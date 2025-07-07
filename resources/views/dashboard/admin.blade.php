@@ -92,8 +92,8 @@
                 </div>
                 <div class="flex-auto p-4">
                     <div class="mb-4">
-                        <p class="font-semibold">Video Editing - <span class="text-green-500">Selesai</span></p>
-                        <div class="w-full bg-gray-250 rounded-full"><div class="bg-green-500 text-xs p-0.5 leading-none rounded-full" style="width: 100%"> 100%</div></div>
+                        <p class="font-semibold">Video Editing - <span style="text-color: #22c55e" >Selesai</span></p>
+                        <div class="w-full bg-gray-250 rounded-full"><div class="text-xs p-0.5 leading-none rounded-full" style="width: 100%; background-color: #22c55e"> 100%</div></div>
                     </div>
                     <div class="mb-4">
                         <p class="font-semibold">Brand Identity - <span class="text-blue-500">In Progress</span></p>

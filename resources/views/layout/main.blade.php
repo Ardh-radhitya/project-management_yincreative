@@ -3,8 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <link rel="icon" type="image/png" href="{{ asset('assets/img/favicon.png') }}" />
-    <title>Dashboard - Y.in Creative PM</title>
+    <title>Dashboard - Y.in Creative</title>
 
     @include('layout.partial.link')
 
@@ -17,8 +18,6 @@
     @include('layout.partial.header')
 
     @yield('content')
-
-    @include('layout.partial.footer')
 
   </body>
 

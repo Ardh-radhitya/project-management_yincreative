@@ -3,8 +3,8 @@
       <div class="h-19">
         <i class="absolute top-0 right-0 p-4 opacity-50 cursor-pointer fas fa-times dark:text-white text-slate-400 xl:hidden" sidenav-close></i>
         <a class="block px-8 py-6 m-0 text-sm whitespace-nowrap dark:text-white text-slate-700" href="https://www.instagram.com/y.in_creative/?utm_source=ig_web_button_share_sheet" target="_blank">
-          <img src="{{ asset('argon-template/build/assets/img/logoyin.png') }}" class="inline h-full max-w-full transition-all duration-200 dark:hidden ease-nav-brand max-h-8" alt="main_logo" />
-          <img src="{{ asset('argon-template/build/assets/img/logoyin.png') }}" class="hidden h-full max-w-full transition-all duration-200 dark:inline ease-nav-brand max-h-8" alt="main_logo" />
+          <img src="./assets/img/blacklogo-yin.png" class="inline h-full max-w-full transition-all duration-200 dark:hidden ease-nav-brand max-h-8" alt="main_logo" />
+          <img src="./assets/img/blacklogo-yin.png" class="hidden h-full max-w-full transition-all duration-200 dark:inline ease-nav-brand max-h-8" alt="main_logo" />
           <span class="ml-1 font-semibold transition-all duration-200 ease-nav-brand">Creative</span>
         </a>
       </div>
@@ -26,8 +26,8 @@
 
         <li class="mt-0.5 w-full">
             <a class="py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap rounded-lg px-4 transition-colors
-                {{ request()->routeIs('project.admin') ? 'bg-blue-500/13 font-semibold text-slate-700' : 'dark:text-white dark:opacity-80' }}"
-                href="{{ route('project.admin') }}">
+                {{ request()->routeIs('projects.index') ? 'bg-blue-500/13 font-semibold text-slate-700' : 'dark:text-white dark:opacity-80' }}"
+                href="{{ route('projects.index') }}">
             <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center stroke-0 text-center xl:p-2.5">
                 <i class="relative top-0 text-sm leading-normal text-orange-500 ni ni-briefcase-24"></i>
             </div>
@@ -59,27 +59,6 @@
             <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Categories</span>
             </a>
         </li>
-        <li class="mt-0.5 w-full">
-            <a class="py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap rounded-lg px-4 transition-colors
-                {{ request()->routeIs('clients.index') ? 'bg-blue-500/13 font-semibold text-slate-700' : 'dark:text-white dark:opacity-80' }}"
-                href="{{ route('clients.index') }}">
-            <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center stroke-0 text-center xl:p-2.5">
-                <i class="relative top-0 text-sm leading-normal text-red-500 ni ni-circle-08"></i>
-            </div>
-            <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Clients</span>
-            </a>
-        </li>
-        <li class="mt-0.5 w-full">
-            <a class="py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap rounded-lg px-4 transition-colors
-                {{ request()->routeIs('users.index') ? 'bg-blue-500/13 font-semibold text-slate-700' : 'dark:text-white dark:opacity-80' }}"
-                href="{{ route('users.index') }}">
-            <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center stroke-0 text-center xl:p-2.5">
-                <i class="relative top-0 text-sm leading-normal text-yellow-500 ni ni-single-02"></i>
-            </div>
-            <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Users</span>
-            </a>
-        </li>
-
         <li class="w-full mt-4">
             <h6 class="pl-6 ml-2 text-xs font-bold leading-tight uppercase dark:text-white opacity-60">Account</h6>
         </li>
