@@ -25,8 +25,14 @@ Route::get('/project', function () {
 
 
 // Route untuk resource Clients (CRUD)
-Route::resource('clients', ClientController::class);
-
+Route::prefix('clients')->group(function () {
+    Route::get('/', [ClientController::class, 'index'])->name('clients.index');
+    Route::get('/create', [ClientController::class, 'create'])->name('clients.create');
+    Route::post('/', [ClientController::class, 'store'])->name('clients.store');
+    Route::get('/{id}', [ClientController::class, 'edit'])->name('clients.edit');
+    Route::put('/{id}', [ClientController::class, 'update'])->name('clients.update');
+    Route::delete('/{id}', [ClientController::class, 'destroy'])->name('clients.destroy');
+});
 // Route untuk Categories
 Route::get('/categories', function () {
     return view('categories.index');

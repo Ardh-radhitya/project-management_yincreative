@@ -51,13 +51,18 @@
                             </td>
                             <td class="p-2 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
                                 <div class="flex justify-center items-center">
-                                    <a href="{{ route('clients.edit', $client->clients_id) }}" class="text-xs font-semibold leading-tight dark:text-white/80 text-slate-400 mr-4"> Edit </a>
+                                    <a href="{{ url('clients/' . $client->id) }}" class="text-xs font-semibold leading-tight dark:text-white/80 text-slate-400 mr-4"> Edit </a>
 
-                                    <form action="{{ route('clients.destroy', $client->clients_id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this client?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="text-xs font-semibold leading-tight text-red-500">Delete</button>
-                                    </form>
+                                <form action="{{ url('clients/' . $client->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this client?');">
+    @csrf
+    @method('DELETE')
+    <button type="submit"
+        class="text-xs font-semibold text-red-600 hover:underline hover:text-red-800 dark:text-red-400 dark:hover:text-red-200 transition duration-200">
+        Delete
+    </button>
+</form>
+
+
                                 </div>
                             </td>
                         </tr>

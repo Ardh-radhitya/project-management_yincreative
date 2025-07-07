@@ -24,76 +24,82 @@ class ClientController extends Controller
 
     // Menyimpan klien baru ke database
     public function store(Request $request)
-    {
-        // Validasi input
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:clients',
-            'password' => 'required|string|min:8',
-            'photo_profile' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        ]);
+{
+    // Validasi input
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|string|email|max:255|unique:clients',
+        'password' => 'required|string|min:8',
+        'photo_profile' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+    ]);
 
-        $imagePath = null;
-        if ($request->hasFile('photo_profile')) {
-            // Simpan gambar ke storage/app/public/profile_pictures
-            $imagePath = $request->file('photo_profile')->store('photo_profile', 'public');
-        }
-
-        Client::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password), // Hash password
-            'photo_profile' => $imagePath,
-        ]);
-
-        return redirect()->route('clients.index')->with('success', 'Client created successfully.');
+    $imagePath = null;
+    if ($request->hasFile('photo_profile')) {
+        $imagePath = $request->file('photo_profile')->store('photo_profile', 'public');
     }
 
+    Client::create([
+        'name' => $validated['name'],
+        'email' => $validated['email'],
+        'password' => Hash::make($validated['password']),
+        'photo_profile' => $imagePath,
+    ]);
+
+    return redirect()->route('clients')->with('success', 'Client created successfully.');
+}
+
+
     // Menampilkan form untuk mengedit klien
-    public function edit(Client $client)
+    public function edit($id)
     {
-        return view('clients.edit', compact('client'));
+        $client = Client::findOrFail($id); // Ambil klien berdasarkan ID
+        return view('clients.edit', [
+            'client' => $client
+        ]);
     }
 
     // Mengupdate data klien di database
-    public function update(Request $request, Client $client)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:clients,email,' . $client->clients_id . ',clients_id',
-            'password' => 'nullable|string|min:8',
-            'photo_profile' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        ]);
+    public function update(Request $request, $id)
+{
+    $client = Client::findOrFail($id);
 
-        $data = $request->except('password', 'photo_profile');
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|string|email|max:255|unique:clients,email,' . $client->id,
+        'password' => 'nullable|string|min:8',
+        'photo_profile' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+    ]);
 
-        if ($request->filled('password')) {
-            $data['password'] = Hash::make($request->password); // Hash password baru jika diisi
-        }
-
-        if ($request->hasFile('photo_profile')) {
-            // Hapus gambar lama jika ada
-            if ($client->photo_profile) {
-                Storage::disk('public')->delete($client->photo_profile);
-            }
-            // Simpan gambar baru
-            $data['photo_profile'] = $request->file('photo_profile')->store('photo_profile', 'public');
-        }
-
-        $client->update($data);
-
-        return redirect()->route('clients.index')->with('success', 'Client updated successfully.');
+    if ($request->hasFile('photo_profile')) {
+        $imagePath = $request->file('photo_profile')->store('photo_profile', 'public');
+        $client->photo_profile = $imagePath;
     }
+
+    $client->name = $validated['name'];
+    $client->email = $validated['email'];
+
+    if (!empty($validated['password'])) {
+        $client->password = Hash::make($validated['password']);
+    }
+
+    $client->save();
+
+    return redirect()->route('clients')->with('success', 'Client updated successfully.');
+}
+
 
     // Menghapus klien dari database
-    public function destroy(Client $client)
-    {
-         // Hapus gambar dari storage
-        if ($client->photo_profile) {
-            Storage::disk('public')->delete($client->photo_profile);
-        }
+    public function destroy($id)
+{
+    $client = Client::findOrFail($id);
 
-        $client->delete();
-        return redirect()->route('clients.index')->with('success', 'Client deleted successfully.');
+    if ($client->photo_profile) {
+        Storage::disk('public')->delete($client->photo_profile);
     }
+
+    $client->delete();
+
+    return redirect()->route('clients.index')->with('success', 'Client deleted successfully.');
+}
+
 }

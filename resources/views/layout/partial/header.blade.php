@@ -5,7 +5,7 @@
         <a class="block px-8 py-6 m-0 text-sm whitespace-nowrap dark:text-white text-slate-700" href="https://www.instagram.com/y.in_creative/?utm_source=ig_web_button_share_sheet" target="_blank">
           <img src="{{ asset('argon-template/build/assets/img/logoyin.png') }}" class="inline h-full max-w-full transition-all duration-200 dark:hidden ease-nav-brand max-h-8" alt="main_logo" />
           <img src="{{ asset('argon-template/build/assets/img/logoyin.png') }}" class="hidden h-full max-w-full transition-all duration-200 dark:inline ease-nav-brand max-h-8" alt="main_logo" />
-          <span class="ml-1 font-semibold transition-all duration-200 ease-nav-brand">Creative</span>
+          <span class="ml-1 font-semibold transition-all duration-200 ease-nav-brand">Y.in Creative</span>
         </a>
       </div>
 
