@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('roles', function (Blueprint $table) {
-            $table->id('roles_id');
+            $table->id(); // pake default 'id' aja
+            $table->string('name'); // INI dia yang hilang kemarin
             $table->timestamps();
         });
     }

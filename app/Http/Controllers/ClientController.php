@@ -45,7 +45,7 @@ class ClientController extends Controller
         'photo_profile' => $imagePath,
     ]);
 
-    return redirect()->route('clients')->with('success', 'Client created successfully.');
+    return redirect()->route('clients.index')->with('success', 'Client created successfully.');
 }
 
 
@@ -84,7 +84,7 @@ class ClientController extends Controller
 
     $client->save();
 
-    return redirect()->route('clients')->with('success', 'Client updated successfully.');
+    return redirect()->route('clients.index')->with('success', 'Client updated successfully.');
 }
 
 

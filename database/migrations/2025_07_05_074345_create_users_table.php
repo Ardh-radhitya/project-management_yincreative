@@ -34,6 +34,7 @@ return new class extends Migration
             $table->text('user_agent')->nullable();
             $table->longText('payload');
             $table->integer('last_activity')->index();
+            $table->foreignId('role_id')->nullable()->constrained('roles');
         });
     }
 

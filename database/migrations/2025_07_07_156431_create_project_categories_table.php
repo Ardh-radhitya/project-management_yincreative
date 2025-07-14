@@ -9,19 +9,25 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::create('project_categories', function (Blueprint $table) {
-            $table->id('project_categories_id');
+            $table->id();
+            $table->string('name')->unique();
             $table->timestamps();
         });
     }
+
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
+        Schema::table('projects', function (Blueprint $table) {
+            $table->dropForeign(['category_id']);
+        });
+
         Schema::dropIfExists('project_categories');
     }
 };
