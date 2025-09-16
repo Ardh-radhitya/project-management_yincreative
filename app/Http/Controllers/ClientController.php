@@ -24,30 +24,31 @@ class ClientController extends Controller
 
     // Menyimpan klien baru ke database
     public function store(Request $request)
-{
-    // Validasi input
-    $validated = $request->validate([
-        'name' => 'required|string|max:255',
-        'email' => 'required|string|email|max:255|unique:clients',
-        'password' => 'required|string|min:8',
-        'photo_profile' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-    ]);
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:clients',
+            'password' => 'required|string|min:8',
+            'photo_profile' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
 
-    $imagePath = null;
-    if ($request->hasFile('photo_profile')) {
-        $imagePath = $request->file('photo_profile')->store('photo_profile', 'public');
+        // Simpan foto kalau ada
+        $imagePath = null;
+        if ($request->hasFile('photo_profile')) {
+            $imagePath = $request->file('photo_profile')->store('photo_profile', 'public');
+        }
+
+        // Create client langsung
+        Client::create([
+            'name'          => $validated['name'],
+            'email'         => $validated['email'],
+            'password'      => Hash::make($validated['password']),
+            'photo_profile' => $imagePath,
+        ]);
+
+        return redirect()->route('clients.index')
+                        ->with('success', 'Client created successfully.');
     }
-
-    Client::create([
-        'name' => $validated['name'],
-        'email' => $validated['email'],
-        'password' => Hash::make($validated['password']),
-        'photo_profile' => $imagePath,
-    ]);
-
-    return redirect()->route('clients.index')->with('success', 'Client created successfully.');
-}
-
 
     // Menampilkan form untuk mengedit klien
     public function edit($id)

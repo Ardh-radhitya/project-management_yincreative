@@ -11,6 +11,8 @@ Route::get('/dashboard-admin', function () {
     return view('dashboard.admin');
 })->name('dashboard.admin');
 
+
+
 //route untuk Admins
 Route::prefix('admins')->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('admins.index');

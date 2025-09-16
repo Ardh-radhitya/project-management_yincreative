@@ -42,9 +42,6 @@
                             <td class="p-2 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap">
                                 <span class="text-sm font-semibold dark:text-white">{{ $project->title }}</span>
                             </td>
-                            <td class="text-sm text-gray-700 dark:text-white">
-                                {{ $project->category->name ?? '-' }}
-                            </td>
                             <td class="p-2 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap">
                                 <span class="text-sm text-slate-500 dark:text-white/80">
                                     {{ optional($project->client)->name ?? '-' }}
@@ -97,12 +94,3 @@
     </div>
 </div>
 @endsection
-
-
-
-<!-- Tailwind safelist trick biar warna kebaca -->
-<div class="hidden">
-    text-green-600 bg-green-100
-    text-yellow-600 bg-yellow-100
-    text-red-600 bg-red-100
-</div>

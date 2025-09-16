@@ -60,7 +60,11 @@ class UserController extends Controller
             $data['password'] = Hash::make($request->password);
         }
 
-        $user->update($data);
+        $user = User::findOrFail($id);
+        $user->name = $request->name;
+        $user->email = $request->email;
+
+        $user->save();
 
         return redirect()->route('users.index')->with('success', 'User updated successfully');
     }
@@ -70,4 +74,5 @@ class UserController extends Controller
         $user->delete();
         return redirect()->route('users.index')->with('success', 'User deleted');
     }
+
 }

@@ -38,7 +38,7 @@
                             <td class="p-2 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
                                 <div class="flex px-2 py-1">
                                     <div>
-                                        <img src="{{ $client->photo_profile ? asset('storage/' . $client->photo_profile) : asset('assets/img/team-2.jpg') }}" class="inline-flex items-center justify-center mr-4 text-sm text-white transition-all duration-200 ease-in-out h-9 w-9 rounded-xl" alt="user1" />
+                                        <img src="{{ $client->photo_profile ? asset('storage/' . $client->photo_profile) : asset('images/clients/default.png') }}" class="inline-flex items-center justify-center mr-4 text-sm text-white transition-all duration-200 ease-in-out h-9 w-9 rounded-xl" alt="user1" />
                                     </div>
                                     <div class="flex flex-col justify-center">
                                         <h6 class="mb-0 text-sm leading-normal dark:text-white">{{ $client->name }}</h6>
@@ -68,9 +68,9 @@
                         </tr>
                         @empty
                         <tr>
-                           <td colspan="3" class="p-4 text-center text-sm text-gray-500">
-                               No clients found.
-                           </td>
+                            <td colspan="3" class="p-4 text-center text-sm text-gray-500">
+                                No clients found.
+                            </td>
                         </tr>
                         @endforelse
                     </tbody>
