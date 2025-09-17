@@ -4,8 +4,16 @@
 <div class="p-6">
     <h3 class="text-2xl font-bold mb-4">Add New User</h3>
 
-    <form action="{{ route('users.store') }}" method="POST">
+    <form action="{{ route('users.store') }}" enctype="multipart/form-data" method="POST">
         @csrf
+        <label class="block text-sm font-medium mb-1">Photo Profile</label>
+        <input type="file" name="photo_profile" class="border p-2 w-full">
+        {{-- preview image opsional jika pakai old() --}}
+        @if(old('photo_profile'))
+            <img src="{{ asset('storage/'.old('photo_profile')) }}"
+                class="w-24 h-24 object-cover mb-2 rounded">
+        @endif
+
         <div class="mb-4">
             <label for="name" class="block text-white font-medium mb-1">Name</label>
             <input type="text" name="name" id="name" class="w-full p-2 rounded bg-white text-black" required>
@@ -37,7 +45,6 @@
         <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded mt-4">
             Save
         </button>
-
     </form>
 </div>
 @endsection

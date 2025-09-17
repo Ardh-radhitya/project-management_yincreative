@@ -32,7 +32,13 @@
                             <td class="p-2 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
                                 <div class="flex px-2 py-1">
                                     <div>
-                                        <img src="{{ asset('assets/img/user-default.jpg') }}" class="inline-flex items-center justify-center mr-4 h-9 w-9 rounded-xl" alt="user" />
+                                        <img
+                                            src="{{ $user->photo_profile
+                                                ? asset('storage/'.$user->photo_profile)
+                                                : asset('images/clients/default.png') }}"
+                                            alt="avatar"
+                                            class="inline-flex items-center justify-center mr-4 h-9 w-9 rounded-xl"
+                                        />
                                     </div>
                                     <div class="flex flex-col justify-center">
                                         <h6 class="mb-0 text-sm leading-normal dark:text-white">{{ $user->name }}</h6>

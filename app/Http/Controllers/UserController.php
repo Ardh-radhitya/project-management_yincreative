@@ -15,7 +15,6 @@ class UserController extends Controller
         return view('users.index', compact('users'));
     }
 
-
     public function create()
     {
         $roles = Role::whereIn('name', ['Admin', 'Internal Team'])->get();
@@ -25,17 +24,28 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users,email',
+            'name'          => 'required',
+            'email'         => 'required|email|unique:users,email',
             // 'role_id' => 'required|exists:roles,id',
-            'password' => 'required|min:6|confirmed',
+            'password'      => 'required|min:6|confirmed',
+            'photo_profile' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
+        // --- simpan file jika ada
+        $imagePath = null;
+        if ($request->hasFile('photo_profile')) {
+            $path = $request->file('photo_profile')->store('users', 'public');
+            $data['photo_profile'] = $path;
+        }
+
+
+        // --- create user + path foto
         User::create([
-            'name' => $request->name,
-            'email' => $request->email,
+            'name'          => $request->name,
+            'email'         => $request->email,
             // 'role_id' => $request->role_id,
-            'password' => Hash::make($request->password),
+            'password'      => Hash::make($request->password),
+            'photo_profile' => $imagePath,
         ]);
 
         return redirect()->route('users.index')->with('success', 'User created successfully');
@@ -50,21 +60,28 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users,email,' . $user->id,
-            'role_id' => 'required|exists:roles,id',
+            'name'          => 'required',
+            'email'         => 'required|email|unique:users,email,' . $user->id,
+            //'role_id' => 'required|exists:roles,id',
+            'password'      => 'nullable|min:6|confirmed',
+            'photo_profile' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        $data = $request->only('name', 'email', 'role_id');
-        if ($request->password) {
+        // --- data dasar
+        $data = $request->only('name', 'email'); // tambahkan role_id jika dipakai
+
+        // --- password (opsional)
+        if ($request->filled('password')) {
             $data['password'] = Hash::make($request->password);
         }
 
-        $user = User::findOrFail($id);
-        $user->name = $request->name;
-        $user->email = $request->email;
+        // --- foto profil (opsional)
+        if ($request->hasFile('photo_profile')) {
+            $data['photo_profile'] = $request->file('photo_profile')->store('photo_profile', 'public');
+        }
 
-        $user->save();
+        // --- update langsung
+        $user->update($data);
 
         return redirect()->route('users.index')->with('success', 'User updated successfully');
     }
@@ -74,5 +91,4 @@ class UserController extends Controller
         $user->delete();
         return redirect()->route('users.index')->with('success', 'User deleted');
     }
-
 }
