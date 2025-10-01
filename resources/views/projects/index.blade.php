@@ -68,7 +68,7 @@
                             </td>
                             <td class="p-2 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap">
                                 <div class="flex justify-center items-center">
-                                    <a href="{{ url('projects/' . $project->id) }}" class="text-xs font-semibold leading-tight dark:text-white/80 text-slate-400 mr-4"> Edit </a>
+                                    <a href="{{ route('projects.edit', $project->id) }}" class="text-xs font-semibold ..."> Edit </a>
                                     <form action="{{ url('projects/' . $project->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this project?');">
                                         @csrf
                                         @method('DELETE')

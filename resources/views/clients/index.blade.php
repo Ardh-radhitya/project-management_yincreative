@@ -51,7 +51,7 @@
                             </td>
                             <td class="p-2 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
                                 <div class="flex justify-center items-center">
-                                    <a href="{{ url('clients/' . $client->id) }}" class="text-xs font-semibold leading-tight dark:text-white/80 text-slate-400 mr-4"> Edit </a>
+                                    <a href="{{ url('clients.edit' . $client->id) }}" class="text-xs font-semibold leading-tight dark:text-white/80 text-slate-400 mr-4"> Edit </a>
 
                                 <form action="{{ url('clients/' . $client->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this client?');">
     @csrf

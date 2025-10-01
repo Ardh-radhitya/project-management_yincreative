@@ -21,7 +21,7 @@ Route::get('/dashboard-client', fn() => view('dashboard.client'))->name('dashboa
 
 /*
 |--------------------------------------------------------------------------
-| Admins CRUD
+| Admin CRUD+index
 |--------------------------------------------------------------------------
 */
 Route::prefix('admins')->group(function () {
@@ -38,11 +38,12 @@ Route::prefix('admins')->group(function () {
 | Projects CRUD
 |--------------------------------------------------------------------------
 */
+
 Route::prefix('projects')->group(function () {
     Route::get('/', [ProjectController::class, 'index'])->name('projects.index');
     Route::get('/create', [ProjectController::class, 'create'])->name('projects.create');
     Route::post('/', [ProjectController::class, 'store'])->name('projects.store');
-    Route::get('/{project}', [ProjectController::class, 'edit'])->name('projects.edit');
+    Route::get('/{project}/edit', [ProjectController::class, 'edit'])->name('projects.edit');
     Route::put('/{project}', [ProjectController::class, 'update'])->name('projects.update');
     Route::delete('/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
 });
@@ -97,7 +98,7 @@ Route::prefix('clients')->group(function () {
     Route::get('/', [ClientController::class, 'index'])->name('clients.index');
     Route::get('/create', [ClientController::class, 'create'])->name('clients.create');
     Route::post('/', [ClientController::class, 'store'])->name('clients.store');
-    Route::get('/{id}', [ClientController::class, 'edit'])->name('clients.edit');
+    Route::get('/{id}/edit', [ClientController::class, 'edit'])->name('clients.edit');
     Route::put('/{id}', [ClientController::class, 'update'])->name('clients.update');
     Route::delete('/{id}', [ClientController::class, 'destroy'])->name('clients.destroy');
 });
