@@ -33,6 +33,7 @@
                     <th class="py-2 px-3 text-gray-500 text-sm font-medium">#</th>
                     <th class="py-2 px-3 text-gray-500 text-sm font-medium">Project Name</th>
                     <th class="py-2 px-3 text-gray-500 text-sm font-medium">Client</th>
+                    <th class="py-2 px-3 text-gray-500 text-sm font-medium">Status</th>
                     <th class="py-2 px-3 text-gray-500 text-sm font-medium">Created At</th>
                 </tr>
             </thead>
@@ -40,13 +41,14 @@
                 @forelse ($recentProjects as $index => $project)
                     <tr class="border-b hover:bg-gray-50">
                         <td class="py-2 px-3 text-sm text-gray-700">{{ $index + 1 }}</td>
-                        <td class="py-2 px-3 text-sm text-gray-800 font-medium">{{ $project->name }}</td>
-                        <td class="py-2 px-3 text-sm text-gray-700">{{ $project->client->name ?? '-' }}</td>
-                        <td class="py-2 px-3 text-sm text-gray-700">{{ $project->created_at->format('d M Y') }}</td>
+                        <td class="py-2 px-3 text-sm text-gray-800 font-medium">{{ $project->title ?? $project->name ?? '-' }}</td>
+                        <td class="py-2 px-3 text-sm text-gray-700">{{ optional($project->client)->name ?? '-' }}</td>
+                        <td class="py-2 px-3 text-sm text-gray-700">{{ ucfirst($project->status ?? 'pending') }}</td>
+                        <td class="py-2 px-3 text-sm text-gray-700">{{ $project->created_at ? $project->created_at->format('d M Y') : '-' }}</td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="4" class="py-3 text-center text-gray-500">No recent projects found.</td>
+                        <td colspan="5" class="py-3 text-center text-gray-500">No recent projects found.</td>
                     </tr>
                 @endforelse
             </tbody>
