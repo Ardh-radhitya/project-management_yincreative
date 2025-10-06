@@ -15,7 +15,7 @@ use App\Http\Controllers\ProfileController;
 |--------------------------------------------------------------------------
 */
 Route::get('/', fn() => redirect()->route('dashboard.admin'));
-Route::get('/dashboard-admin', fn() => view('dashboard.admin'))->name('dashboard.admin');
+Route::get('/dashboard-admin', [AdminController::class, 'dashboard'])->name('dashboard.admin');
 Route::get('/dashboard-team', fn() => view('dashboard.team'))->name('dashboard.team');
 Route::get('/dashboard-client', fn() => view('dashboard.client'))->name('dashboard.client');
 

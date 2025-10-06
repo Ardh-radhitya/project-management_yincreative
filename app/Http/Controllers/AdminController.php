@@ -9,6 +9,25 @@ use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
+    public function dashboard()
+    {
+        $totalProjects = \App\Models\Project::count();
+        $totalClients = \App\Models\Client::count();
+        $totalUsers = \App\Models\User::count();
+        $totalAdmins = \App\Models\Admin::count();
+
+        // Ambil 5 proyek terbaru
+        $recentProjects = \App\Models\Project::latest()->take(5)->get();
+
+        return view('dashboard.admin', compact(
+            'totalProjects',
+            'totalClients',
+            'totalUsers',
+            'totalAdmins',
+            'recentProjects'
+        ));
+    }
+
     public function index()
     {
         $admins = Admin::all();
@@ -87,3 +106,6 @@ class AdminController extends Controller
         return redirect()->route('admins.index')->with('success', 'Admin deleted successfully.');
     }
 }
+
+
+
