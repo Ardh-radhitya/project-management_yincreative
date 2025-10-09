@@ -17,19 +17,21 @@ class UserController extends Controller
 
     public function create()
     {
-        $roles = Role::whereIn('name', ['Admin', 'Internal Team'])->get();
+        $roles = \App\Models\Role::all();
         return view('users.create', compact('roles'));
     }
 
+
     public function store(Request $request)
     {
-        $request->validate([
-            'name'          => 'required',
-            'email'         => 'required|email|unique:users,email',
-            // 'role_id' => 'required|exists:roles,id',
-            'password'      => 'required|min:6|confirmed',
-            'photo_profile' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'photo_profile' => $imagePath ?? null,
+            'role_id' => $request->role_id,
         ]);
+
 
         // --- simpan file jika ada
         $imagePath = null;

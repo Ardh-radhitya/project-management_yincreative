@@ -25,12 +25,15 @@
         </div>
 
         <div class="mb-4">
-            <label for="role_id" class="block text-gray-500 font-medium mb-1">Select Role</label>
-            <select name="role_id" id="role_id" class="w-full p-2 rounded bg-white text-black" required>
-                <option value="1">Admin</option>
-                <option value="2">Internal Team</option>
+            <label for="role_id" class="block text-sm font-medium text-gray-700">Role</label>
+            <select name="role_id" id="role_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+                <option value="">Pilih Role</option>
+                @foreach($roles as $role)
+                    <option value="{{ $role->id }}">{{ ucfirst($role->name) }}</option>
+                @endforeach
             </select>
         </div>
+
 
         <div class="mb-4">
             <label for="password" class="block text-gray-500 font-medium mb-1">Password</label>
