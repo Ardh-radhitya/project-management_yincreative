@@ -25,11 +25,11 @@ class LoginController extends Controller
 
             // Redirect sesuai role
             if ($user->role->name === 'admin') {
-                return redirect()->route('dashboard.admin');
+                return redirect()->route('admin.dashboard');
             } elseif ($user->role->name === 'team') {
-                return redirect()->route('dashboard.team');
+                return redirect()->route('team.dashboard');
             } elseif ($user->role->name === 'client') {
-                return redirect()->route('dashboard.client');
+                return redirect()->route('client.dashboard');
             } else {
                 Auth::logout();
                 return redirect()->route('login')->with('error', 'Role tidak dikenali.');
