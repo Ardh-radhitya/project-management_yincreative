@@ -28,12 +28,6 @@ class AdminController extends Controller
         ));
     }
 
-    public function index()
-    {
-        $admins = Admin::all();
-        return view('admins.index', compact('admins'));
-    }
-
     public function create()
     {
         return view('admins.create');
@@ -60,7 +54,7 @@ class AdminController extends Controller
             'photo_profile' => $imagePath,
         ]);
 
-        return redirect()->route('admins.index')->with('success', 'Admin created successfully.');
+        return redirect()->route('dashboard.admin')->with('success', 'Admin created successfully.');
     }
 
     public function edit(Admin $admin)
@@ -93,7 +87,7 @@ class AdminController extends Controller
 
         $admin->save();
 
-        return redirect()->route('admins.index')->with('success', 'Admin updated successfully.');
+        return redirect()->route('dashboard.admin')->with('success', 'Admin updated successfully.');
     }
 
     public function destroy(Admin $admin)
@@ -103,7 +97,7 @@ class AdminController extends Controller
         }
 
         $admin->delete();
-        return redirect()->route('admins.index')->with('success', 'Admin deleted successfully.');
+        return redirect()->route('dashboard.admin')->with('success', 'Admin deleted successfully.');
     }
 }
 

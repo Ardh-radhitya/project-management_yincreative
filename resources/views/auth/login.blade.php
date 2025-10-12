@@ -182,5 +182,4 @@
         </div>
         </footer>
     </body>
-    <link href="{{ asset('argon-template/build/assets/css/argon-dashboard-tailwind.css') }}" rel="stylesheet" />
 </html>

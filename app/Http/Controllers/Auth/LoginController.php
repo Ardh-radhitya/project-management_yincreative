@@ -24,11 +24,11 @@ class LoginController extends Controller
             $user = Auth::user();
 
             // Redirect sesuai role
-            if ($user->role->name === 'admin') {
+            if ($user->role_id === 1) {
                 return redirect()->route('admin.dashboard');
-            } elseif ($user->role->name === 'team') {
+            } elseif ($user->role_id === 2) {
                 return redirect()->route('team.dashboard');
-            } elseif ($user->role->name === 'client') {
+            } elseif ($user->role_id === 3) {
                 return redirect()->route('client.dashboard');
             } else {
                 Auth::logout();

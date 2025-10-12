@@ -13,13 +13,9 @@ use App\Http\Controllers\ProfileController;
 
 
 /*--------------------------------------------------------------------------
-| Authentication Routes
+| Login Routes
 |--------------------------------------------------------------------------
 */
-Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [AuthController::class, 'login'])->name('login.post');
-
-
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
@@ -32,9 +28,10 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 |--------------------------------------------------------------------------
 */
 Route::get('/', fn() => redirect()->route('dashboard.admin'));
-Route::get('/dashboard-admin', [AdminController::class, 'dashboard'])->name('dashboard.admin');
-Route::get('/dashboard-team', fn() => view('dashboard.team'))->name('dashboard.team');
-Route::get('/dashboard-client', fn() => view('dashboard.client'))->name('dashboard.client');
+Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+Route::get('/team/dashboard', [TeamController::class, 'index'])->name('team.dashboard');
+Route::get('/client/dashboard', [ClientController::class, 'index'])->name('client.dashboard');
+
 
 /*
 |--------------------------------------------------------------------------
@@ -42,7 +39,7 @@ Route::get('/dashboard-client', fn() => view('dashboard.client'))->name('dashboa
 |--------------------------------------------------------------------------
 */
 Route::prefix('admins')->group(function () {
-    Route::get('/', [AdminController::class, 'index'])->name('admins.index');
+    Route::get('/', [AdminController::class, 'index'])->name('dashboard.admin');
     Route::get('/create', [AdminController::class, 'create'])->name('admins.create');
     Route::post('/', [AdminController::class, 'store'])->name('admins.store');
     Route::get('/{admin}', [AdminController::class, 'edit'])->name('admins.edit');

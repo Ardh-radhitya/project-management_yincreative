@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Client;
+use App\Models\ProjectCategory;
 
 class Project extends Model
 {
@@ -17,6 +19,15 @@ class Project extends Model
         'status',
         'client_id',
     ];
+
+    public function index()
+    {
+        $totalProjects = Project::count();
+        $totalUsers = User::count();
+
+        return view('dashboard.admin', compact('totalProjects', 'totalUsers'));
+    }
+
 
     // Relasi ke Client
     public function client()
