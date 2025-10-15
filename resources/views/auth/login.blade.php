@@ -1,36 +1,61 @@
-@extends('layout.main') {{-- kalau lo mau bikin layout auth sendiri, lebih ringan dari main dashboard --}}
+@extends('layout.login')
 
 @section('content')
-<div class="min-h-screen flex items-center justify-center bg-gray-900">
-    <div class="w-full max-w-md bg-white p-8 rounded-lg shadow-lg">
-        <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">Login</h2>
+<div class="container mx-auto">
+    <div class="flex flex-wrap -mx-3">
+        <div class="flex flex-col w-full max-w-full px-3 mx-auto lg:w-1/2 shrink-0 md:w-9/12 md:flex-0">
+            <div class="relative flex flex-col min-w-0 break-words bg-white border-0 shadow-none lg:py-4 dark:bg-gray-950 rounded-2xl bg-clip-border">
+                <div class="flex-auto p-6 text-center">
+                    <img src="{{ asset('argon-template/build/assets/img/logoyin.png') }}" alt="Logo" class="mx-auto mb-4" style="max-width: 100px;">
+                    <h4 class="mb-1 font-bold">Login</h4>
+                    <p class="mb-0">Masukan email dan password kamu untuk login</p>
+                </div>
 
-        @if($errors->any())
-            <div class="bg-red-100 text-red-700 p-3 rounded mb-4">
-                {{ $errors->first() }}
+                <div class="flex-auto p-6 pt-0">
+                    <form role="form" method="POST" action="{{ route('login.post') }}">
+                        @csrf
+                        <div class="flex flex-wrap -mx-3">
+                            <div class="w-full max-w-full px-3 shrink-0 md:w-full md:flex-0">
+                                <div class="mb-4">
+                                    <label for="email" class="inline-block mb-2 ml-1 font-bold text-size-xs text-slate-700">Email</label>
+                                    <input type="email" id="email" name="email" value="{{ old('email') }}" placeholder="eg. soft@dashboard.com" required
+                                        class="focus:shadow-soft-primary-outline text-size-sm leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 transition-all focus:border-fuchsia-300 focus:outline-none focus:transition-shadow" />
+
+                                    {{-- KODE PENAMPIL ERROR DITAMBAHKAN DI SINI --}}
+                                    @error('email')
+                                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="w-full max-w-full px-3 shrink-0 md:w-full md:flex-0">
+                                <div class="mb-4">
+                                    <label for="password" class="inline-block mb-2 ml-1 font-bold text-size-xs text-slate-700">Password</label>
+                                    <input type="password" id="password" name="password" placeholder="••••••••" required
+                                        class="focus:shadow-soft-primary-outline text-size-sm leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 transition-all focus:border-fuchsia-300 focus:outline-none focus:transition-shadow" />
+                                </div>
+                            </div>
+                            <div class="w-full max-w-full px-3 shrink-0 md:w-full md:flex-0">
+                                <div class="min-h-6 mb-0.5 block pl-12">
+                                    <input id="rememberMe"
+                                        class="mt-0.54 rounded-10 duration-250 ease-soft-in-out after:rounded-circle after:shadow-soft-2xl after:duration-250 checked:after:translate-x-5.25 h-5 relative float-left -ml-12 w-10 cursor-pointer appearance-none border border-solid border-gray-200 bg-slate-800/10 bg-none bg-contain bg-left bg-no-repeat align-top transition-all after:absolute after:top-px after:h-4 after:w-4 after:translate-x-px after:bg-white after:content-[''] checked:border-slate-800/95 checked:bg-slate-800/95 checked:bg-none checked:bg-right"
+                                        type="checkbox" name="remember" />
+                                    <label class="mb-2 ml-1 font-normal cursor-pointer select-none text-size-sm text-slate-700"
+                                        for="rememberMe">Remember me</label>
+                                </div>
+                            </div>
+                            <div class="w-full max-w-full px-3 mt-4 shrink-0 md:w-full md:flex-0">
+                                <div class="text-center">
+                                    <button type="submit"
+                                        class="inline-block w-full px-6 py-3 mt-6 mb-2 font-bold text-center text-white uppercase align-middle transition-all bg-transparent border-0 rounded-lg cursor-pointer active:opacity-85 hover:scale-102 hover:shadow-soft-xs leading-pro text-size-xs ease-soft-in tracking-tight-soft shadow-soft-md bg-150 bg-x-25 bg-gradient-cyan hover:border-slate-700 hover:bg-slate-700 hover:text-white">
+                                        Login
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
-        @endif
-
-        <form method="POST" action="{{ route('login.post') }}">
-            @csrf
-
-            <div class="mb-4">
-                <label for="email" class="block text-gray-700">Email</label>
-                <input id="email" type="email" name="email" required
-                    class="w-full border border-gray-300 rounded px-3 py-2 mt-1 focus:ring focus:ring-indigo-200">
-            </div>
-
-            <div class="mb-6">
-                <label for="password" class="block text-gray-700">Password</label>
-                <input id="password" type="password" name="password" required
-                    class="w-full border border-gray-300 rounded px-3 py-2 mt-1 focus:ring focus:ring-indigo-200">
-            </div>
-
-            <button type="submit"
-                    class="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700 transition">
-                Masuk
-            </button>
-        </form>
+        </div>
     </div>
 </div>
 @endsection
