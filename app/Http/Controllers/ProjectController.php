@@ -2,86 +2,79 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Client;
 use App\Models\Project;
+use App\Models\Client; // <-- Tambahkan ini
+use App\Models\ProjectCategory; // <-- Tambahkan ini
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use App\Models\ProjectCategory;
 
 class ProjectController extends Controller
 {
     public function index()
     {
-        $projects = Project::with('client')->orderByDesc('created_at')->get();
+        $projects = Project::with(['client', 'category'])->get();
         return view('projects.index', compact('projects'));
     }
 
     public function create()
     {
+        // Ambil data untuk dropdown di form
         $clients = Client::all();
         $categories = ProjectCategory::all();
-
         return view('projects.create', compact('clients', 'categories'));
     }
 
     public function store(Request $request)
     {
-        $request->validate([
-            'title' => 'required|string|max:255',
+        // --- VALIDASI DITAMBAHKAN DI SINI ---
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'start_date' => 'nullable|date',
-            'end_date' => 'nullable|date|after_or_equal:start_date',
-            'status' => 'required|in:Not Started,In Progress,Completed',
-            'client_id' => 'nullable|exists:clients,id',
-            'category_id' => 'nullable|exists:project_categories,id',
+            'client_id' => 'required|exists:clients,id',
+            'category_id' => 'required|exists:project_categories,id',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'status' => 'required|string', // Bisa divalidasi lebih spesifik jika perlu
         ]);
 
-        Project::create([
-            'title' => $request->title,
-            'description' => $request->description,
-            'start_date' => $request->start_date,
-            'end_date' => $request->end_date,
-            'status' => $request->status,
-            'client_id' => $request->client_id,
-            'category_id' => $request->category_id,
-            //'admin_id' => auth()->guard('admin')->id(), // asumsi pakai guard admin
-        ]);
+        Project::create($validatedData);
 
-        return redirect()->route('projects.index')->with('success', 'Project created successfully.');
+        return redirect()->route('projects.index')->with('success', 'Proyek berhasil ditambahkan.');
+    }
+
+    public function show(Project $project)
+    {
+        return view('projects.show', compact('project'));
     }
 
     public function edit(Project $project)
     {
+        // Ambil data untuk dropdown di form edit
         $clients = Client::all();
         $categories = ProjectCategory::all();
-
         return view('projects.edit', compact('project', 'clients', 'categories'));
-
     }
 
     public function update(Request $request, Project $project)
     {
-        $request->validate([
-            'title' => 'required|string|max:255',
+        // --- VALIDASI UNTUK UPDATE ---
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'start_date' => 'nullable|date',
-            'end_date' => 'nullable|date|after_or_equal:start_date',
-            'status' => 'required|in:Not Started,In Progress,Completed',
-            'client_id' => 'nullable|exists:clients,id',
-            'category_id' => 'nullable|exists:project_categories,id',
+            'client_id' => 'required|exists:clients,id',
+            'category_id' => 'required|exists:project_categories,id',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'status' => 'required|string',
         ]);
 
-        $project->update($request->only([
-            'title', 'description', 'start_date', 'end_date', 'status', 'client_id'
-        ]));
+        $project->update($validatedData);
 
-        return redirect()->route('projects.index')->with('success', 'Project updated successfully.');
+        return redirect()->route('projects.index')->with('success', 'Proyek berhasil diperbarui.');
     }
 
     public function destroy(Project $project)
     {
         $project->delete();
-        return redirect()->route('projects.index')->with('success', 'Project deleted successfully.');
+        return redirect()->route('projects.index')->with('success', 'Proyek berhasil dihapus.');
     }
-
 }

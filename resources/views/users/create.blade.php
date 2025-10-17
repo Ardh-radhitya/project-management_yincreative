@@ -1,53 +1,62 @@
 @extends('layout.main')
 
 @section('content')
-<div class="p-6">
-    <h3 class="text-2xl font-bold mb-4">Add New User</h3>
+<div class="flex flex-wrap -mx-3">
+    <div class="flex-none w-full max-w-full px-3">
+        <div class="relative flex flex-col min-w-0 mb-6 break-words bg-white border-0 border-transparent border-solid shadow-soft-xl rounded-2xl bg-clip-border">
+            <div class="p-6 pb-0 mb-0 bg-white border-b-0 border-b-solid rounded-t-2xl border-b-transparent">
+                <h6>Tambah User Baru</h6>
+            </div>
+            <div class="flex-auto px-0 pt-0 pb-2">
+                <div class="p-6">
+                    <form action="{{ route('users.store') }}" method="POST">
+                        @csrf
+                        <div class="mb-4">
+                            <label for="name" class="inline-block mb-2 ml-1 font-bold text-size-xs text-slate-700">Nama</label>
+                            <input type="text" name="name" id="name" value="{{ old('name') }}" placeholder="Masukkan Nama User"
+                                class="focus:shadow-soft-primary-outline text-size-sm leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 transition-all focus:border-fuchsia-300 focus:outline-none focus:transition-shadow" />
+                            @error('name')
+                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div class="mb-4">
+                            <label for="email" class="inline-block mb-2 ml-1 font-bold text-size-xs text-slate-700">Email</label>
+                            <input type="email" name="email" id="email" value="{{ old('email') }}" placeholder="Masukkan Email"
+                                class="focus:shadow-soft-primary-outline text-size-sm leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 transition-all focus:border-fuchsia-300 focus:outline-none focus:transition-shadow" />
+                            @error('email')
+                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div class="mb-4">
+                            <label for="password" class="inline-block mb-2 ml-1 font-bold text-size-xs text-slate-700">Password</label>
+                            <input type="password" name="password" id="password" placeholder="Masukkan Password"
+                                class="focus:shadow-soft-primary-outline text-size-sm leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 transition-all focus:border-fuchsia-300 focus:outline-none focus:transition-shadow" />
+                            @error('password')
+                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div class="mb-4">
+                            <label for="role_id" class="inline-block mb-2 ml-1 font-bold text-size-xs text-slate-700">Role</label>
+                            <select name="role_id" id="role_id" class="focus:shadow-soft-primary-outline text-size-sm leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 transition-all focus:border-fuchsia-300 focus:outline-none focus:transition-shadow">
+                                <option value="">Pilih Role</option>
+                                @foreach ($roles as $role)
+                                    <option value="{{ $role->id }}" {{ old('role_id') == $role->id ? 'selected' : '' }}>{{ $role->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('role_id')
+                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
 
-    <form action="{{ route('users.store') }}" enctype="multipart/form-data" method="POST">
-        @csrf
-        <label class="block text-sm font-medium mb-1">Photo Profile</label>
-        <input type="file" name="photo_profile" class="border p-2 w-full">
-        {{-- preview image opsional jika pakai old() --}}
-        @if(old('photo_profile'))
-            <img src="{{ asset('storage/'.old('photo_profile')) }}"
-                class="w-24 h-24 object-cover mb-2 rounded">
-        @endif
-
-        <div class="mb-4">
-            <label for="name" class="block text-white font-medium mb-1">Name</label>
-            <input type="text" name="name" id="name" class="w-full p-2 rounded bg-white text-black" required>
+                        {{-- PERBAIKAN DI SINI --}}
+                        <div class="flex justify-end mt-6">
+                            <a href="{{ route('users.index') }}" class="inline-block px-6 py-3 mr-3 font-bold text-center uppercase align-middle transition-all bg-gray-200 border-0 rounded-lg cursor-pointer hover:scale-102 active:opacity-85 hover:shadow-soft-xs leading-pro text-size-xs ease-soft-in tracking-tight-soft shadow-soft-md bg-150 bg-x-25 text-slate-800">Batal</a>
+                            <button type="submit" class="inline-block px-6 py-3 font-bold text-center text-white uppercase align-middle transition-all bg-transparent border-0 rounded-lg cursor-pointer active:opacity-85 hover:scale-102 hover:shadow-soft-xs leading-pro text-size-xs ease-soft-in tracking-tight-soft shadow-soft-md bg-150 bg-x-25 bg-gradient-cyan hover:border-slate-700 hover:bg-slate-700 hover:text-white">Simpan</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-
-        <div class="mb-4">
-            <label for="email" class="block text-white font-medium mb-1">Email</label>
-            <input type="email" name="email" id="email" class="w-full p-2 rounded bg-white text-black" required>
-        </div>
-
-        <div class="mb-4">
-            <label for="role_id" class="block text-sm font-medium text-gray-700">Role</label>
-            <select name="role_id" id="role_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                <option value="">Pilih Role</option>
-                @foreach($roles as $role)
-                    <option value="{{ $role->id }}">{{ ucfirst($role->name) }}</option>
-                @endforeach
-            </select>
-        </div>
-
-
-        <div class="mb-4">
-            <label for="password" class="block text-gray-500 font-medium mb-1">Password</label>
-            <input type="password" name="password" id="password" class="w-full p-2 rounded bg-white text-black" required>
-        </div>
-
-        <div class="mb-4">
-            <label for="password_confirmation" class="block text-gray-500 font-medium mb-1">Confirm Password</label>
-            <input type="password" name="password_confirmation" id="password_confirmation" class="w-full p-2 rounded bg-white text-black" required>
-        </div>
-
-        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded mt-4">
-            Save
-        </button>
-    </form>
+    </div>
 </div>
 @endsection

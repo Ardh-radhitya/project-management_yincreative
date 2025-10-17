@@ -1,106 +1,48 @@
 <?php
-
 namespace App\Http\Controllers;
-
 use App\Models\Client;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
 
 class ClientController extends Controller
 {
-    // Menampilkan daftar semua klien
+    // Fungsi BARU untuk menampilkan dasbor klien
+    public function dashboard()
+    {
+        return view('dashboard.client');
+    }
+
+    // SEMUA KODE LAMA-MU ADA DI BAWAH INI
     public function index()
     {
-        $clients = Client::latest()->paginate(10); // Ambil semua klien, urutkan dari terbaru
+        $clients = Client::all();
         return view('clients.index', compact('clients'));
     }
 
-    // Menampilkan form untuk membuat klien baru
     public function create()
     {
         return view('clients.create');
     }
 
-    // Menyimpan klien baru ke database
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:clients',
-            'password' => 'required|string|min:8',
-            'photo_profile' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        ]);
-
-        // Simpan foto kalau ada
-        $imagePath = null;
-        if ($request->hasFile('photo_profile')) {
-            $imagePath = $request->file('photo_profile')->store('photo_profile', 'public');
-        }
-
-        // Create client langsung
-        Client::create([
-            'name'          => $validated['name'],
-            'email'         => $validated['email'],
-            'password'      => Hash::make($validated['password']),
-            'photo_profile' => $imagePath,
-        ]);
-
-        return redirect()->route('clients.index')
-                        ->with('success', 'Client created successfully.');
+        Client::create($request->all());
+        return redirect()->route('clients.index');
     }
 
-    // Menampilkan form untuk mengedit klien
-    public function edit($id)
+    public function edit(Client $client)
     {
-        $client = Client::findOrFail($id); // Ambil klien berdasarkan ID
-        return view('clients.edit', [
-            'client' => $client
-        ]);
+        return view('clients.edit', compact('client'));
     }
 
-    // Mengupdate data klien di database
-    public function update(Request $request, $id)
-{
-    $client = Client::findOrFail($id);
-
-    $validated = $request->validate([
-        'name' => 'required|string|max:255',
-        'email' => 'required|string|email|max:255|unique:clients,email,' . $client->id,
-        'password' => 'nullable|string|min:8',
-        'photo_profile' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-    ]);
-
-    if ($request->hasFile('photo_profile')) {
-        $imagePath = $request->file('photo_profile')->store('photo_profile', 'public');
-        $client->photo_profile = $imagePath;
+    public function update(Request $request, Client $client)
+    {
+        $client->update($request->all());
+        return redirect()->route('clients.index');
     }
 
-    $client->name = $validated['name'];
-    $client->email = $validated['email'];
-
-    if (!empty($validated['password'])) {
-        $client->password = Hash::make($validated['password']);
+    public function destroy(Client $client)
+    {
+        $client->delete();
+        return redirect()->route('clients.index');
     }
-
-    $client->save();
-
-    return redirect()->route('clients.index')->with('success', 'Client updated successfully.');
-}
-
-
-    // Menghapus klien dari database
-    public function destroy($id)
-{
-    $client = Client::findOrFail($id);
-
-    if ($client->photo_profile) {
-        Storage::disk('public')->delete($client->photo_profile);
-    }
-
-    $client->delete();
-
-    return redirect()->route('clients.index')->with('success', 'Client deleted successfully.');
-}
-
 }

@@ -13,6 +13,16 @@
             </a>
         </div>
     </div>
+    {{-- Menampilkan notifikasi sukses --}}
+    @if (session('success'))
+        <div class="relative p-4 pr-12 mb-4 text-white border border-solid rounded-lg bg-gradient-cyan border-slate-100" role="alert">
+            <span class="font-bold">Sukses!</span> {{ session('success') }}
+            <button type="button" class="box-content absolute top-0 right-0 p-4 text-size-sm text-white bg-transparent border-0 rounded" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    @endif
+
     <div class="relative flex flex-col min-w-0 break-words bg-white shadow-xl dark:bg-slate-850 dark:shadow-dark-xl rounded-2xl bg-clip-border">
         <div class="p-6">
             <div class="overflow-x-auto">

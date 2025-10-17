@@ -3,94 +3,80 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\Role;
+use App\Models\Role; // <-- Tambahkan ini untuk mengambil data Role
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Hash; // <-- Tambahkan ini untuk hashing password
 
 class UserController extends Controller
 {
     public function index()
     {
-        $users = User::all();
+        $users = User::with('role')->get(); // Mengambil user beserta data rolenya
         return view('users.index', compact('users'));
     }
 
     public function create()
     {
-        $roles = \App\Models\Role::all();
+        $roles = Role::all(); // Ambil semua role untuk ditampilkan di dropdown
         return view('users.create', compact('roles'));
     }
 
-
     public function store(Request $request)
     {
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'photo_profile' => $imagePath ?? null,
-            'role_id' => $request->role_id,
+        // --- VALIDASI DITAMBAHKAN DI SINI ---
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8',
+            'role_id' => 'required|exists:roles,id',
         ]);
 
-
-        // --- simpan file jika ada
-        $imagePath = null;
-        if ($request->hasFile('photo_profile')) {
-            $path = $request->file('photo_profile')->store('users', 'public');
-            $data['photo_profile'] = $path;
-        }
-
-
-        // --- create user + path foto
+        // Buat user baru dengan data yang sudah divalidasi
         User::create([
-            'name'          => $request->name,
-            'email'         => $request->email,
-            // 'role_id' => $request->role_id,
-            'password'      => Hash::make($request->password),
-            'photo_profile' => $imagePath,
+            'name' => $validatedData['name'],
+            'email' => $validatedData['email'],
+            'password' => Hash::make($validatedData['password']), // Jangan lupa hash password
+            'role_id' => $validatedData['role_id'],
         ]);
 
-        return redirect()->route('users.index')->with('success', 'User created successfully');
+        return redirect()->route('users.index')->with('success', 'User berhasil ditambahkan.');
+    }
+
+    public function show(User $user)
+    {
+        // Biasanya tidak digunakan jika ada halaman index, tapi bisa disiapkan
+        return view('users.show', compact('user'));
     }
 
     public function edit(User $user)
     {
-        $roles = Role::whereIn('name', ['Admin', 'Internal Team'])->get();
+        $roles = Role::all();
         return view('users.edit', compact('user', 'roles'));
     }
 
     public function update(Request $request, User $user)
     {
-        $request->validate([
-            'name'          => 'required',
-            'email'         => 'required|email|unique:users,email,' . $user->id,
-            //'role_id' => 'required|exists:roles,id',
-            'password'      => 'nullable|min:6|confirmed',
-            'photo_profile' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        // --- VALIDASI UNTUK UPDATE ---
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'role_id' => 'required|exists:roles,id',
         ]);
 
-        // --- data dasar
-        $data = $request->only('name', 'email'); // tambahkan role_id jika dipakai
-
-        // --- password (opsional)
+        // Jika password diisi, maka update passwordnya
         if ($request->filled('password')) {
-            $data['password'] = Hash::make($request->password);
+            $request->validate(['password' => 'string|min:8']);
+            $validatedData['password'] = Hash::make($request->password);
         }
 
-        // --- foto profil (opsional)
-        if ($request->hasFile('photo_profile')) {
-            $data['photo_profile'] = $request->file('photo_profile')->store('photo_profile', 'public');
-        }
+        $user->update($validatedData);
 
-        // --- update langsung
-        $user->update($data);
-
-        return redirect()->route('users.index')->with('success', 'User updated successfully');
+        return redirect()->route('users.index')->with('success', 'User berhasil diperbarui.');
     }
 
     public function destroy(User $user)
     {
         $user->delete();
-        return redirect()->route('users.index')->with('success', 'User deleted');
+        return redirect()->route('users.index')->with('success', 'User berhasil dihapus.');
     }
 }

@@ -1,98 +1,90 @@
 @extends('layout.main')
 
 @section('content')
-<div class="w-full px-6 py-6 mx-auto">
-
-    <div class="flex justify-between items-center mb-6">
-        <div>
-            <h3 class="font-bold text-white text-3xl">Add New Project</h3>
-            <p class="text-white">Fill the form below to create a new project.</p>
+<div class="flex flex-wrap -mx-3">
+    <div class="flex-none w-full max-w-full px-3">
+        <div class="relative flex flex-col min-w-0 mb-6 break-words bg-white border-0 border-transparent border-solid shadow-soft-xl rounded-2xl bg-clip-border">
+            <div class="p-6 pb-0 mb-0 bg-white border-b-0 border-b-solid rounded-t-2xl border-b-transparent">
+                <h6>Tambah Proyek Baru</h6>
+            </div>
+            <div class="flex-auto px-0 pt-0 pb-2">
+                <div class="p-6">
+                    <form action="{{ route('projects.store') }}" method="POST">
+                        @csrf
+                        <div class="mb-4">
+                            <label for="name" class="inline-block mb-2 ml-1 font-bold text-size-xs text-slate-700">Nama Proyek</label>
+                            <input type="text" name="name" id="name" value="{{ old('name') }}" placeholder="Masukkan Nama Proyek" class="form-input @error('name') border-red-500 @enderror" />
+                            @error('name')<p class="mt-2 text-sm text-red-600">{{ $message }}</p>@enderror
+                        </div>
+                        <div class="mb-4">
+                            <label for="client_id" class="inline-block mb-2 ml-1 font-bold text-size-xs text-slate-700">Klien</label>
+                            <select name="client_id" id="client_id" class="form-input @error('client_id') border-red-500 @enderror">
+                                <option value="">Pilih Klien</option>
+                                @foreach ($clients as $client)
+                                    <option value="{{ $client->id }}" {{ old('client_id') == $client->id ? 'selected' : '' }}>{{ $client->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('client_id')<p class="mt-2 text-sm text-red-600">{{ $message }}</p>@enderror
+                        </div>
+                        <div class="mb-4">
+                            <label for="category_id" class="inline-block mb-2 ml-1 font-bold text-size-xs text-slate-700">Kategori</label>
+                            <select name="category_id" id="category_id" class="form-input @error('category_id') border-red-500 @enderror">
+                                <option value="">Pilih Kategori</option>
+                                @foreach ($categories as $category)
+                                    <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('category_id')<p class="mt-2 text-sm text-red-600">{{ $message }}</p>@enderror
+                        </div>
+                        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                            <div class="mb-4">
+                                <label for="start_date" class="inline-block mb-2 ml-1 font-bold text-size-xs text-slate-700">Tanggal Mulai</label>
+                                <input type="date" name="start_date" id="start_date" value="{{ old('start_date') }}" class="form-input @error('start_date') border-red-500 @enderror" />
+                                @error('start_date')<p class="mt-2 text-sm text-red-600">{{ $message }}</p>@enderror
+                            </div>
+                            <div class="mb-4">
+                                <label for="end_date" class="inline-block mb-2 ml-1 font-bold text-size-xs text-slate-700">Tanggal Selesai</label>
+                                <input type="date" name="end_date" id="end_date" value="{{ old('end_date') }}" class="form-input @error('end_date') border-red-500 @enderror" />
+                                @error('end_date')<p class="mt-2 text-sm text-red-600">{{ $message }}</p>@enderror
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label for="status" class="inline-block mb-2 ml-1 font-bold text-size-xs text-slate-700">Status</label>
+                            <select name="status" id="status" class="form-input @error('status') border-red-500 @enderror">
+                                <option value="">Pilih Status</option>
+                                <option value="Pending" {{ old('status') == 'Pending' ? 'selected' : '' }}>Pending</option>
+                                <option value="In Progress" {{ old('status') == 'In Progress' ? 'selected' : '' }}>In Progress</option>
+                                <option value="Completed" {{ old('status') == 'Completed' ? 'selected' : '' }}>Completed</option>
+                            </select>
+                            @error('status')<p class="mt-2 text-sm text-red-600">{{ $message }}</p>@enderror
+                        </div>
+                        <div class="mb-4">
+                            <label for="description" class="inline-block mb-2 ml-1 font-bold text-size-xs text-slate-700">Deskripsi (Opsional)</label>
+                            <textarea name="description" id="description" rows="4" placeholder="Masukkan Deskripsi Proyek" class="form-input @error('description') border-red-500 @enderror">{{ old('description') }}</textarea>
+                            @error('description')<p class="mt-2 text-sm text-red-600">{{ $message }}</p>@enderror
+                        </div>
+                        <div class="flex justify-end mt-6">
+                            <a href="{{ route('projects.index') }}" class="btn-secondary">Batal</a>
+                            <button type="submit" class="btn-primary">Simpan</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-    </div>
-
-    @if ($errors->any())
-        <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
-            <strong>There were some problems with your input:</strong>
-            <ul class="mt-2 list-disc list-inside">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
-    <div class="bg-white dark:bg-slate-850 p-6 rounded-xl shadow-xl">
-        <form action="{{ route('projects.store') }}" method="POST">
-            @csrf
-
-            {{-- Title --}}
-            <div class="mb-4">
-                <label for="title" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Project Title</label>
-                <input type="text" name="title" id="title" value="{{ old('title') }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-slate-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white" required>
-            </div>
-
-            {{-- Description --}}
-            <div class="mb-4">
-                <label for="description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
-                <textarea name="description" id="description" rows="4" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-slate-800 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white">{{ old('description') }}</textarea>
-            </div>
-
-            {{-- Client --}}
-            <div class="mb-4">
-                <label for="client_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Client</label>
-                <select name="client_id" id="client_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-slate-800 dark:border-gray-600 dark:text-white">
-                    <option value="">-- Select Client --</option>
-                    @foreach ($clients as $client)
-                        <option value="{{ $client->id }}" {{ old('client_id') == $client->id ? 'selected' : '' }}>{{ $client->name }}</option>
-                    @endforeach
-                </select>
-            </div>
-
-            {{-- Start Date --}}
-            <div class="mb-4">
-                <label for="start_date" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Start Date</label>
-                <input type="date" name="start_date" id="start_date" value="{{ old('start_date') }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-slate-800 dark:border-gray-600 dark:text-white">
-            </div>
-
-            {{-- End Date --}}
-            <div class="mb-4">
-                <label for="end_date" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">End Date</label>
-                <input type="date" name="end_date" id="end_date" value="{{ old('end_date') }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-slate-800 dark:border-gray-600 dark:text-white">
-            </div>
-
-            {{-- Status --}}
-            <div class="mb-6">
-                <label for="status" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Status</label>
-                <select name="status" id="status" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-slate-800 dark:border-gray-600 dark:text-white">
-                    <option value="Not Started" {{ old('status') == 'Not Started' ? 'selected' : '' }}>Not Started</option>
-                    <option value="In Progress" {{ old('status') == 'In Progress' ? 'selected' : '' }}>In Progress</option>
-                    <option value="Completed" {{ old('status') == 'Completed' ? 'selected' : '' }}>Completed</option>
-                </select>
-            </div>
-
-            {{-- Category --}}
-            <div class="mb-4">
-                <label for="category_id" class="block mb-1 font-medium">Project Category</label>
-                <select name="category_id" id="category_id" class="w-full border rounded px-3 py-2">
-                    <option value="">-- Select Category --</option>
-                    @foreach($categories as $category)
-                        <option value="{{ $category->id }}" {{ old('category_id', $project->category_id ?? '') == $category->id ? 'selected' : '' }}>
-                            {{ $category->name }}
-                        </option>
-                    @endforeach
-                </select>
-                @error('category_id')
-                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                @enderror
-            </div>
-
-
-            {{-- Buttons --}}
-            <div class="flex justify-end space-x-3">
-                <a href="{{ route('projects.index') }}" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600">Cancel</a>
-                <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">Save Project</button>
-            </div>
-        </form>
     </div>
 </div>
 @endsection
+
+@push('styles')   {{--biar gausah tulis ulang css --}}
+<style>
+    .form-input {
+        @apply focus:shadow-soft-primary-outline text-size-sm leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 transition-all focus:border-fuchsia-300 focus:outline-none focus:transition-shadow;
+    }
+    .btn-primary {
+        @apply inline-block px-6 py-3 font-bold text-center text-white uppercase align-middle transition-all bg-transparent border-0 rounded-lg cursor-pointer active:opacity-85 hover:scale-102 hover:shadow-soft-xs leading-pro text-size-xs ease-soft-in tracking-tight-soft shadow-soft-md bg-150 bg-x-25 bg-gradient-cyan hover:border-slate-700 hover:bg-slate-700 hover:text-white;
+    }
+    .btn-secondary {
+        @apply inline-block px-6 py-3 mr-3 font-bold text-center uppercase align-middle transition-all bg-gray-200 border-0 rounded-lg cursor-pointer hover:scale-102 active:opacity-85 hover:shadow-soft-xs leading-pro text-size-xs ease-soft-in tracking-tight-soft shadow-soft-md bg-150 bg-x-25 text-slate-800;
+    }
+</style>
+@endpush

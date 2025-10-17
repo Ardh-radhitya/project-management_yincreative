@@ -25,21 +25,21 @@ class DatabaseSeeder extends Seeder
         User::create([
             'name' => 'Admin User',
             'email' => 'admin@y.in',
-            'password' => Hash::make('password123'),
+            'password' => Hash::make('admin123'),
             'role_id' => $adminRole->id,
         ]);
 
         User::create([
             'name' => 'Team User',
             'email' => 'team@y.in',
-            'password' => Hash::make('password123'),
+            'password' => Hash::make('team123'),
             'role_id' => $teamRole->id,
         ]);
 
         User::create([
             'name' => 'Client User',
             'email' => 'client@y.in',
-            'password' => Hash::make('password123'),
+            'password' => Hash::make('client123'),
             'role_id' => $clientRole->id,
         ]);
     }

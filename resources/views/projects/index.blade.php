@@ -1,94 +1,77 @@
 @extends('layout.main')
 
 @section('content')
-<div class="w-full px-6 py-6 mx-auto">
+<div class="flex flex-wrap -mx-3">
+    <div class="flex-none w-full max-w-full px-3">
 
-    <div class="flex justify-between items-center mb-6">
-        <div>
-            <h3 class="font-bold text-white text-3xl">Projects Management</h3>
-            <p class="text-white">Add, view, and manage project entries.</p>
-        </div>
-        <div>
-            <a href="{{ route('projects.create') }}" class="inline-block px-6 py-3 text-xs font-bold text-center text-white uppercase align-middle transition-all bg-blue-500 border-0 rounded-lg cursor-pointer hover:bg-blue-600">
-                + New Project
-            </a>
-        </div>
-    </div>
+        @if (session('success'))
+            <div class="relative p-4 pr-12 mb-4 text-white border border-solid rounded-lg bg-gradient-cyan border-slate-100" role="alert">
+                <span class="font-bold">Sukses!</span> {{ session('success') }}
+                <button type="button" class="box-content absolute top-0 right-0 p-4 text-size-sm text-white bg-transparent border-0 rounded" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        @endif
 
-    @if (session('success'))
-        <div class="p-4 mb-4 text-sm text-white rounded-lg bg-green-500 shadow" role="alert">
-            <strong class="font-bold">Success!</strong> {{ session('success') }}
-        </div>
-    @endif
-
-
-    <div class="relative flex flex-col min-w-0 break-words bg-white shadow-xl dark:bg-slate-850 dark:shadow-dark-xl rounded-2xl bg-clip-border">
-        <div class="p-6">
-            <div class="overflow-x-auto">
-                <table class="items-center w-full mb-0 align-top border-collapse dark:border-white/40 text-slate-500">
-                    <thead class="align-bottom">
-                        <tr>
-                            <th class="px-6 py-3 font-bold text-left uppercase align-middle bg-transparent border-b dark:border-white/40 dark:text-white text-xxs tracking-none whitespace-nowrap text-slate-400 opacity-70">Title</th>
-                            <th class="px-6 py-3 font-bold text-left uppercase align-middle bg-transparent border-b dark:border-white/40 dark:text-white text-xxs tracking-none whitespace-nowrap text-slate-400 opacity-70">Client</th>
-                            <th class="px-6 py-3 font-bold text-center uppercase align-middle bg-transparent border-b dark:border-white/40 dark:text-white text-xxs tracking-none whitespace-nowrap text-slate-400 opacity-70">Start Date</th>
-                            <th class="px-6 py-3 font-bold text-center uppercase align-middle bg-transparent border-b dark:border-white/40 dark:text-white text-xxs tracking-none whitespace-nowrap text-slate-400 opacity-70">End Date</th>
-                            <th class="px-6 py-3 font-bold text-center uppercase align-middle bg-transparent border-b dark:border-white/40 dark:text-white text-xxs tracking-none whitespace-nowrap text-slate-400 opacity-70">Status</th>
-                            <th class="px-6 py-3 font-bold text-center uppercase align-middle bg-transparent border-b dark:border-white/40 dark:text-white text-xxs tracking-none whitespace-nowrap text-slate-400 opacity-70">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($projects as $project)
-                        <tr>
-                            <td class="p-2 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap">
-                                <span class="text-sm font-semibold dark:text-white">{{ $project->title }}</span>
-                            </td>
-                            <td class="p-2 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap">
-                                <span class="text-sm text-slate-500 dark:text-white/80">
-                                    {{ optional($project->client)->name ?? '-' }}
-                                </span>
-                            </td>
-                            <td class="p-2 text-center align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap">
-                                <span class="text-xs font-semibold dark:text-white/80 text-slate-400">{{ $project->start_date ?? '-' }}</span>
-                            </td>
-                            <td class="p-2 text-center align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap">
-                                <span class="text-xs font-semibold dark:text-white/80 text-slate-400">{{ $project->end_date ?? '-' }}</span>
-                            </td>
-                            <td class="p-2 text-center align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap">
-                                <span class="text-xs font-semibold
-                                    @if ($project->status === 'Completed')
-                                        text-green-600 bg-green-100 px-2 py-1 rounded-full
-                                    @elseif ($project->status === 'In Progress')
-                                        text-yellow-600 bg-yellow-100 px-2 py-1 rounded-full
-                                    @else
-                                        text-red-600 bg-red-100 px-2 py-1 rounded-full
-                                    @endif
-                                ">
-                                    {{ $project->status }}
-                                </span>
-                            </td>
-                            <td class="p-2 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap">
-                                <div class="flex justify-center items-center">
-                                    <a href="{{ route('projects.edit', $project->id) }}" class="text-xs font-semibold ..."> Edit </a>
-                                    <form action="{{ url('projects/' . $project->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this project?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit"
-                                            class="text-xs font-semibold text-red-600 hover:underline hover:text-red-800 dark:text-red-400 dark:hover:text-red-200 transition duration-200">
-                                            Delete
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="6" class="p-4 text-center text-sm text-gray-500">
-                                No projects found.
-                            </td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+        <div class="relative flex flex-col min-w-0 mb-6 break-words bg-white border-0 border-transparent border-solid shadow-soft-xl rounded-2xl bg-clip-border">
+            <div class="p-6 pb-0 mb-0 bg-white border-b-0 border-b-solid rounded-t-2xl border-b-transparent">
+                <div class="flex justify-between">
+                    <h6 class="mb-0">Tabel Proyek</h6>
+                    {{-- INI ADALAH KODE UNTUK TOMBOL TAMBAH PROYEK --}}
+                    <a href="{{ route('projects.create') }}" class="inline-block px-6 py-3 font-bold text-center text-white uppercase align-middle transition-all bg-transparent border-0 rounded-lg cursor-pointer active:opacity-85 hover:scale-102 hover:shadow-soft-xs leading-pro text-size-xs ease-soft-in tracking-tight-soft shadow-soft-md bg-150 bg-x-25 bg-gradient-cyan hover:border-slate-700 hover:bg-slate-700 hover:text-white">Tambah Proyek</a>
+                </div>
+            </div>
+            <div class="flex-auto px-0 pt-0 pb-2">
+                <div class="p-0 overflow-x-auto">
+                    <table class="items-center w-full mb-0 align-top border-gray-200 text-slate-500">
+                        <thead class="align-bottom">
+                            <tr>
+                                <th class="px-6 py-3 font-bold text-left uppercase align-middle bg-transparent border-b border-gray-200 shadow-none text-size-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70">Nama Proyek</th>
+                                <th class="px-6 py-3 font-bold text-left uppercase align-middle bg-transparent border-b border-gray-200 shadow-none text-size-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70">Klien</th>
+                                <th class="px-6 py-3 font-bold text-center uppercase align-middle bg-transparent border-b border-gray-200 shadow-none text-size-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70">Status</th>
+                                <th class="px-6 py-3 font-bold text-center uppercase align-middle bg-transparent border-b border-gray-200 shadow-none text-size-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70">Tanggal Selesai</th>
+                                <th class="px-6 py-3 font-semibold capitalize align-middle bg-transparent border-b border-gray-200 border-solid shadow-none tracking-none whitespace-nowrap text-slate-400 opacity-70"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($projects as $project)
+                            <tr>
+                                <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
+                                    <div class="flex px-2 py-1">
+                                        <div class="flex flex-col justify-center">
+                                            <h6 class="mb-0 text-size-sm leading-normal">{{ $project->name }}</h6>
+                                            <p class="mb-0 text-size-xs leading-tight text-slate-400">{{ $project->category->name ?? '' }}</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
+                                    <p class="mb-0 font-semibold leading-tight text-size-xs">{{ $project->client->name ?? 'N/A' }}</p>
+                                </td>
+                                <td class="p-2 text-center align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
+                                    <span class="bg-gradient-{{ $project->status == 'Completed' ? 'lime' : ($project->status == 'In Progress' ? 'cyan' : 'slate') }} px-3.6-em text-size-xs-em rounded-1.8 py-2.2-em inline-block whitespace-nowrap text-center align-baseline font-bold uppercase leading-none text-white">{{ $project->status }}</span>
+                                </td>
+                                <td class="p-2 text-center align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
+                                    <span class="font-semibold leading-tight text-size-xs text-slate-400">{{ \Carbon\Carbon::parse($project->end_date)->format('d/m/Y') }}</span>
+                                </td>
+                                <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
+                                    <div class="flex items-center justify-center">
+                                        <a href="{{ route('projects.edit', $project->id) }}" class="mr-2 font-semibold leading-tight text-size-xs text-slate-400"> Edit </a>
+                                        <form action="{{ route('projects.destroy', $project->id) }}" method="POST" onsubmit="return confirm('Anda yakin ingin menghapus proyek ini?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="font-semibold leading-tight text-size-xs text-red-500"> Hapus </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="5" class="p-4 text-center text-slate-500">Belum ada data proyek.</td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
