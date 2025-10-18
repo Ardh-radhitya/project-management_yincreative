@@ -9,10 +9,12 @@ class Client extends Model
 {
     use HasFactory;
 
+    // Tambahkan 'photo_profile' di sini
     protected $fillable = [
         'name',
         'email',
-        'password',
-        'photo_profile',
+        'phone',
+        'company',
+        'photo_profile'
     ];
 }

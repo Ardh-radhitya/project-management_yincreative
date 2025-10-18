@@ -1,18 +1,27 @@
 @extends('layout.main')
 
 @section('content')
-<div class="w-full px-6 py-6 mx-auto">
-    <h3 class="font-bold text-2xl mb-4 text-white">Add Project Category</h3>
-
-    <form action="{{ route('categories.store') }}" method="POST">
-        @csrf
-        <div class="mb-4">
-            <label for="name" class="text-white">Category Name</label>
-            <input type="text" name="name" id="name" class="w-full p-2 rounded" placeholder="e.g. Design" required>
-        </div>
-        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-            Save Category
-        </button>
-    </form>
+<div class="relative flex flex-col min-w-0 mb-6 break-words bg-white border-0 border-transparent border-solid shadow-soft-xl rounded-2xl bg-clip-border">
+    <div class="p-6 pb-0 mb-0 bg-white border-b-0 border-b-solid rounded-t-2xl border-b-transparent">
+        <h6>Tambah Kategori Baru</h6>
+    </div>
+    <div class="flex-auto p-6">
+        <form action="{{ route('categories.store') }}" method="POST">
+            @csrf
+            <div class="mb-4">
+                <label for="name" class="inline-block mb-2 ml-1 font-bold text-size-xs text-slate-700">Nama Kategori</label>
+                <input type="text" name="name" id="name" value="{{ old('name') }}" placeholder="Masukkan Nama Kategori" class="form-input @error('name') border-red-500 @enderror" />
+                @error('name')<p class="mt-2 text-sm text-red-600">{{ $message }}</p>@enderror
+            </div>
+            <div class="flex justify-end mt-6">
+                <a href="{{ route('categories.index') }}" class="btn-secondary">Batal</a>
+                <button type="submit" class="btn-primary">Simpan</button>
+            </div>
+        </form>
+    </div>
 </div>
 @endsection
+
+@push('styles')
+    @include('projects.style')
+@endpush

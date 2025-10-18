@@ -1,91 +1,49 @@
 @extends('layout.main')
 
 @section('content')
-<div class="w-full px-6 py-6 mx-auto">
-    <div class="relative flex flex-col min-w-0 break-words bg-white border-0 shadow-xl dark:bg-slate-850 dark:shadow-dark-xl rounded-2xl bg-clip-border">
-        <div class="p-6">
-            <h3 class="font-bold text-2xl mb-4 dark:text-white">Edit Client</h3>
-
-            {{-- Flash Message --}}
-            @if(session('success'))
-                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-                    <strong class="font-bold">Success!</strong>
-                    <span class="block sm:inline">{{ session('success') }}</span>
+<div class="flex flex-wrap -mx-3">
+    <div class="flex-none w-full max-w-full px-3">
+        <div class="relative flex flex-col min-w-0 mb-6 break-words bg-white border-0 border-transparent border-solid shadow-soft-xl rounded-2xl bg-clip-border">
+            <div class="p-6 pb-0 mb-0 bg-white border-b-0 border-b-solid rounded-t-2xl border-b-transparent">
+                <h6>Edit Klien</h6>
+            </div>
+            <div class="flex-auto px-0 pt-0 pb-2">
+                <div class="p-6">
+                    <form action="{{ route('clients.update', $client->id) }}" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <div class="mb-4">
+                            <label for="name" class="inline-block mb-2 ml-1 font-bold text-size-xs text-slate-700">Nama Klien</label>
+                            <input type="text" name="name" id="name" value="{{ old('name', $client->name) }}" placeholder="Nama Klien" class="form-input @error('name') border-red-500 @enderror" />
+                            @error('name')<p class="mt-2 text-sm text-red-600">{{ $message }}</p>@enderror
+                        </div>
+                        <div class="mb-4">
+                            <label for="email" class="inline-block mb-2 ml-1 font-bold text-size-xs text-slate-700">Email</label>
+                            <input type="email" name="email" id="email" value="{{ old('email', $client->email) }}" placeholder="Email Klien" class="form-input @error('email') border-red-500 @enderror" />
+                            @error('email')<p class="mt-2 text-sm text-red-600">{{ $message }}</p>@enderror
+                        </div>
+                        <div class="mb-4">
+                            <label for="phone" class="inline-block mb-2 ml-1 font-bold text-size-xs text-slate-700">Telepon (Opsional)</label>
+                            <input type="text" name="phone" id="phone" value="{{ old('phone', $client->phone) }}" placeholder="Nomor Telepon" class="form-input @error('phone') border-red-500 @enderror" />
+                            @error('phone')<p class="mt-2 text-sm text-red-600">{{ $message }}</p>@enderror
+                        </div>
+                        <div class="mb-4">
+                            <label for="company" class="inline-block mb-2 ml-1 font-bold text-size-xs text-slate-700">Perusahaan (Opsional)</label>
+                            <input type="text" name="company" id="company" value="{{ old('company', $client->company) }}" placeholder="Nama Perusahaan" class="form-input @error('company') border-red-500 @enderror" />
+                            @error('company')<p class="mt-2 text-sm text-red-600">{{ $message }}</p>@enderror
+                        </div>
+                        <div class="flex justify-end mt-6">
+                            <a href="{{ route('clients.index') }}" class="btn-secondary">Batal</a>
+                            <button type="submit" class="btn-primary">Simpan Perubahan</button>
+                        </div>
+                    </form>
                 </div>
-            @endif
-
-            {{-- Validation Errors --}}
-            @if($errors->any())
-                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-                    <strong class="font-bold">There's something wrong!</strong>
-                    <ul class="list-disc pl-5 mt-2 text-sm">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-
-            <form action="{{ route('clients.update', $client->id) }}" method="POST" enctype="multipart/form-data">
-                @csrf
-                @method('PUT')
-
-                {{-- Name --}}
-                <div class="mb-4">
-                    <label for="name" class="inline-block mb-2 ml-1 font-bold text-xs text-slate-700 dark:text-white/80">Client Name</label>
-                    <input type="text" name="name" id="name" value="{{ old('name', $client->name) }}" placeholder="e.g., Acme Corporation"
-                        class="focus:shadow-primary-outline dark:bg-slate-850 dark:text-white text-sm block w-full rounded-lg border border-gray-300 px-3 py-2 font-normal text-gray-700 placeholder:text-gray-500 focus:border-blue-500 focus:outline-none" />
-                    @error('name')
-                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                {{-- Email --}}
-                <div class="mb-4">
-                    <label for="email" class="inline-block mb-2 ml-1 font-bold text-xs text-slate-700 dark:text-white/80">Email</label>
-                    <input type="email" name="email" id="email" value="{{ old('email', $client->email) }}" placeholder="e.g., contact@acme.com"
-                        class="focus:shadow-primary-outline dark:bg-slate-850 dark:text-white text-sm block w-full rounded-lg border border-gray-300 px-3 py-2 font-normal text-gray-700 placeholder:text-gray-500 focus:border-blue-500 focus:outline-none" />
-                    @error('email')
-                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                {{-- Password (Optional) --}}
-                <div class="mb-4">
-                    <label for="password" class="inline-block mb-2 ml-1 font-bold text-xs text-slate-700 dark:text-white/80">New Password (Leave empty to keep current)</label>
-                    <input type="password" name="password" id="password" placeholder="********"
-                        class="focus:shadow-primary-outline dark:bg-slate-850 dark:text-white text-sm block w-full rounded-lg border border-gray-300 px-3 py-2 font-normal text-gray-700 placeholder:text-gray-500 focus:border-blue-500 focus:outline-none" />
-                    @error('password')
-                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                {{-- Photo Profile --}}
-                <div class="mb-4">
-                    <label for="photo_profile" class="inline-block mb-2 ml-1 font-bold text-xs text-slate-700 dark:text-white/80">Update Profile Picture</label>
-                    <input type="file" name="photo_profile" id="photo_profile"
-                        class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
-                    @if ($client->photo_profile)
-                        <p class="text-xs mt-1 text-slate-500 dark:text-slate-300">Current: <a href="{{ asset('storage/'.$client->photo_profile) }}" target="_blank" class="underline text-blue-500">View Image</a></p>
-                    @endif
-                    @error('photo_profile')
-                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                {{-- Buttons --}}
-                <div class="flex justify-end mt-6">
-                    <a href="{{ route('clients.index') }}"
-                        class="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-blue-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
-                        Cancel
-                    </a>
-                    <button type="submit"
-                        class="text-white bg-yellow-500 hover:bg-yellow-600 focus:ring-4 focus:ring-yellow-300 font-bold rounded-lg text-xs px-5 py-2.5 mb-2 uppercase">
-                        Update Client
-                    </button>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>
 @endsection
+
+@push('styles')
+@include('projects.style')
+@endpush

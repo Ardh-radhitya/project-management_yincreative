@@ -1,17 +1,17 @@
 <?php
+
 namespace App\Http\Controllers;
+
 use App\Models\Client;
 use Illuminate\Http\Request;
 
 class ClientController extends Controller
 {
-    // Fungsi BARU untuk menampilkan dasbor klien
     public function dashboard()
     {
         return view('dashboard.client');
     }
 
-    // SEMUA KODE LAMA-MU ADA DI BAWAH INI
     public function index()
     {
         $clients = Client::all();
@@ -25,8 +25,16 @@ class ClientController extends Controller
 
     public function store(Request $request)
     {
-        Client::create($request->all());
-        return redirect()->route('clients.index');
+        // --- VALIDASI DITAMBAHKAN DI SINI ---
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:clients',
+            'phone' => 'nullable|string|max:20',
+            'company' => 'nullable|string|max:255',
+        ]);
+
+        Client::create($validatedData);
+        return redirect()->route('clients.index')->with('success', 'Klien berhasil ditambahkan.');
     }
 
     public function edit(Client $client)
@@ -36,13 +44,21 @@ class ClientController extends Controller
 
     public function update(Request $request, Client $client)
     {
-        $client->update($request->all());
-        return redirect()->route('clients.index');
+        // --- VALIDASI UNTUK UPDATE ---
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:clients,email,' . $client->id,
+            'phone' => 'nullable|string|max:20',
+            'company' => 'nullable|string|max:255',
+        ]);
+
+        $client->update($validatedData);
+        return redirect()->route('clients.index')->with('success', 'Klien berhasil diperbarui.');
     }
 
     public function destroy(Client $client)
     {
         $client->delete();
-        return redirect()->route('clients.index');
+        return redirect()->route('clients.index')->with('success', 'Klien berhasil dihapus.');
     }
 }

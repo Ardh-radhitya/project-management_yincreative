@@ -2,11 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Client;
-use App\Models\Project;
 use App\Models\ProjectCategory;
 use Illuminate\Http\Request;
-
 
 class ProjectCategoryController extends Controller
 {
@@ -23,13 +20,12 @@ class ProjectCategoryController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|unique:project_categories,name|max:255',
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255|unique:project_categories',
         ]);
 
-        ProjectCategory::create(['name' => $request->name]);
-
-        return redirect()->route('categories.index')->with('success', 'Category created successfully.');
+        ProjectCategory::create($validatedData);
+        return redirect()->route('categories.index')->with('success', 'Kategori berhasil ditambahkan.');
     }
 
     public function edit(ProjectCategory $category)
@@ -39,19 +35,17 @@ class ProjectCategoryController extends Controller
 
     public function update(Request $request, ProjectCategory $category)
     {
-        $request->validate([
-            'name' => 'required|max:255|unique:project_categories,name,' . $category->id,
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255|unique:project_categories,name,' . $category->id,
         ]);
 
-        $category->update(['name' => $request->name]);
-
-        return redirect()->route('categories.index')->with('success', 'Category updated successfully.');
+        $category->update($validatedData);
+        return redirect()->route('categories.index')->with('success', 'Kategori berhasil diperbarui.');
     }
 
     public function destroy(ProjectCategory $category)
     {
         $category->delete();
-        return redirect()->route('categories.index')->with('success', 'Category deleted successfully.');
+        return redirect()->route('categories.index')->with('success', 'Kategori berhasil dihapus.');
     }
 }
-

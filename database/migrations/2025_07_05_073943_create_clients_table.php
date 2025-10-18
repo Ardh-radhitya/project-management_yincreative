@@ -4,8 +4,6 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-use function Laravel\Prompts\password;
-
 return new class extends Migration
 {
     /**
@@ -15,10 +13,11 @@ return new class extends Migration
     {
         Schema::create('clients', function (Blueprint $table) {
             $table->id();
-            $table->string('photo_profile');
-            $table->string('name')->unique();
-            $table->string('email');
-            $table->string('password');
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->string('phone', 20)->nullable(); // Opsional
+            $table->string('company')->nullable(); // Opsional
+            $table->string('photo_profile')->nullable(); // Opsional
             $table->timestamps();
         });
     }
