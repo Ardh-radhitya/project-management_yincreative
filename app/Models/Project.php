@@ -31,4 +31,11 @@ class Project extends Model
     {
         return $this->belongsTo(ProjectCategory::class);
     }
+
+    // Tambahkan fungsi ini di dalam class Project
+    public function tasks()
+    {
+        // Satu proyek bisa punya banyak tugas
+        return $this->hasMany(Task::class);
+    }
 }

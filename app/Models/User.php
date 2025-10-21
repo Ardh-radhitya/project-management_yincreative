@@ -53,4 +53,11 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    // Tambahkan fungsi ini di dalam class User
+    public function assignedTasks()
+    {
+        // Satu user bisa ditugaskan banyak tugas
+        return $this->hasMany(Task::class, 'assigned_to_user_id');
+    }
 }

@@ -43,6 +43,8 @@ class ProjectController extends Controller
 
     public function show(Project $project)
     {
+        // Ambil data proyek beserta relasi client, category, dan tasks (dengan user yang ditugaskan)
+        $project->load(['client', 'category', 'tasks.assignedUser']);
         return view('projects.show', compact('project'));
     }
 

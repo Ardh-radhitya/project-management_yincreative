@@ -10,6 +10,7 @@ use App\Http\Controllers\ProjectCategoryController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TaskController;
 
 // Rute Publik (hanya untuk login & logout)
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -37,6 +38,7 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['role:admin,team'])->group(function () {
         Route::resource('projects', ProjectController::class);
         Route::resource('categories', ProjectCategoryController::class);
+        Route::resource('projects.tasks', TaskController::class)->shallow();
     });
 
     // --- Rute Pengaturan (untuk semua yang sudah login) ---
