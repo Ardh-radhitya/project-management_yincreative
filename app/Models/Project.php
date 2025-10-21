@@ -4,30 +4,21 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Client;
-use App\Models\ProjectCategory;
 
 class Project extends Model
 {
     use HasFactory;
 
+    // Pastikan semua kolom yang diisi dari form terdaftar di sini
     protected $fillable = [
-        'title',
+        'name',
         'description',
+        'client_id',
+        'category_id',
         'start_date',
         'end_date',
-        'status',
-        'client_id',
+        'status'
     ];
-
-    public function index()
-    {
-        $totalProjects = Project::count();
-        $totalUsers = User::count();
-
-        return view('dashboard.admin', compact('totalProjects', 'totalUsers'));
-    }
-
 
     // Relasi ke Client
     public function client()
@@ -35,9 +26,9 @@ class Project extends Model
         return $this->belongsTo(Client::class);
     }
 
+    // Relasi ke Category
     public function category()
     {
-        return $this->belongsTo(ProjectCategory::class, 'category_id');
+        return $this->belongsTo(ProjectCategory::class);
     }
-
 }
