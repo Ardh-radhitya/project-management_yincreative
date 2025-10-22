@@ -26,7 +26,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard-admin', [AdminController::class, 'dashboard'])->name('dashboard.admin')->middleware('role:admin');
     Route::get('/dashboard-team', [TeamController::class, 'index'])->name('dashboard.team')->middleware('role:team,admin');
     Route::get('/dashboard-client', [ClientController::class, 'dashboard'])->name('dashboard.client')->middleware('role:client');
+    Route::get('/client/projects/create', [ClientController::class, 'createProjectForm'])->name('client.projects.create')->middleware('role:client');
+    Route::post('/client/projects', [ClientController::class, 'storeProject'])->name('client.projects.store')->middleware('role:client');
 
+    
     // --- Grup Rute Khusus Admin ---
     Route::middleware(['role:admin'])->group(function () {
         Route::resource('users', UserController::class);
@@ -39,6 +42,7 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('projects', ProjectController::class);
         Route::resource('categories', ProjectCategoryController::class);
         Route::resource('projects.tasks', TaskController::class)->shallow();
+        Route::patch('/tasks/{task}/status', [TaskController::class, 'updateStatus'])->name('tasks.updateStatus');
     });
 
     // --- Rute Pengaturan (untuk semua yang sudah login) ---

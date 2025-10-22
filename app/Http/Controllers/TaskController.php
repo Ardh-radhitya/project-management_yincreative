@@ -87,4 +87,17 @@ class TaskController extends Controller
     // --- Fungsi index dan show biasanya tidak diperlukan untuk task dalam konteks ini ---
     public function index() { abort(404); }
     public function show(Task $task) { abort(404); }
+    public function updateStatus(Request $request, Task $task)
+{
+    // Validasi input status
+    $validated = $request->validate([
+        'status' => 'required|string|in:To Do,In Progress,Done', // Pastikan statusnya valid
+    ]);
+
+    // Update hanya kolom status
+    $task->update(['status' => $validated['status']]);
+
+    // Redirect kembali ke halaman detail proyek dengan pesan sukses
+    return redirect()->route('projects.show', $task->project_id)->with('success', 'Status tugas berhasil diperbarui.');
+}
 }

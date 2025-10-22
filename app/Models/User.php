@@ -60,4 +60,11 @@ class User extends Authenticatable
         // Satu user bisa ditugaskan banyak tugas
         return $this->hasMany(Task::class, 'assigned_to_user_id');
     }
+
+    public function client()
+    {
+    // Asumsi foreign key di tabel users adalah 'client_id'
+    // Jika nama kolomnya beda, sesuaikan 'client_id'
+    return $this->belongsTo(Client::class, 'id'); // Sesuaikan jika perlu
+    }
 }

@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Client;
+use App\Models\ProjectCategory;
+use App\Models\Project;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ClientController extends Controller
 {
@@ -12,6 +15,43 @@ class ClientController extends Controller
         return view('dashboard.client');
     }
 
+    public function createProjectForm()
+    {
+        $categories = ProjectCategory::all(); // Ambil kategori untuk dropdown
+        return view('clients.create_project', compact('categories'));
+    }
+
+    /**
+     *  Menyimpan proyek yang diajukan oleh Klien.
+     */
+    public function storeProject(Request $request)
+    {
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'category_id' => 'required|exists:project_categories,id',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+        ]);
+
+        // Dapatkan ID klien yang sedang login
+        $client = Client::where('email', Auth::user()->email)->first();
+        $clientId = $client ? $client->id : null;
+
+        // Periksa apakah user adalah klien
+        if (!$clientId) {
+            return back()->with('error', 'Hanya klien yang bisa mengajukan proyek.');
+        }
+
+        // Tambahkan client_id dan status default
+        $validatedData['client_id'] = $clientId;
+        $validatedData['status'] = 'Pending'; // Status awal proyek dari klien
+
+        Project::create($validatedData);
+
+        // Redirect kembali ke dasbor klien dengan pesan sukses
+        return redirect()->route('dashboard.client')->with('success', 'Proyek berhasil diajukan.');
+    }
     public function index()
     {
         $clients = Client::all();
