@@ -49,8 +49,12 @@
                                     <p class="mb-0 font-semibold leading-tight text-size-xs">{{ $project->client->name ?? 'N/A' }}</p>
                                 </td>
                                 <td class="p-2 text-center align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
-                                    <span class="bg-gradient-{{ $project->status == 'Completed' ? 'lime' : ($project->status == 'In Progress' ? 'cyan' : 'slate') }} px-3.6-em text-size-xs-em rounded-1.8 py-2.2-em inline-block whitespace-nowrap text-center align-baseline font-bold uppercase leading-none text-white">{{ $project->status }}</span>
-                                </td>
+                                    <span class="px-3.6-em text-size-xs-em rounded-1.8 py-2.2-em inline-block whitespace-nowrap text-center align-baseline font-bold uppercase leading-none
+                                        {{-- Background tetap berubah sesuai status --}}
+                                        bg-gradient-{{ $project->status == 'Completed' ? 'lime' : ($project->status == 'In Progress' ? 'cyan' : 'slate') }}
+                                        {{-- Warna teks selalu gelap agar kontras --}}
+                                        text-gray-800
+                                    ">{{ $project->status }}</span>
                                 <td class="p-2 text-center align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
                                     <span class="font-semibold leading-tight text-size-xs text-slate-400">{{ \Carbon\Carbon::parse($project->end_date)->format('d/m/Y') }}</span>
                                 </td>

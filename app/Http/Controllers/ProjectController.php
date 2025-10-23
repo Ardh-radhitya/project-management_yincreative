@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Project;
-use App\Models\Client; // <-- Tambahkan ini
-use App\Models\ProjectCategory; // <-- Tambahkan ini
+use App\Models\Client;
+use App\Models\ProjectCategory;
 use Illuminate\Http\Request;
+use App\Events\ProjectStatusUpdated; // <-- TAMBAHKAN Impor Event
+use Illuminate\Support\Facades\Log;   // <-- TAMBAHKAN Impor Log (untuk debug jika perlu)
 
 class ProjectController extends Controller
 {
@@ -17,7 +19,6 @@ class ProjectController extends Controller
 
     public function create()
     {
-        // Ambil data untuk dropdown di form
         $clients = Client::all();
         $categories = ProjectCategory::all();
         return view('projects.create', compact('clients', 'categories'));
@@ -25,7 +26,6 @@ class ProjectController extends Controller
 
     public function store(Request $request)
     {
-        // --- VALIDASI DITAMBAHKAN DI SINI ---
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -33,24 +33,22 @@ class ProjectController extends Controller
             'category_id' => 'required|exists:project_categories,id',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
-            'status' => 'required|string', // Bisa divalidasi lebih spesifik jika perlu
+            'status' => 'required|string|in:Pending,In Progress,Completed', // Dibuat lebih spesifik
         ]);
 
-        Project::create($validatedData);
+        $project = Project::create($validatedData);
 
         return redirect()->route('projects.index')->with('success', 'Proyek berhasil ditambahkan.');
     }
 
     public function show(Project $project)
     {
-        // Ambil data proyek beserta relasi client, category, dan tasks (dengan user yang ditugaskan)
         $project->load(['client', 'category', 'tasks.assignedUser']);
         return view('projects.show', compact('project'));
     }
 
     public function edit(Project $project)
     {
-        // Ambil data untuk dropdown di form edit
         $clients = Client::all();
         $categories = ProjectCategory::all();
         return view('projects.edit', compact('project', 'clients', 'categories'));
@@ -58,7 +56,6 @@ class ProjectController extends Controller
 
     public function update(Request $request, Project $project)
     {
-        // --- VALIDASI UNTUK UPDATE ---
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -66,10 +63,22 @@ class ProjectController extends Controller
             'category_id' => 'required|exists:project_categories,id',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
-            'status' => 'required|string',
+            'status' => 'required|string|in:Pending,In Progress,Completed', // Dibuat lebih spesifik
         ]);
 
+        // Simpan status lama sebelum update
+        $oldStatus = $project->status;
+
+        // Update data proyek
         $project->update($validatedData);
+
+        // Logika BARU: Umumkan event HANYA jika status berubah
+        if ($oldStatus !== $validatedData['status']) { // Bandingkan dengan data tervalidasi
+            Log::info("Status berubah dari {$oldStatus} ke {$validatedData['status']}. Mencoba dispatch event untuk Project ID: {$project->id}"); // Log Debug 1
+            ProjectStatusUpdated::dispatch($project->fresh()); // Kirim data $project yang sudah terupdate
+        } else {
+             Log::info("Status tidak berubah untuk Project ID: {$project->id}. Event tidak di-dispatch."); // Log Debug Tambahan
+        }
 
         return redirect()->route('projects.index')->with('success', 'Proyek berhasil diperbarui.');
     }
