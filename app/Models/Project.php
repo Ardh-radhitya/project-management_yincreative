@@ -25,6 +25,7 @@ class Project extends Model
 
     /**
      * Relasi: Satu Proyek dimiliki oleh satu Klien.
+     * (Ini sudah ada di file-mu)
      */
     public function client()
     {
@@ -33,6 +34,7 @@ class Project extends Model
 
     /**
      * Relasi: Satu Proyek masuk dalam satu Kategori.
+     * (Ini sudah ada di file-mu)
      */
     public function category()
     {
@@ -41,6 +43,7 @@ class Project extends Model
 
     /**
      * Relasi: Satu Proyek memiliki banyak Tugas (Task).
+     * (Ini sudah ada di file-mu)
      */
     public function tasks()
     {
