@@ -26,10 +26,15 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard-admin', [AdminController::class, 'dashboard'])->name('dashboard.admin')->middleware('role:admin');
     Route::get('/dashboard-team', [TeamController::class, 'index'])->name('dashboard.team')->middleware('role:team,admin');
     Route::get('/dashboard-client', [ClientController::class, 'dashboard'])->name('dashboard.client')->middleware('role:client');
+    // --- RUTE UNTUK KLIEN MENGELOLA PROYEK ---
     Route::get('/client/projects/create', [ClientController::class, 'createProjectForm'])->name('client.projects.create')->middleware('role:client');
     Route::post('/client/projects', [ClientController::class, 'storeProject'])->name('client.projects.store')->middleware('role:client');
+    // Rute baru untuk menampilkan form edit
+    Route::get('/client/projects/{project}/edit', [ClientController::class, 'editProjectForm'])->name('client.projects.edit')->middleware('role:client');
+    // Rute baru untuk menyimpan perubahan (update)
+    Route::put('/client/projects/{project}', [ClientController::class, 'updateProject'])->name('client.projects.update')->middleware('role:client');
+    // ----------------------------------------
 
-    
     // --- Grup Rute Khusus Admin ---
     Route::middleware(['role:admin'])->group(function () {
         Route::resource('users', UserController::class);

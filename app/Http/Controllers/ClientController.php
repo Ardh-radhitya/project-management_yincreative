@@ -10,22 +10,68 @@ use Illuminate\Support\Facades\Auth;
 
 class ClientController extends Controller
 {
+    // Fungsi untuk mengecek otorisasi klien
+    private function authorizeClientAccess(Project $project)
+    {
+        $client = Client::where('email', Auth::user()->email)->first();
+        if (!$client || $project->client_id !== $client->id) {
+            abort(403, 'ANDA TIDAK BERHAK MENGAKSES PROYEK INI.');
+        }
+        return $client;
+    }
+
     public function dashboard()
     {
-        return view('dashboard.client');
+        $client = Client::where('email', Auth::user()->email)->first();
+        $projects = [];
+        if ($client) {
+            $projects = $client->projects()->orderBy('created_at', 'desc')->get();
+        }
+        return view('dashboard.client', compact('projects'));
     }
 
     public function createProjectForm()
     {
-        $categories = ProjectCategory::all(); // Ambil kategori untuk dropdown
+        $categories = ProjectCategory::all();
         return view('clients.create_project', compact('categories'));
     }
 
-    /**
-     *  Menyimpan proyek yang diajukan oleh Klien.
-     */
     public function storeProject(Request $request)
     {
+        $validatedData = $request->validate([ /* ... validasi ... */ ]);
+        $client = Client::where('email', Auth::user()->email)->first();
+        if (!$client) { /* ... error handling ... */ }
+        $validatedData['client_id'] = $client->id;
+        $validatedData['status'] = 'Pending';
+        Project::create($validatedData);
+        return redirect()->route('dashboard.client')->with('success', 'Proyek berhasil diajukan.');
+    }
+
+    /**
+     * FUNGSI BARU: Menampilkan form edit proyek untuk Klien.
+     */
+    public function editProjectForm(Project $project)
+    {
+        // Keamanan: Pastikan klien ini adalah pemilik proyek
+        $this->authorizeClientAccess($project);
+
+        $categories = ProjectCategory::all();
+        return view('clients.edit_project', compact('project', 'categories'));
+    }
+
+    /**
+     * FUNGSI BARU: Memperbarui proyek yang diajukan oleh Klien.
+     */
+    public function updateProject(Request $request, Project $project)
+    {
+        // Keamanan: Pastikan klien ini adalah pemilik proyek
+        $this->authorizeClientAccess($project);
+
+        // Hanya izinkan edit jika status masih 'Pending' (Opsional, tapi ide bagus)
+        if ($project->status !== 'Pending') {
+            return back()->with('error', 'Proyek yang sudah diproses tidak dapat diubah lagi.');
+        }
+
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -34,24 +80,14 @@ class ClientController extends Controller
             'end_date' => 'required|date|after_or_equal:start_date',
         ]);
 
-        // Dapatkan ID klien yang sedang login
-        $client = Client::where('email', Auth::user()->email)->first();
-        $clientId = $client ? $client->id : null;
+        $project->update($validatedData);
 
-        // Periksa apakah user adalah klien
-        if (!$clientId) {
-            return back()->with('error', 'Hanya klien yang bisa mengajukan proyek.');
-        }
-
-        // Tambahkan client_id dan status default
-        $validatedData['client_id'] = $clientId;
-        $validatedData['status'] = 'Pending'; // Status awal proyek dari klien
-
-        Project::create($validatedData);
-
-        // Redirect kembali ke dasbor klien dengan pesan sukses
-        return redirect()->route('dashboard.client')->with('success', 'Proyek berhasil diajukan.');
+        return redirect()->route('dashboard.client')->with('success', 'Proyek berhasil diperbarui.');
     }
+
+
+    // --- Fungsi CRUD Klien (untuk Admin) ---
+
     public function index()
     {
         $clients = Client::all();
@@ -65,7 +101,6 @@ class ClientController extends Controller
 
     public function store(Request $request)
     {
-        // --- VALIDASI DITAMBAHKAN DI SINI ---
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:clients',
@@ -84,7 +119,6 @@ class ClientController extends Controller
 
     public function update(Request $request, Client $client)
     {
-        // --- VALIDASI UNTUK UPDATE ---
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:clients,email,' . $client->id,

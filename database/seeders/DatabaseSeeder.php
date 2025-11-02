@@ -6,6 +6,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Client; // <-- TAMBAHKAN INI
 use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
@@ -32,15 +33,24 @@ class DatabaseSeeder extends Seeder
         User::create([
             'name' => 'Team User',
             'email' => 'team@y.in',
-            'password' => Hash::make('team123'),
+            'password' => Hash::make('password123'),
             'role_id' => $teamRole->id,
         ]);
 
         User::create([
             'name' => 'Client User',
             'email' => 'client@y.in',
-            'password' => Hash::make('client123'),
+            'password' => Hash::make('password123'),
             'role_id' => $clientRole->id,
         ]);
+
+        // --- TAMBAHKAN BLOK INI ---
+        // Buat data profil klien yang sesuai dengan akun user klien
+        Client::create([
+            'name' => 'Client User',
+            'email' => 'client@y.in',
+            'company' => 'Perusahaan Klien Contoh',
+        ]);
+        // -------------------------
     }
 }

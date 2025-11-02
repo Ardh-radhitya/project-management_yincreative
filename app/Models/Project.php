@@ -9,33 +9,41 @@ class Project extends Model
 {
     use HasFactory;
 
-    // Pastikan semua kolom yang diisi dari form terdaftar di sini
+    /**
+     * Kolom yang boleh diisi secara massal (mass assignable).
+     * INI ADALAH KUNCI PERBAIKANNYA
+     */
     protected $fillable = [
         'name',
         'description',
-        'client_id',
-        'category_id',
         'start_date',
         'end_date',
-        'status'
+        'status',
+        'client_id',
+        'category_id',
     ];
 
-    // Relasi ke Client
+    /**
+     * Relasi: Satu Proyek dimiliki oleh satu Klien.
+     */
     public function client()
     {
         return $this->belongsTo(Client::class);
     }
 
-    // Relasi ke Category
+    /**
+     * Relasi: Satu Proyek masuk dalam satu Kategori.
+     */
     public function category()
     {
         return $this->belongsTo(ProjectCategory::class);
     }
 
-    // Tambahkan fungsi ini di dalam class Project
+    /**
+     * Relasi: Satu Proyek memiliki banyak Tugas (Task).
+     */
     public function tasks()
     {
-        // Satu proyek bisa punya banyak tugas
         return $this->hasMany(Task::class);
     }
 }

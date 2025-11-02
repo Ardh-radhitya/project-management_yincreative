@@ -9,7 +9,6 @@ class Client extends Model
 {
     use HasFactory;
 
-    // Tambahkan 'photo_profile' di sini
     protected $fillable = [
         'name',
         'email',
@@ -17,4 +16,12 @@ class Client extends Model
         'company',
         'photo_profile'
     ];
+
+    /**
+     * Satu Klien bisa memiliki banyak Proyek.
+     */
+    public function projects()
+    {
+        return $this->hasMany(Project::class);
+    }
 }
