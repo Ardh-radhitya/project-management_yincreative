@@ -38,40 +38,46 @@ class ClientController extends Controller
 
     public function storeProject(Request $request)
     {
-        $validatedData = $request->validate([ /* ... validasi ... */ ]);
+        // --- PERBAIKAN DI SINI: Aturan validasi diisi ---
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'category_id' => 'required|exists:project_categories,id',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+        ]);
+        // Sekarang $validatedData berisi: ['name', 'description', 'category_id', 'start_date', 'end_date']
+
         $client = Client::where('email', Auth::user()->email)->first();
-        if (!$client) { /* ... error handling ... */ }
-        $validatedData['client_id'] = $client->id;
-        $validatedData['status'] = 'Pending';
+        if (!$client) {
+            return back()->with('error', 'Gagal menemukan profil klien Anda.');
+        }
+
+        $validatedData['client_id'] = $client->id; // Tambahkan client_id
+        $validatedData['status'] = 'Pending'; // Tambahkan status default
+
+        // Sekarang Project::create() menerima SEMUA data
         Project::create($validatedData);
+
         return redirect()->route('dashboard.client')->with('success', 'Proyek berhasil diajukan.');
     }
 
-    /**
-     * FUNGSI BARU: Menampilkan form edit proyek untuk Klien.
-     */
     public function editProjectForm(Project $project)
     {
-        // Keamanan: Pastikan klien ini adalah pemilik proyek
         $this->authorizeClientAccess($project);
-
         $categories = ProjectCategory::all();
         return view('clients.edit_project', compact('project', 'categories'));
     }
 
-    /**
-     * FUNGSI BARU: Memperbarui proyek yang diajukan oleh Klien.
-     */
     public function updateProject(Request $request, Project $project)
     {
-        // Keamanan: Pastikan klien ini adalah pemilik proyek
         $this->authorizeClientAccess($project);
 
-        // Hanya izinkan edit jika status masih 'Pending' (Opsional, tapi ide bagus)
         if ($project->status !== 'Pending') {
             return back()->with('error', 'Proyek yang sudah diproses tidak dapat diubah lagi.');
         }
 
+        // --- PERBAIKAN DI SINI: Aturan validasi diisi ---
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -81,13 +87,11 @@ class ClientController extends Controller
         ]);
 
         $project->update($validatedData);
-
         return redirect()->route('dashboard.client')->with('success', 'Proyek berhasil diperbarui.');
     }
 
 
     // --- Fungsi CRUD Klien (untuk Admin) ---
-
     public function index()
     {
         $clients = Client::all();
@@ -107,7 +111,6 @@ class ClientController extends Controller
             'phone' => 'nullable|string|max:20',
             'company' => 'nullable|string|max:255',
         ]);
-
         Client::create($validatedData);
         return redirect()->route('clients.index')->with('success', 'Klien berhasil ditambahkan.');
     }
@@ -125,7 +128,6 @@ class ClientController extends Controller
             'phone' => 'nullable|string|max:20',
             'company' => 'nullable|string|max:255',
         ]);
-
         $client->update($validatedData);
         return redirect()->route('clients.index')->with('success', 'Klien berhasil diperbarui.');
     }
