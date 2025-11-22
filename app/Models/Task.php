@@ -27,7 +27,12 @@ class Task extends Model
     // Relasi: Satu tugas ditugaskan ke satu user (bisa null)
     public function assignedUser()
     {
-        // Kita pakai nama 'assignedUser' agar tidak bentrok dengan relasi User bawaan Laravel
+        // dibuat 'assignedUser' agar tidak bentrok dengan relasi User bawaan Laravel
         return $this->belongsTo(User::class, 'assigned_to_user_id');
+    }
+
+    public function progress()
+    {
+        return $this->hasMany(TaskProgress::class)->orderBy('created_at', 'desc');
     }
 }

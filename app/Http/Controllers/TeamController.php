@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth; // <-- Tambahkan ini
-use App\Models\Project;                // <-- Tambahkan ini
+use Illuminate\Support\Facades\Auth;
+use App\Models\Project;
 
 class TeamController extends Controller
 {
@@ -13,27 +13,24 @@ class TeamController extends Controller
      */
     public function index()
     {
-        // 1. Dapatkan user yang sedang login
         $user = Auth::user();
 
-        // 2. Ambil semua tugas yang ditugaskan ke user ini
-        // Kita juga ambil relasi 'project' agar tahu tugas ini milik proyek mana
+        // 1. Ambil SEMUA tugas yang ditugaskan ke user ini (Apapun statusnya)
+        // Kita hapus filter whereIn('status', ...) agar task 'Done' tetap muncul
         $myTasks = $user->assignedTasks()
-                        ->with('project') // Ambil data proyek terkait
-                        ->whereIn('status', ['To Do', 'In Progress']) // Hanya yang belum selesai
+                        ->with('project')
                         ->orderBy('created_at', 'desc')
                         ->get();
 
-        // 3. Ambil daftar ID proyek yang unik dari tugas-tugas tadi
+        // 2. Ambil daftar ID proyek dari tugas-tugas tersebut
         $projectIds = $myTasks->pluck('project_id')->unique();
 
-        // 4. Ambil data lengkap proyek-proyek tersebut
-        $myProjects = Project::with('client') // Ambil juga data kliennya
+        // 3. Ambil data proyek (Apapun statusnya)
+        // Kita hapus filter where('status', 'In Progress') agar proyek 'Pending'/'Completed' tetap muncul
+        $myProjects = Project::with('client')
                             ->whereIn('id', $projectIds)
-                            ->where('status', 'In Progress') // Hanya proyek yang 'In Progress'
                             ->get();
 
-        // 5. Kirim data ke view
         return view('dashboard.team', compact('myProjects', 'myTasks'));
     }
 }

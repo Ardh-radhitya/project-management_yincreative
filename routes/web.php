@@ -48,6 +48,7 @@ Route::middleware(['auth'])->group(function () {
         Route::resource('categories', ProjectCategoryController::class);
         Route::resource('projects.tasks', TaskController::class)->shallow();
         Route::patch('/tasks/{task}/status', [TaskController::class, 'updateStatus'])->name('tasks.updateStatus');
+        Route::post('/tasks/{task}/progress', [TaskController::class, 'storeProgress'])->name('tasks.progress.store');
     });
 
     // --- Rute Pengaturan (untuk semua yang sudah login) ---

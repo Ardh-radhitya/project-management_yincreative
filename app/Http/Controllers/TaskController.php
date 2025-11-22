@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Task;
 use App\Models\Project;
 use App\Models\User;
+use App\Models\TaskProgress; // <--- INI PERBAIKAN UTAMANYA (Impor Model TaskProgress)
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth; // <--- Penting untuk mengambil ID user yang login
 
 class TaskController extends Controller
 {
@@ -38,13 +40,10 @@ class TaskController extends Controller
 
     /**
      * Menampilkan form untuk mengedit task.
-     * Parameter $task otomatis diambil dari URL (misal: /tasks/5/edit) karena kita pakai ->shallow()
      */
     public function edit(Task $task)
     {
-        // Ambil data project terkait untuk tombol Batal dan info
         $project = $task->project;
-        // Ambil team members untuk dropdown
         $teamMembers = User::whereHas('role', function ($query) {
             $query->where('name', 'Team');
         })->get();
@@ -65,8 +64,41 @@ class TaskController extends Controller
 
         $task->update($validatedData);
 
-        // Redirect kembali ke halaman detail proyek tempat task ini berada
         return redirect()->route('projects.show', $task->project_id)->with('success', 'Tugas berhasil diperbarui.');
+    }
+
+    /**
+     * FUNGSI BARU: Memperbarui status task saja (untuk dropdown di list).
+     */
+    public function updateStatus(Request $request, Task $task)
+    {
+        $validated = $request->validate([
+            'status' => 'required|string|in:To Do,In Progress,Done',
+        ]);
+
+        $task->update(['status' => $validated['status']]);
+
+        return redirect()->route('projects.show', $task->project_id)->with('success', 'Status tugas berhasil diperbarui.');
+    }
+
+    /**
+     * FUNGSI BARU: Menyimpan laporan progress (komentar) pada tugas.
+     * Ini untuk menjawab request dosbingmu.
+     */
+    public function storeProgress(Request $request, Task $task)
+    {
+        $request->validate([
+            'progress_note' => 'required|string',
+        ]);
+
+        // Pastikan Model TaskProgress sudah di-import di atas!
+        TaskProgress::create([
+            'task_id' => $task->id,
+            'user_id' => Auth::id(),
+            'progress_note' => $request->progress_note,
+        ]);
+
+        return back()->with('success', 'Laporan progress berhasil ditambahkan.');
     }
 
     /**
@@ -74,30 +106,11 @@ class TaskController extends Controller
      */
     public function destroy(Task $task)
     {
-        // Simpan dulu ID proyeknya sebelum task dihapus
         $projectId = $task->project_id;
-
-        // Hapus task
         $task->delete();
-
-        // Redirect kembali ke halaman detail proyek
         return redirect()->route('projects.show', $projectId)->with('success', 'Tugas berhasil dihapus.');
     }
 
-    // --- Fungsi index dan show biasanya tidak diperlukan untuk task dalam konteks ini ---
     public function index() { abort(404); }
     public function show(Task $task) { abort(404); }
-    public function updateStatus(Request $request, Task $task)
-{
-    // Validasi input status
-    $validated = $request->validate([
-        'status' => 'required|string|in:To Do,In Progress,Done', // Pastikan statusnya valid
-    ]);
-
-    // Update hanya kolom status
-    $task->update(['status' => $validated['status']]);
-
-    // Redirect kembali ke halaman detail proyek dengan pesan sukses
-    return redirect()->route('projects.show', $task->project_id)->with('success', 'Status tugas berhasil diperbarui.');
-}
 }
