@@ -15,18 +15,16 @@ class TeamController extends Controller
     {
         $user = Auth::user();
 
-        // 1. Ambil SEMUA tugas yang ditugaskan ke user ini (Apapun statusnya)
-        // Kita hapus filter whereIn('status', ...) agar task 'Done' tetap muncul
+        // 1. mengambil SEMUA tugas yang ditugaskan ke user ini (Apapun statusnya)
         $myTasks = $user->assignedTasks()
                         ->with('project')
                         ->orderBy('created_at', 'desc')
                         ->get();
 
-        // 2. Ambil daftar ID proyek dari tugas-tugas tersebut
+        // 2. Mengmbil daftar ID proyek dari tugas-tugas tersebut
         $projectIds = $myTasks->pluck('project_id')->unique();
 
-        // 3. Ambil data proyek (Apapun statusnya)
-        // Kita hapus filter where('status', 'In Progress') agar proyek 'Pending'/'Completed' tetap muncul
+        // 3. Mengambil data proyek (Apapun statusnya)
         $myProjects = Project::with('client')
                             ->whereIn('id', $projectIds)
                             ->get();

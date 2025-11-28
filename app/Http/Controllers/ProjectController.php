@@ -72,7 +72,7 @@ class ProjectController extends Controller
         // Update data proyek
         $project->update($validatedData);
 
-        // Logika BARU: Umumkan event HANYA jika status berubah
+        // Umumkan event HANYA jika status berubah
         if ($oldStatus !== $validatedData['status']) { // Bandingkan dengan data tervalidasi
             Log::info("Status berubah dari {$oldStatus} ke {$validatedData['status']}. Mencoba dispatch event untuk Project ID: {$project->id}"); // Log Debug 1
             ProjectStatusUpdated::dispatch($project->fresh()); // Kirim data $project yang sudah terupdate
