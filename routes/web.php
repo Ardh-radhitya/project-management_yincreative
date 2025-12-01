@@ -39,7 +39,6 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['role:admin'])->group(function () {
         Route::resource('users', UserController::class);
         Route::resource('clients', ClientController::class);
-        Route::resource('admins', AdminController::class)->except(['index']);
     });
 
     // --- Grup Rute untuk Admin dan Tim ---
