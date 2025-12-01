@@ -38,7 +38,7 @@ class ClientController extends Controller
 
     public function storeProject(Request $request)
     {
-        // --- PERBAIKAN DI SINI: Aturan validasi diisi ---
+        // Aturan validasi
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
