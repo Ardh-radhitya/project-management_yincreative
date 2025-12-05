@@ -35,7 +35,7 @@
                 </select>
                 @error('category_id')<p class="mt-2 text-sm text-red-600">{{ $message }}</p>@enderror
             </div>
-             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div class="mb-4">
                     <label for="start_date" class="inline-block mb-2 ml-1 font-bold text-size-xs text-slate-700">Tanggal Mulai yang Diharapkan</label>
                     <input type="date" name="start_date" id="start_date" value="{{ old('start_date', $project->start_date) }}" class="form-input @error('start_date') border-red-500 @enderror" />

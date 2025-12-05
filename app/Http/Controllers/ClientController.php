@@ -7,26 +7,22 @@ use App\Models\ProjectCategory;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\StoreProjectRequest;
+use App\Http\Requests\UpdateProjectRequest;
 
 class ClientController extends Controller
 {
-    // Fungsi untuk mengecek otorisasi klien
     private function authorizeClientAccess(Project $project)
     {
         $client = Client::where('email', Auth::user()->email)->first();
-        if (!$client || $project->client_id !== $client->id) {
-            abort(403, 'ANDA TIDAK BERHAK MENGAKSES PROYEK INI.');
-        }
+        abort_if(!$client || $project->client_id !== $client->id, 403, 'ANDA TIDAK BERHAK MENGAKSES PROYEK INI.');
         return $client;
     }
 
     public function dashboard()
     {
         $client = Client::where('email', Auth::user()->email)->first();
-        $projects = [];
-        if ($client) {
-            $projects = $client->projects()->orderBy('created_at', 'desc')->get();
-        }
+        $projects = $client ? $client->projects()->orderBy('created_at', 'desc')->get() : [];
         return view('dashboard.client', compact('projects'));
     }
 
@@ -36,27 +32,17 @@ class ClientController extends Controller
         return view('clients.create_project', compact('categories'));
     }
 
-    public function storeProject(Request $request)
+    public function storeProject(StoreProjectRequest $request)
     {
-        // Aturan validasi
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'category_id' => 'required|exists:project_categories,id',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after_or_equal:start_date',
-        ]);
-        // Sekarang $validatedData berisi: ['name', 'description', 'category_id', 'start_date', 'end_date']
-
         $client = Client::where('email', Auth::user()->email)->first();
         if (!$client) {
             return back()->with('error', 'Gagal menemukan profil klien Anda.');
         }
 
-        $validatedData['client_id'] = $client->id; // Tambahkan client_id
-        $validatedData['status'] = 'Pending'; // Tambahkan status default
+        $validatedData = $request->validated();
+        $validatedData['client_id'] = $client->id;
+        $validatedData['status'] = Project::STATUS_PENDING;
 
-        // Sekarang Project::create() menerima SEMUA data
         Project::create($validatedData);
 
         return redirect()->route('dashboard.client')->with('success', 'Proyek berhasil diajukan.');
@@ -69,29 +55,20 @@ class ClientController extends Controller
         return view('clients.edit_project', compact('project', 'categories'));
     }
 
-    public function updateProject(Request $request, Project $project)
+    public function updateProject(UpdateProjectRequest $request, Project $project)
     {
         $this->authorizeClientAccess($project);
 
-        if ($project->status !== 'Pending') {
+        if ($project->status !== Project::STATUS_PENDING) {
             return back()->with('error', 'Proyek yang sudah diproses tidak dapat diubah lagi.');
         }
 
-        // --- PERBAIKAN DI SINI: Aturan validasi diisi ---
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'category_id' => 'required|exists:project_categories,id',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after_or_equal:start_date',
-        ]);
-
-        $project->update($validatedData);
+        $project->update($request->validated());
         return redirect()->route('dashboard.client')->with('success', 'Proyek berhasil diperbarui.');
     }
 
+    // --- Admin Functions ---
 
-    // --- Fungsi CRUD Klien (untuk Admin) ---
     public function index()
     {
         $clients = Client::all();
@@ -105,6 +82,7 @@ class ClientController extends Controller
 
     public function store(Request $request)
     {
+        // Idealnya ini juga dipisah ke StoreClientRequest nanti
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:clients',

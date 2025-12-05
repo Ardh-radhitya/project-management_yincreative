@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\ClientController;
@@ -12,10 +13,22 @@ use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TaskController;
 
-// Rute Publik (hanya untuk login & logout)
-Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [LoginController::class, 'login'])->name('login.post');
-Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+// --- Rute Publik (Guest) ---
+// Saya bungkus dengan middleware 'guest' agar user yang sudah login tidak bisa akses halaman ini lagi
+Route::middleware('guest')->group(function () {
+    // Login
+    Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [LoginController::class, 'login'])->name('login.post');
+
+    // [BARU] Register (Sign Up)
+    Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+    Route::post('/register', [RegisterController::class, 'register'])->name('register.post');
+});
+
+// Logout (Hanya bisa diakses jika sudah login)
+Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth')->name('logout');
+
+// Redirect root ke login
 Route::get('/', fn() => redirect()->route('login'));
 
 
@@ -26,6 +39,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard-admin', [AdminController::class, 'dashboard'])->name('dashboard.admin')->middleware('role:admin');
     Route::get('/dashboard-team', [TeamController::class, 'index'])->name('dashboard.team')->middleware('role:team,admin');
     Route::get('/dashboard-client', [ClientController::class, 'dashboard'])->name('dashboard.client')->middleware('role:client');
+
     // --- RUTE UNTUK KLIEN MENGELOLA PROYEK ---
     Route::get('/client/projects/create', [ClientController::class, 'createProjectForm'])->name('client.projects.create')->middleware('role:client');
     Route::post('/client/projects', [ClientController::class, 'storeProject'])->name('client.projects.store')->middleware('role:client');
@@ -51,9 +65,8 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // --- Rute Pengaturan (untuk semua yang sudah login) ---
-    // PERBAIKAN DI SINI: Grup Settings ditambahkan kembali secara lengkap
     Route::prefix('settings')->name('settings.')->group(function () {
-        Route::get('/', [SettingsController::class, 'index'])->name('index'); // Rute yang hilang
+        Route::get('/', [SettingsController::class, 'index'])->name('index');
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::get('/notifications', [SettingsController::class, 'notifications'])->name('notifications');

@@ -30,7 +30,10 @@
                                 <span class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-blue-600 bg-blue-200">
                                     {{ $userTaskCount }} Tugas Anda Menunggu
                                 </span>
-                                <a href="{{ route('projects.show', $project->id) }}" class="text-sm font-bold text-blue-500 hover:underline">View Details</a>
+                                {{-- Ganti route ke 'projects.edit' agar bisa diakses oleh Team --}}
+                                <a href="{{ route('projects.edit', $project->id) }}" class="text-xs font-bold leading-tight text-slate-500">
+                                    View details <i class="fas fa-arrow-right ml-1"></i>
+                                </a>
                             </div>
                         </div>
                     @empty
@@ -53,8 +56,10 @@
                             <label class="font-medium text-gray-900 dark:text-gray-300">{{ $task->title }}</label>
                             <p class="text-xs text-gray-500">
                                 Status: {{ $task->status }}
-                                {{-- Link ke halaman detail proyek tempat tugas ini berada --}}
-                                | <a href="{{ route('projects.show', $task->project_id) }}" class="text-blue-500 hover:underline">Lihat Proyek</a>
+                                {{-- Mengarah ke List Tugas (Kanban/Table) milik proyek tersebut --}}
+                                <a href="{{ route('projects.tasks.index', $task->project->id) }}" class="text-xs font-bold leading-tight text-slate-500">
+                                    Lihat Tugas <i class="fas fa-eye ml-1"></i>
+                                </a>
                             </p>
                         </div>
                     @empty

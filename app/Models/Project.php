@@ -9,10 +9,12 @@ class Project extends Model
 {
     use HasFactory;
 
-    /**
-     * Kolom yang boleh diisi secara massal (mass assignable).
-     * INI ADALAH KUNCI PERBAIKANNYA
-     */
+    // DEFINISI KONSTANTA STATUS
+    const STATUS_PENDING = 'Pending';
+    const STATUS_IN_PROGRESS = 'In Progress';
+    const STATUS_COMPLETED = 'Completed';
+    // Tambahkan status lain jika ada, misal: 'On Hold'
+
     protected $fillable = [
         'name',
         'description',

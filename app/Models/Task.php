@@ -9,30 +9,43 @@ class Task extends Model
 {
     use HasFactory;
 
-    // Kolom yang boleh diisi massal
     protected $fillable = [
-        'project_id',
         'title',
         'description',
         'status',
-        'assigned_to_user_id'
+        'assigned_to_user_id', // Foreign Key User
+        'project_id',          // Foreign Key Project
     ];
 
-    // Relasi: Satu tugas milik satu proyek
+    /**
+     * Relasi: Task dimiliki oleh satu Project
+     */
     public function project()
     {
         return $this->belongsTo(Project::class);
     }
 
-    // Relasi: Satu tugas ditugaskan ke satu user (bisa null)
-    public function assignedUser()
+    /**
+     * Relasi: Task dikerjakan oleh satu User (Team)
+     * Kita harus sebutkan 'assigned_to_user_id' karena nama kolomnya custom.
+     */
+    public function user()
     {
-        // dibuat 'assignedUser' agar tidak bentrok dengan relasi User bawaan Laravel
         return $this->belongsTo(User::class, 'assigned_to_user_id');
     }
 
+    /**
+     * Relasi: Task memiliki banyak Progress (History)
+     * (Opsional: Tambahkan ini jika nanti butuh menampilkan riwayat progress)
+     */
     public function progress()
     {
-        return $this->hasMany(TaskProgress::class)->orderBy('created_at', 'desc');
+        return $this->hasMany(TaskProgress::class);
+    }
+
+    // Alias agar $task->assignedUser tetap jalan
+    public function assignedUser()
+    {
+        return $this->user();
     }
 }

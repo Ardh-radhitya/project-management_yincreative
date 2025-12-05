@@ -13,11 +13,15 @@ return new class extends Migration
     {
         Schema::create('clients', function (Blueprint $table) {
             $table->id();
+            // Menambahkan kolom user_id sebagai penghubung ke tabel users
+            // Kita gunakan unsignedBigInteger dan nullable dulu untuk keamanan urutan migrasi
+            $table->unsignedBigInteger('user_id')->nullable()->index();
+
             $table->string('name');
             $table->string('email')->unique();
-            $table->string('phone', 20)->nullable(); // Opsional
-            $table->string('company')->nullable(); // Opsional
-            $table->string('photo_profile')->nullable(); // Opsional
+            $table->string('phone', 20)->nullable();
+            $table->string('company')->nullable();
+            $table->string('photo_profile')->nullable();
             $table->timestamps();
         });
     }
