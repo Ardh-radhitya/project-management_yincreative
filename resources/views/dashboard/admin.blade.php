@@ -106,7 +106,7 @@
                                             <div class="flex px-2 py-1">
                                                 <div class="flex flex-col justify-center">
                                                     {{-- Link ke detail proyek --}}
-                                                    <a href="{{ route('projects.show', $project->id) }}">
+                                                    <a href="{{ route('projects.tasks.index', $project->id) }}">
                                                         <h6 class="mb-0 text-size-sm leading-normal hover:text-blue-500">{{ $project->name }}</h6>
                                                     </a>
                                                 </div>

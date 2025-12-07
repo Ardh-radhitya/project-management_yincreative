@@ -13,9 +13,15 @@ class TaskController extends Controller
 {
     public function index(Project $project)
     {
-        $tasks = $project->tasks()->with('user')->get();
+        // PERBAIKAN: Tambahkan 'progress.user' untuk memuat siapa yang komen
+        $tasks = $project->tasks()
+                        ->with(['user', 'progress.user'])
+                        ->orderBy('created_at', 'desc')
+                        ->get();
+
         return view('tasks.index', compact('project', 'tasks'));
     }
+
 
     public function create(Project $project)
     {

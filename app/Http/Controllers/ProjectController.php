@@ -43,8 +43,7 @@ class ProjectController extends Controller
 
     public function show(Project $project)
     {
-        $project->load(['client', 'category', 'tasks.assignedUser']);
-        return view('projects.show', compact('project'));
+        return redirect()->route('projects.tasks.index', $project->id);
     }
 
     public function edit(Project $project)
