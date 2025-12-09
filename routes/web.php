@@ -14,18 +14,17 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TaskController;
 
 // --- Rute Publik (Guest) ---
-// Saya bungkus dengan middleware 'guest' agar user yang sudah login tidak bisa akses halaman ini lagi
 Route::middleware('guest')->group(function () {
     // Login
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 
-    // [BARU] Register (Sign Up)
+    // Register (Sign Up)
     Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
     Route::post('/register', [RegisterController::class, 'register'])->name('register.post');
 });
 
-// Logout (Hanya bisa diakses jika sudah login)
+// Logout
 Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth')->name('logout');
 
 // Redirect root ke login
@@ -43,15 +42,26 @@ Route::middleware(['auth'])->group(function () {
     // --- RUTE UNTUK KLIEN MENGELOLA PROYEK ---
     Route::get('/client/projects/create', [ClientController::class, 'createProjectForm'])->name('client.projects.create')->middleware('role:client');
     Route::post('/client/projects', [ClientController::class, 'storeProject'])->name('client.projects.store')->middleware('role:client');
-    // Rute baru untuk menampilkan form edit
+    // Rute form edit
     Route::get('/client/projects/{project}/edit', [ClientController::class, 'editProjectForm'])->name('client.projects.edit')->middleware('role:client');
-    // Rute baru untuk menyimpan perubahan (update)
+    // Rute update
     Route::put('/client/projects/{project}', [ClientController::class, 'updateProject'])->name('client.projects.update')->middleware('role:client');
     // ----------------------------------------
 
     // --- Grup Rute Khusus Admin ---
     Route::middleware(['role:admin'])->group(function () {
-        Route::resource('users', UserController::class);
+
+        // [MODIFIKASI DI SINI: Integrasi Refactoring AdminController]
+        // Kita tidak pakai Route::resource('users') lagi karena methodnya custom
+
+        Route::get('/users', [AdminController::class, 'indexUsers'])->name('users.index');
+        Route::get('/users/create', [AdminController::class, 'createUser'])->name('users.create');
+        Route::post('/users', [AdminController::class, 'storeUser'])->name('users.store');
+        Route::get('/users/{user}/edit', [AdminController::class, 'editUser'])->name('users.edit');
+        Route::put('/users/{user}', [AdminController::class, 'updateUser'])->name('users.update');
+        Route::delete('/users/{user}', [AdminController::class, 'destroyUser'])->name('users.destroy');
+
+        // Untuk Clients, masih pakai standar resource (belum direfactor)
         Route::resource('clients', ClientController::class);
     });
 
@@ -64,7 +74,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/tasks/{task}/progress', [TaskController::class, 'storeProgress'])->name('tasks.progress.store');
     });
 
-    // --- Rute Pengaturan (untuk semua yang sudah login) ---
+    // --- Rute Pengaturan ---
     Route::prefix('settings')->name('settings.')->group(function () {
         Route::get('/', [SettingsController::class, 'index'])->name('index');
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

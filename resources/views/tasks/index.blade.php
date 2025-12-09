@@ -25,8 +25,8 @@
                             </div>
                         </div>
                         <div class="w-full lg:w-1/4 text-right">
-                             {{-- Status Proyek Badge --}}
-                             @php
+                            {{-- Status Proyek Badge --}}
+                            @php
                                 $badgeColor = match($project->status) {
                                     'Pending' => 'from-gray-600 to-slate-300',
                                     'In Progress' => 'from-blue-600 to-violet-600',
@@ -38,7 +38,7 @@
                                 {{ $project->status }}
                             </span>
                             <br>
-                            <a href="{{ route('projects.tasks.create', $project->id) }}" class="inline-block px-6 py-3 font-bold text-center text-white uppercase align-middle transition-all bg-transparent border-0 rounded-lg cursor-pointer leading-pro text-xs ease-soft-in tracking-tight-rem shadow-soft-md bg-150 bg-x-25 hover:scale-102 active:opacity-85 hover:shadow-soft-xs bg-gradient-to-tl from-blue-600 to-cyan-400">
+                            <a href="{{ route('projects.tasks.create', $project->id) }}" class="inline-block px-6 py-3 font-bold text-center text-slate-800 uppercase align-middle transition-all bg-transparent border-0 rounded-lg cursor-pointer leading-pro text-xs ease-soft-in tracking-tight-rem shadow-soft-md bg-150 bg-x-25 hover:scale-102 active:opacity-85 hover:shadow-soft-xs bg-gradient-to-tl from-blue-600 to-cyan-400">
                                 <i class="fas fa-plus mr-1"></i> Tambah Tugas
                             </a>
                         </div>
@@ -102,9 +102,9 @@
                                             <select name="status" onchange="this.form.submit()"
                                                 class="text-xs font-bold uppercase py-1 px-3 rounded-lg border-2 cursor-pointer focus:outline-none"
                                                 style="@if($task->status == 'Done') color: #16a34a; border-color: #16a34a; background-color: #f0fdf4; @elseif($task->status == 'In Progress') color: #2563eb; border-color: #2563eb; background-color: #eff6ff; @else color: #475569; border-color: #475569; background-color: #f8fafc; @endif">
-                                                <option class="text-slate-700 bg-white" value="To Do" {{ $task->status == 'To Do' ? 'selected' : '' }}>To Do</option>
-                                                <option class="text-slate-700 bg-white" value="In Progress" {{ $task->status == 'In Progress' ? 'selected' : '' }}>In Progress</option>
-                                                <option class="text-slate-700 bg-white" value="Done" {{ $task->status == 'Done' ? 'selected' : '' }}>Done</option>
+                                                <option class="text-black bg-white" value="To Do" {{ $task->status == 'To Do' ? 'selected' : '' }}>To Do</option>
+                                                <option class="text-black bg-white" value="In Progress" {{ $task->status == 'In Progress' ? 'selected' : '' }}>In Progress</option>
+                                                <option class="text-black bg-white" value="Done" {{ $task->status == 'Done' ? 'selected' : '' }}>Done</option>
                                             </select>
                                         </form>
                                     </td>

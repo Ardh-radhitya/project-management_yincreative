@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\Role; // <-- Tambahkan ini untuk mengambil data Role
+use App\Models\Role;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash; // <-- Tambahkan ini untuk hashing password
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {

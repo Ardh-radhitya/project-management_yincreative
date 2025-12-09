@@ -115,4 +115,48 @@ class ClientController extends Controller
         $client->delete();
         return redirect()->route('clients.index')->with('success', 'Klien berhasil dihapus.');
     }
+
+
+    // ... (Kode bagian atas dashboard/project JANGAN DIHAPUS) ...
+
+    // ==========================================
+    // --- Fungsi CRUD Klien (Khusus Admin) ---
+    // ==========================================
+
+    public function index()
+    {
+        $clients = Client::all();
+        return view('clients.index', compact('clients'));
+    }
+
+    public function create()
+    {
+        return view('clients.create');
+    }
+
+    // Menggunakan StoreClientRequest (Validasi Otomatis)
+    public function store(\App\Http\Requests\StoreClientRequest $request)
+    {
+        Client::create($request->validated());
+        return redirect()->route('clients.index')->with('success', 'Klien berhasil ditambahkan.');
+    }
+
+    public function edit(Client $client)
+    {
+        return view('clients.edit', compact('client'));
+    }
+
+    // Menggunakan UpdateClientRequest (Validasi Otomatis)
+    public function update(\App\Http\Requests\UpdateClientRequest $request, Client $client)
+    {
+        $client->update($request->validated());
+        return redirect()->route('clients.index')->with('success', 'Klien berhasil diperbarui.');
+    }
+
+    public function destroy(Client $client)
+    {
+        $client->delete();
+        return redirect()->route('clients.index')->with('success', 'Klien berhasil dihapus.');
+    }
 }
+
