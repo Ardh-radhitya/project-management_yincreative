@@ -9,9 +9,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
+// Import Request untuk Admin (CRUD Client)
+use App\Http\Requests\StoreClientRequest;
+use App\Http\Requests\UpdateClientRequest;
 
 class ClientController extends Controller
 {
+    // ==========================================
+    // --- AREA KLIEN (DASHBOARD & PROYEK) ---
+    // ==========================================
+
     private function authorizeClientAccess(Project $project)
     {
         $client = Client::where('email', Auth::user()->email)->first();
@@ -67,96 +74,61 @@ class ClientController extends Controller
         return redirect()->route('dashboard.client')->with('success', 'Proyek berhasil diperbarui.');
     }
 
-    // --- Admin Functions ---
+    // [FITUR BARU] Detail Proyek View-Only untuk Klien
+    public function showProject(Project $project)
+    {
+        $this->authorizeClientAccess($project);
 
+        $tasks = $project->tasks()
+                        ->with(['user', 'progress.user'])
+                        ->orderBy('created_at', 'desc')
+                        ->get();
+
+        return view('clients.show_project', compact('project', 'tasks'));
+    }
+
+
+    // ==========================================
+    // --- AREA ADMIN (MANAJEMEN DATA KLIEN) ---
+    // ==========================================
+
+    // List semua klien
     public function index()
     {
         $clients = Client::all();
         return view('clients.index', compact('clients'));
     }
 
+    // Form tambah klien
     public function create()
     {
         return view('clients.create');
     }
 
-    public function store(Request $request)
-    {
-        // Idealnya ini juga dipisah ke StoreClientRequest nanti
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:clients',
-            'phone' => 'nullable|string|max:20',
-            'company' => 'nullable|string|max:255',
-        ]);
-        Client::create($validatedData);
-        return redirect()->route('clients.index')->with('success', 'Klien berhasil ditambahkan.');
-    }
-
-    public function edit(Client $client)
-    {
-        return view('clients.edit', compact('client'));
-    }
-
-    public function update(Request $request, Client $client)
-    {
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:clients,email,' . $client->id,
-            'phone' => 'nullable|string|max:20',
-            'company' => 'nullable|string|max:255',
-        ]);
-        $client->update($validatedData);
-        return redirect()->route('clients.index')->with('success', 'Klien berhasil diperbarui.');
-    }
-
-    public function destroy(Client $client)
-    {
-        $client->delete();
-        return redirect()->route('clients.index')->with('success', 'Klien berhasil dihapus.');
-    }
-
-
-    // ... (Kode bagian atas dashboard/project JANGAN DIHAPUS) ...
-
-    // ==========================================
-    // --- Fungsi CRUD Klien (Khusus Admin) ---
-    // ==========================================
-
-    public function index()
-    {
-        $clients = Client::all();
-        return view('clients.index', compact('clients'));
-    }
-
-    public function create()
-    {
-        return view('clients.create');
-    }
-
-    // Menggunakan StoreClientRequest (Validasi Otomatis)
-    public function store(\App\Http\Requests\StoreClientRequest $request)
+    // Simpan klien baru (Pakai Request Validasi)
+    public function store(StoreClientRequest $request)
     {
         Client::create($request->validated());
         return redirect()->route('clients.index')->with('success', 'Klien berhasil ditambahkan.');
     }
 
+    // Form edit klien
     public function edit(Client $client)
     {
         return view('clients.edit', compact('client'));
     }
 
-    // Menggunakan UpdateClientRequest (Validasi Otomatis)
-    public function update(\App\Http\Requests\UpdateClientRequest $request, Client $client)
+    // Update klien (Pakai Request Validasi)
+    public function update(UpdateClientRequest $request, Client $client)
     {
         $client->update($request->validated());
         return redirect()->route('clients.index')->with('success', 'Klien berhasil diperbarui.');
     }
 
+    // Hapus klien
     public function destroy(Client $client)
     {
         $client->delete();
         return redirect()->route('clients.index')->with('success', 'Klien berhasil dihapus.');
     }
 }
-
