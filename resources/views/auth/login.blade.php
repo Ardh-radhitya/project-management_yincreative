@@ -11,7 +11,7 @@
                 <div class="flex flex-col w-full max-w-full px-3 mx-auto lg:mx-0 shrink-0 md:flex-0 md:w-7/12 lg:w-5/12 xl:w-4/12">
                     <div class="relative flex flex-col min-w-0 break-words bg-transparent border-0 shadow-none lg:py4 dark:bg-gray-950 rounded-2xl bg-clip-border">
                         <div class="p-6 pb-0 mb-0">
-                            <h4 class="font-bold text-slate-700">Masuk</h4>
+                            <h4 class="font-bold text-slate-700">LOGIN</h4>
                             <p class="mb-0 text-slate-500">Masukkan email dan password Anda untuk masuk.</p>
                         </div>
                         <div class="flex-auto p-6">
@@ -51,7 +51,7 @@
 
                         </div>
                         <div class="border-black/12.5 rounded-b-2xl border-t-0 border-solid p-6 text-center pt-0 px-1 sm:px-6">
-                            <p class="mx-auto mb-6 leading-normal text-sm">Belum punya akun? <a href="{{ route('register') }}" class="font-semibold text-transparent bg-clip-text bg-gradient-to-tl from-blue-500 to-violet-500">Daftar</a></p>
+                            <p class="mx-auto mb-6 leading-normal text-sm">Belum punya akun? <a href="{{ route('register') }}" class="font-semibold text-transparent bg-clip-text bg-gradient-to-tl from-blue-500 to-violet-500">Sign Up</a></p>
                         </div>
                     </div>
                 </div>
@@ -59,7 +59,7 @@
                 <div class="absolute top-0 right-0 flex-col justify-center hidden w-6/12 h-full max-w-full px-3 pr-0 my-auto text-center flex-0 lg:flex">
                     <div class="relative flex flex-col justify-center h-full bg-cover px-24 m-4 overflow-hidden rounded-xl bg-[url('https://raw.githubusercontent.com/creativetimofficial/public-assets/master/argon-dashboard-pro/assets/img/signin-ill.jpg')]">
                         <span class="absolute top-0 left-0 w-full h-full bg-center bg-cover bg-gradient-to-tl from-blue-500 to-violet-500 opacity-60"></span>
-                        <h4 class="z-20 mt-12 font-bold text-white">"Manajemen Proyek Lebih Mudah"</h4>
+                    <h4 class="z-20 mt-12 font-bold text-white">Y.in Creative Project Management</h4>
                         <p class="z-20 text-white ">Platform terpusat untuk kolaborasi tim, klien, dan admin yang efisien dan transparan.</p>
                     </div>
                 </div>

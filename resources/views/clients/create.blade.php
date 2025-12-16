@@ -37,7 +37,7 @@
             <div class="flex justify-end mt-6">
                 {{-- Tombol Batal kembali ke daftar klien --}}
                 <a href="{{ route('clients.index') }}" class="btn-secondary">Batal</a>
-                <button type="submit" class="btn-primary">Simpan Klien</button>
+                <button type="submit" class="btn-primary">Simpan</button>
             </div>
         </form>
     </div>

@@ -13,7 +13,7 @@
             </a>
         </div>
     </div>
-    {{-- Menampilkan notifikasi sukses --}}
+    {{-- Menampilkan notifikasi/alert sukses --}}
     @if (session('success'))
         <div class="relative p-4 pr-12 mb-4 text-white border border-solid rounded-lg bg-gradient-cyan border-slate-100" role="alert">
             <span class="font-bold">Sukses!</span> {{ session('success') }}
@@ -31,7 +31,6 @@
                         <tr>
                             <th class="px-6 py-3 font-bold text-left uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70">User</th>
                             <th class="px-6 py-3 pl-2 font-bold text-left uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70">Role</th>
-                            {{-- <th class="px-6 py-3 font-bold text-center uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70">Status</th> --}}
                             <th class="px-6 py-3 font-bold text-center uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400 opacity-70">Joined</th>
                             <th class="px-6 py-3 font-semibold capitalize align-middle bg-transparent border-b border-collapse border-solid shadow-none dark:border-white/40 dark:text-white tracking-none whitespace-nowrap text-slate-400 opacity-70"></th>
                         </tr>
@@ -72,7 +71,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="text-center text-gray-400 py-4">Belum ada user.</td>
+                            <td colspan="4" class="text-center text-gray-400 py-4">Belum ada user</td>
                         </tr>
                     @endforelse
                     </tbody>

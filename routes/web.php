@@ -46,7 +46,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/client/projects/{project}/edit', [ClientController::class, 'editProjectForm'])->name('client.projects.edit')->middleware('role:client');
     // Rute update
     Route::put('/client/projects/{project}', [ClientController::class, 'updateProject'])->name('client.projects.update')->middleware('role:client');
-    // ----------------------------------------
+    // [BARU] Rute Detail Proyek (View Only)
+    Route::get('/client/projects/{project}/detail', [ClientController::class, 'showProject'])->name('client.projects.show')->middleware('role:client');
 
     // --- Grup Rute Khusus Admin ---
     Route::middleware(['role:admin'])->group(function () {
@@ -81,5 +82,6 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::get('/notifications', [SettingsController::class, 'notifications'])->name('notifications');
         Route::put('/notifications', [SettingsController::class, 'updateNotifications'])->name('notifications.update');
+
     });
 });

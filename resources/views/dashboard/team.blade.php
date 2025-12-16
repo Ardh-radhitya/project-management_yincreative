@@ -6,8 +6,8 @@
 @section('content')
 <div class="w-full px-6 py-6 mx-auto">
     {{-- Sambutan dinamis dengan nama user --}}
-    <h3 class="font-bold text-white text-3xl">Welcome back, {{ Auth::user()->name }}!</h3>
-    <p class="text-white mb-6">Here's your task and project overview for today.</p>
+    <h3 class="font-bold text-white text-3xl">Selamat Datang, {{ Auth::user()->name }}!</h3>
+    <p class="text-white mb-6">Berikut adalah tugas dan daftar proyek Anda untuk hari ini.</p>
 
     <div class="flex flex-wrap -mx-3">
         {{-- Bagian Proyek Aktif Saya --}}
@@ -32,7 +32,7 @@
                                 </span>
                                 {{-- Ganti route ke 'projects.edit' agar bisa diakses oleh Team --}}
                                 <a href="{{ route('projects.edit', $project->id) }}" class="text-xs font-bold leading-tight text-slate-500">
-                                    View details <i class="fas fa-arrow-right ml-1"></i>
+                                    Lihat Rincian <i class="fas fa-arrow-right ml-1"></i>
                                 </a>
                             </div>
                         </div>
@@ -47,7 +47,7 @@
         <div class="w-full max-w-full px-3 mt-6 lg:mt-0 lg:w-4/12 lg:flex-none">
             <div class="border-black/12.5 dark:bg-slate-850 dark:shadow-dark-xl shadow-xl relative z-20 flex min-w-0 flex-col break-words rounded-2xl border-0 border-solid bg-white bg-clip-border">
                 <div class="border-black/12.5 mb-0 rounded-t-2xl border-b-0 border-solid p-6 pt-4 pb-0">
-                    <h6 class="capitalize dark:text-white">Tugas Saya (To Do)</h6>
+                    <h6 class="capitalize dark:text-white">Tugas Anda</h6>
                 </div>
                 <div class="flex-auto p-4">
                     {{-- Loop untuk $myTasks --}}

@@ -18,6 +18,46 @@
 
         {{-- Bagian ini akan memuat sidebar dan membuka tag <main> --}}
         @include('layout.partial.header')
+            <div class="w-full px-6 py-6 mx-auto">
+            
+            {{-- [BARU] GLOBAL ALERT NOTIFICATION --}}
+            {{-- Ini akan otomatis menangkap pesan ->with('success') atau ->with('error') dari Controller manapun --}}
+            
+            @if(session('success'))
+                <div class="relative w-full p-4 mb-4 text-white bg-green-500 rounded-lg shadow-md flex justify-between items-center" role="alert">
+                    <div class="flex items-center">
+                        <i class="fas fa-check-circle mr-2 text-lg"></i>
+                        <span class="text-sm font-bold">{{ session('success') }}</span>
+                    </div>
+                    <button type="button" onclick="this.parentElement.style.display='none'" class="text-white hover:text-gray-100">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div class="relative w-full p-4 mb-4 text-white bg-red-500 rounded-lg shadow-md flex justify-between items-center" role="alert">
+                    <div class="flex items-center">
+                        <i class="fas fa-exclamation-triangle mr-2 text-lg"></i>
+                        <span class="text-sm font-bold">{{ session('error') }}</span>
+                    </div>
+                    <button type="button" onclick="this.parentElement.style.display='none'" class="text-white hover:text-gray-100">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            @endif
+
+            {{-- Validasi Error Form (Jika ada input yang salah) --}}
+            @if ($errors->any())
+                <div class="relative w-full p-4 mb-4 text-white bg-red-400 rounded-lg shadow-md" role="alert">
+                    <ul class="list-disc list-inside text-sm font-bold">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+            {{-- [AKHIR GLOBAL ALERT] --}}
 
             {{-- Di sinilah semua konten halaman akan ditampilkan --}}
             @yield('content')

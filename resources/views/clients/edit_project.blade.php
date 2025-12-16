@@ -48,7 +48,7 @@
                 </div>
             </div>
             <div class="mb-4">
-                <label for="description" class="inline-block mb-2 ml-1 font-bold text-size-xs text-slate-700">Deskripsi Brief Proyek</label>
+                <label for="description" class="inline-block mb-2 ml-1 font-bold text-size-xs text-slate-700">Deskripsi Singkat Proyek</label>
                 <textarea name="description" id="description" rows="4" class="form-input @error('description') border-red-500 @enderror">{{ old('description', $project->description) }}</textarea>
                 @error('description')<p class="mt-2 text-sm text-red-600">{{ $message }}</p>@enderror
             </div>
