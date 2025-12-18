@@ -48,13 +48,6 @@
         </div>
     </div>
 
-    {{-- Alert Sukses --}}
-    @if(session('success'))
-        <div class="p-4 mb-4 text-sm text-green-700 bg-green-100 border border-green-200 rounded-lg shadow-md">
-            <i class="fas fa-check-circle mr-2"></i> {{ session('success') }}
-        </div>
-    @endif
-
     {{-- BAGIAN 2: DAFTAR TUGAS --}}
     <div class="flex flex-wrap -mx-3">
         <div class="w-full max-w-full px-3">

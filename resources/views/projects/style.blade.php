@@ -14,7 +14,7 @@
         background-color: #2152ff; /* Warna cadangan */
 
         /* Border radius yang lebih kotak tapi halus */
-        border-radius: 8px;
+        border-radius: 6px;
 
         /* Warna teks */
         color: #ffffff;
@@ -166,9 +166,5 @@
         height: 300px;
     }
 
-    /* Style untuk Notifikasi Sukses */
-    .alert-success {
-        @apply relative p-4 pr-12 mb-4 text-white border border-solid rounded-lg bg-gradient-cyan border-slate-100;
-         background-image: linear-gradient(310deg, #2152ff 0%, #21d4fd 100%); /* Fix juga untuk alert */
-    }
 </style>
+
