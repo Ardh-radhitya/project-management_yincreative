@@ -21,7 +21,25 @@
                                 <p class="text-sm text-slate-700 leading-relaxed mb-0">
                                     {{ $project->description ?? 'Tidak ada deskripsi khusus.' }}
                                 </p>
-                            </div>
+                                {{-- [BARU] TOMBOL DOWNLOAD --}}
+                                @if($project->file_path)
+                                    <hr class="h-px my-4 bg-gray-200 border-0">
+                                    <div class="flex items-center">
+                                        <div class="mr-3">
+                                            <div class="inline-block p-2 text-center text-white bg-blue-500 rounded-lg shadow-sm">
+                                                <i class="fas fa-file-alt"></i>
+                                            </div>
+                                        </div>
+                                        <div class="flex-1">
+                                            <h6 class="mb-0 text-sm font-semibold">Dokumen Lampiran</h6>
+                                            <p class="mb-0 text-xs text-slate-500">File referensi dari klien</p>
+                                        </div>
+                                        <a href="{{ asset('storage/' . $project->file_path) }}" target="_blank"
+                                        class="inline-block px-4 py-2 mb-0 font-bold text-center uppercase align-middle transition-all bg-transparent border border-blue-500 rounded-lg shadow-none cursor-pointer leading-pro text-xs ease-soft-in tracking-tight-soft hover:scale-102 active:shadow-soft-xs hover:border-blue-500 hover:bg-blue-500 hover:text-white text-blue-500">
+                                            <i class="fas fa-download mr-1"></i> Download
+                                        </a>
+                                    </div>
+                                @endif
                         </div>
                         <div class="w-full lg:w-1/4 text-right">
                             {{-- Status Proyek Badge --}}

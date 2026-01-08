@@ -11,7 +11,9 @@
             <h6 class="mb-0">Tabel Proyek</h6>
 
             {{-- PERBAIKAN DI SINI: Ganti semua class manual dengan "btn-primary" --}}
-<a href="{{ route('projects.create') }}" class="inline-block px-6 py-3 mr-3 font-bold text-center uppercase align-middle transition-all bg-gray-200 border-0 rounded-lg cursor-pointer hover:bg-gray-300 active:bg-gray-400 hover:text-red-500 active:text-red-600">Tambah Proyek</a>
+        <a href="{{ route('projects.create') }}" class="inline-block px-6 py-3 font-bold text-center text-white uppercase align-middle transition-all bg-blue-500 border-0 rounded-lg cursor-pointer shadow-md hover:shadow-lg hover:bg-blue-600 active:opacity-85">
+            + Tambah Proyek
+        </a>
         </div>
     </div>
     <div class="flex-auto px-0 pt-0 pb-2">
@@ -73,6 +75,5 @@
 @endsection
 
 @push('styles')
-    {{-- File ini berisi definisi .btn-primary, .btn-action-edit, dll. --}}
     @include('projects.style')
 @endpush

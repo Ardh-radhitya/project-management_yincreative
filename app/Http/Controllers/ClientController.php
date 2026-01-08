@@ -41,18 +41,41 @@ class ClientController extends Controller
 
     public function storeProject(StoreProjectRequest $request)
     {
-        $client = Client::where('email', Auth::user()->email)->first();
+        // 1. Ambil Data User Login
+        $user = Auth::user();
+
+        // 2. Cari Data Client berdasarkan Email User
+        $client = Client::where('email', $user->email)->first();
+
+        // Safety Check: Kalau user ini belum terdaftar di tabel clients
         if (!$client) {
-            return back()->with('error', 'Gagal menemukan profil klien Anda.');
+            return redirect()->back()->with('error', 'Data Client tidak ditemukan untuk akun ini.');
         }
 
+        // 3. Siapkan Data untuk Disimpan
         $validatedData = $request->validated();
+
+        // Isi data relationship & status default
         $validatedData['client_id'] = $client->id;
         $validatedData['status'] = Project::STATUS_PENDING;
 
+        // [PERBAIKAN UTAMA] Set start_date otomatis hari ini untuk menghindari error SQL Not Null
+        $validatedData['start_date'] = now();
+
+        // --- LOGIKA UPLOAD FILE ---
+        if ($request->hasFile('attachments')) {
+            // Simpan file ke folder: storage/app/public/project_files
+            $filePath = $request->file('attachments')->store('project_files', 'public');
+
+            // Simpan path-nya ke array data
+            $validatedData['file_path'] = $filePath;
+        }
+        // --------------------------------
+
+        // 4. Simpan ke Database
         Project::create($validatedData);
 
-        return redirect()->route('dashboard.client')->with('success', 'Proyek berhasil diajukan.');
+        return redirect()->route('dashboard.client')->with('success', 'Proyek berhasil diajukan berserta dokumen lampiran.');
     }
 
     public function editProjectForm(Project $project)

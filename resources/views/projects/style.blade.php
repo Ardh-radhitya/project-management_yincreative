@@ -79,6 +79,28 @@
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
 
+    /* Tombol Tambah Proyek */
+    .btn-add-project {
+        display: inline-block;
+        padding: 0.75rem 1.5rem; /* px-6 py-3 */
+        font-weight: 700; /* font-bold */
+        text-align: center;
+        color: #ffffff; /* text-white */
+        text-transform: uppercase;
+        vertical-align: middle;
+        background-color: #3b82f6; /* bg-blue-500 */
+        border-radius: 0.5rem; /* rounded-lg */
+        border: none;
+        transition: all 0.2s ease-in-out;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-add-project:hover {
+        background-color: #2563eb; /* bg-blue-600 */
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        transform: translateY(-1px);
+    }
+
     /* Style Baru untuk Tombol Aksi di Tabel */
     .btn-action-edit {
         @apply inline-block px-6 py-2.5 font-semibold leading-tight text-center text-white uppercase text-size-xs;

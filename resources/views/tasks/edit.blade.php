@@ -26,7 +26,7 @@
                 @error('description')<p class="mt-2 text-sm text-red-600">{{ $message }}</p>@enderror
             </div>
 
-             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div class="mb-4">
                     <label for="status" class="inline-block mb-2 ml-1 font-bold text-size-xs text-slate-700">Status</label>
                     <select name="status" id="status" class="form-input @error('status') border-red-500 @enderror">
@@ -38,7 +38,7 @@
                     @error('status')<p class="mt-2 text-sm text-red-600">{{ $message }}</p>@enderror
                 </div>
 
-                 <div class="mb-4">
+                <div class="mb-4">
                     <label for="assigned_to_user_id" class="inline-block mb-2 ml-1 font-bold text-size-xs text-slate-700">Tugaskan Kepada (Opsional)</label>
                     <select name="assigned_to_user_id" id="assigned_to_user_id" class="form-input @error('assigned_to_user_id') border-red-500 @enderror">
                         <option value="">Belum Ditugaskan</option>

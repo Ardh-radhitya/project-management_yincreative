@@ -4,8 +4,8 @@
 <div class="px-6 py-6">
     <div class="flex justify-between items-center mb-6">
         <div>
-            <h3 class="font-bold text-3xl">Settings</h3>
-            <p class="text-slate-900">Manage your account and system preferences.</p>
+            <h3 class="font-bold text-3xl">Pengaturan</h3>
+            <p class="text-slate-900">Kelola Akun dan Preferensi</p>
         </div>
     </div>
 
@@ -20,21 +20,21 @@
         <ul class="space-y-3">
             <li>
                 <a href="{{ route('settings.profile') }}" class="text-blue-600 hover:underline">
-                    Profile & Security
+                    Profil & Keamanan
                 </a>
             </li>
             @auth
                 @if(auth()->user()->isAdmin())
                     <li>
                         <a href="{{ route('settings.system') }}" class="text-blue-600 hover:underline">
-                            System Settings
+                            Pengaturan Sistem
                         </a>
                     </li>
                 @endif
             @endauth
             <li>
                 <a href="{{ route('settings.notifications') }}" class="text-blue-600 hover:underline">
-                    Notifications
+                    Notifikasi
                 </a>
             </li>
         </ul>

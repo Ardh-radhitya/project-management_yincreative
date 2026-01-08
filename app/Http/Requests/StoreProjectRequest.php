@@ -23,10 +23,12 @@ class StoreProjectRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
             'category_id' => 'required|exists:project_categories,id',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after_or_equal:start_date',
+            'deadline' => 'required|date|after:today',
+            'description' => 'required|string',
+            // [BARU] Validasi File
+            // Max 5MB (5120 KB), Format: PDF, Word, Gambar, ZIP
+            'attachments' => 'nullable|file|mimes:pdf,doc,docx,jpg,png,jpeg,zip|max:5120',
         ];
     }
 

@@ -13,14 +13,18 @@ use App\Http\Requests\UpdateUserRequest;
 
 class AdminController extends Controller
 {
-    // --- DASHBOARD (PUNYAMU + IMPORT YANG BENAR) ---
+    // --- DASHBOARD (REVISI: TAMBAH STATISTIK LENGKAP) ---
     public function dashboard()
     {
-        // 1. Statistik Kartu Atas
+        // 1. Statistik Lengkap
         $totalProjects = Project::count();
         $totalClients = Client::count();
         $totalUsers = User::count();
-        $activeProjects = Project::where('status', 'In Progress')->count();
+
+        // Ini variabel baru yang dibutuhkan view kamu:
+        $pendingProjects = Project::where('status', 'Pending')->count();
+        $onProgressProjects = Project::where('status', 'In Progress')->count();
+        $completedProjects = Project::where('status', 'Completed')->count();
 
         // 2. Data untuk Tabel (5 Proyek Terbaru)
         $recentProjects = Project::with('client')
@@ -32,7 +36,9 @@ class AdminController extends Controller
             'totalProjects',
             'totalClients',
             'totalUsers',
-            'activeProjects',
+            'pendingProjects',      // <-- Tambahan baru
+            'onProgressProjects',   // <-- Tambahan baru
+            'completedProjects',    // <-- Tambahan baru
             'recentProjects'
         ));
     }

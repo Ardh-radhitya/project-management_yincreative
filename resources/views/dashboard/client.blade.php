@@ -74,9 +74,6 @@
                                     <span class="bg-gradient-to-tl {{ $badgeColor }} px-2.5 text-xs rounded-1.8 py-1.4 inline-block whitespace-nowrap text-center align-baseline font-bold uppercase leading-none text-white">
                                         {{ $project->status }}
                                     </span>
-                                    <span class="bg-gradient-to-tl {{ $badgeColor }} px-2.5 text-xs rounded-1.8 py-1.4 inline-block whitespace-nowrap text-center align-baseline font-bold uppercase leading-none text-white">
-                                        {{ $project->status }}
-                                    </span>
                                 </td>
                                 <td class="p-2 text-center align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
                                     <span class="text-xs font-semibold leading-tight text-slate-400">

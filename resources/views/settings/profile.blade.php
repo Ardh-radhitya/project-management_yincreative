@@ -9,7 +9,7 @@
         <div class="p-3 mb-4 bg-green-100 text-green-700 rounded">{{ session('success') }}</div>
     @endif
 
-    <form action="{{ route('settings.profile.update') }}" method="POST" class="space-y-4">
+    <form action="{{ route('profile.update') }}" method="POST" class="space-y-4">
         @csrf
         @method('PUT')
 
