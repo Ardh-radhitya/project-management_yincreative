@@ -1,12 +1,18 @@
 /** @type {import('tailwindcss').Config} */
-    module.exports = {
+    export default {
     content: [
-    "./resources/**/*.blade.php",
-    "./resources/**/*.js",
-    "./resources/**/*.vue",
+        "./resources/**/*.blade.php",
+        "./resources/**/*.js",
+        "./resources/**/*.vue",
+        "./public/argon-template/**/*.js", // Scan JS template juga
     ],
     theme: {
-    extend: {},
+        extend: {
+        // Kalau Argon punya font khusus, definisikan di sini
+        fontFamily: {
+            sans: ['Open Sans', 'sans-serif'],
+        }
+        },
     },
     plugins: [],
-}
+    }

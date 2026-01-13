@@ -7,13 +7,13 @@
         "dev": "vite"
     },
     "devDependencies": {
-        "@tailwindcss/vite": "^4.1.11",
-        "autoprefixer": "^10.4.2",
+        "@tailwindcss/vite": "^4.1.18",
+        "autoprefixer": "^10.4.23",
         "axios": "^1.8.2",
         "concurrently": "^9.0.1",
         "laravel-vite-plugin": "^1.2.0",
-        "postcss": "^8.4.6",
-        "tailwindcss": "^3.0.19",
+        "postcss": "^8.5.6",
+        "tailwindcss": "^3.4.19",
         "vite": "^6.2.4"
     }
 }
