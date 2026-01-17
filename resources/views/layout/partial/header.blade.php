@@ -1,11 +1,14 @@
 {{-- ============================================= --}}
 {{-- 1. SIDEBAR (MENU KIRI) --}}
 {{-- ============================================= --}}
-<aside class="fixed inset-y-0 flex-wrap items-center justify-between block w-full p-0 my-4 overflow-y-auto antialiased transition-transform duration-200 -translate-x-full bg-white border-0 shadow-xl dark:shadow-none dark:bg-slate-850 max-w-64 ease-soft-in-out xl:ml-6 rounded-2xl xl:left-0 xl:translate-x-0" aria-expanded="false">
+{{-- TAMBAHAN: id="sidenav-main" dan z-index tinggi biar di atas konten --}}
+<aside id="sidenav-main" class="fixed inset-y-0 z-50 flex-wrap items-center justify-between block w-full p-0 my-4 overflow-y-auto antialiased transition-transform duration-200 -translate-x-full bg-white border-0 shadow-xl dark:shadow-none dark:bg-slate-850 max-w-64 ease-soft-in-out xl:ml-6 rounded-2xl xl:left-0 xl:translate-x-0" aria-expanded="false">
 
     {{-- LOGO BRAND --}}
     <div class="h-19">
-        <i class="absolute top-0 right-0 p-4 opacity-50 cursor-pointer fas fa-times dark:text-white text-slate-400 xl:hidden" sidenav-close></i>
+        {{-- TAMBAHAN: id="sidenav-close" buat tombol X di HP --}}
+        <i id="sidenav-close" class="absolute top-0 right-0 p-4 opacity-50 cursor-pointer fas fa-times dark:text-white text-slate-400 xl:hidden"></i>
+
         @php $dashboardRoute = route('login'); @endphp
         @auth
             @if(strtolower(Auth::user()->role->name) == 'admin')
@@ -39,10 +42,7 @@
                 @endif
             @endif
 
-            {{-- ======================================== --}}
-            {{-- BAGIAN AKUN (PROFILE & LOGOUT) - DISINI --}}
-            {{-- ======================================== --}}
-
+            {{-- BAGIAN AKUN (PROFILE & LOGOUT) --}}
             <li class="w-full mt-4">
                 <h6 class="pl-6 ml-2 text-xs font-bold leading-tight uppercase opacity-60">Akun Saya</h6>
             </li>
@@ -89,16 +89,19 @@
                 </h6>
             </nav>
 
-            {{-- Bagian Kanan Navbar KOSONG (Karena menu sudah pindah ke kiri) --}}
+            {{-- Bagian Kanan Navbar --}}
             <div class="flex items-center mt-2 grow sm:mt-0 sm:mr-6 md:mr-0 lg:flex lg:basis-auto">
                 <ul class="flex flex-row justify-end pl-0 mb-0 list-none md-max:w-full">
+
                     {{-- Burger Menu (Wajib ada buat HP) --}}
                     <li class="flex items-center pl-4 xl:hidden">
-                        <a href="javascript:;" class="block p-0 text-sm transition-all ease-nav-brand text-slate-500" sidenav-trigger>
+                        {{-- TAMBAHAN: id="sidenav-trigger" buat tombol Hamburger --}}
+                        <a href="javascript:;" class="block p-0 text-sm transition-all ease-nav-brand text-slate-500" id="sidenav-trigger">
                             <div class="w-4.5 overflow-hidden">
-                                <i class="ease-soft mb-0.75 relative block h-0.5 rounded-sm bg-slate-500 transition-all"></i>
-                                <i class="ease-soft mb-0.75 relative block h-0.5 rounded-sm bg-slate-500 transition-all"></i>
-                                <i class="ease-soft relative block h-0.5 rounded-sm bg-slate-500 transition-all"></i>
+                                {{-- NOTE: Kalau background biru, ganti bg-slate-500 jadi bg-gray-800 atau text-black biar kontras --}}
+                                <i class="ease-soft mb-0.75 relative block h-0.5 rounded-sm bg-slate-600 transition-all"></i>
+                                <i class="ease-soft mb-0.75 relative block h-0.5 rounded-sm bg-slate-600 transition-all"></i>
+                                <i class="ease-soft relative block h-0.5 rounded-sm bg-slate-600 transition-all"></i>
                             </div>
                         </a>
                     </li>
@@ -110,3 +113,41 @@
 
     {{-- KONTEN --}}
     <div class="w-full px-6 py-6 mx-auto">
+        {{-- ============================================= --}}
+    {{-- 3. SCRIPT PENYELAMAT MOBILE (Embed Langsung) --}}
+    {{-- ============================================= --}}
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Ambil elemen berdasarkan ID yang kita buat tadi
+            const sidenav = document.getElementById('sidenav-main');
+            const sidenavTrigger = document.getElementById('sidenav-trigger');
+            const sidenavClose = document.getElementById('sidenav-close');
+
+            // Fungsi Buka Sidebar
+            if (sidenavTrigger) {
+                sidenavTrigger.addEventListener('click', function() {
+                    // Hapus class translate (biar muncul)
+                    sidenav.classList.remove('-translate-x-full');
+                    // Tambahin shadow biar cakep
+                    sidenav.classList.add('shadow-xl');
+                });
+            }
+
+            // Fungsi Tutup Sidebar (Tombol X)
+            if (sidenavClose) {
+                sidenavClose.addEventListener('click', function() {
+                    sidenav.classList.add('-translate-x-full');
+                    sidenav.classList.remove('shadow-xl');
+                });
+            }
+
+            // Fungsi Tutup kalau klik di luar sidebar (Opsional, buat UX enak)
+            document.addEventListener('click', function(event) {
+                if (sidenav && !sidenav.contains(event.target) && !sidenavTrigger.contains(event.target)) {
+                    if (!sidenav.classList.contains('-translate-x-full')) {
+                        sidenav.classList.add('-translate-x-full');
+                    }
+                }
+            });
+        });
+    </script>
