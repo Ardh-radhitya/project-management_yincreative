@@ -44,27 +44,30 @@
                     @include('layout.partial.sidebar.sbclient')
                 @endif
             @endif
-
+            {{-- BAGIAN AKUN (PROFILE & LOGOUT) --}}
             <li class="w-full mt-4">
                 <h6 class="pl-6 ml-2 text-xs font-bold leading-tight uppercase opacity-60">Akun Saya</h6>
             </li>
 
+            {{-- Menu Profile --}}
             <li class="mt-0.5 w-full">
-                <a class="py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors" href="{{ route('profile.edit') }}">
+                <a class="py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors {{ Request::routeIs('profile.edit') ? 'bg-blue-500/13 rounded-lg font-semibold text-slate-700' : '' }}" href="{{ route('profile.edit') }}">
                     <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center stroke-0 text-center xl:p-2.5">
-                        <i class="relative top-0 text-sm leading-normal text-slate-700 fas fa-user-circle"></i>
+                        {{-- FIX: Ganti fas fa-user-circle jadi ni ni-single-02 --}}
+                        <i class="relative top-0 text-sm leading-normal text-slate-700 ni ni-single-02"></i>
                     </div>
                     <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Profil</span>
                 </a>
             </li>
 
-
+            {{-- Menu Logout --}}
             <li class="mt-0.5 w-full">
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
                     <button type="submit" class="w-full text-left py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors hover:bg-red-50 hover:text-red-600 rounded-lg cursor-pointer border-none bg-transparent">
                         <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center stroke-0 text-center xl:p-2.5">
-                            <i class="relative top-0 text-sm leading-normal text-red-600 fas fa-sign-out-alt"></i>
+                            {{-- FIX: Ganti fas fa-sign-out-alt jadi ni ni-user-run --}}
+                            <i class="relative top-0 text-sm leading-normal text-red-600 ni ni-user-run"></i>
                         </div>
                         <span class="ml-1 duration-300 opacity-100 pointer-events-none ease text-red-600 font-semibold">Logout</span>
                     </button>
