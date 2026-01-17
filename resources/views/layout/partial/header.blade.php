@@ -1,14 +1,18 @@
 {{-- ============================================= --}}
-{{-- 1. SIDEBAR (MENU KIRI) --}}
+{{-- 1. SIDEBAR WRAPPER (Z-INDEX TINGGI: 9999) --}}
 {{-- ============================================= --}}
-{{-- TAMBAHAN: id="sidenav-main" dan z-index tinggi biar di atas konten --}}
-<aside id="sidenav-main" class="fixed inset-y-0 z-50 flex-wrap items-center justify-between block w-full p-0 my-4 overflow-y-auto antialiased transition-transform duration-200 -translate-x-full bg-white border-0 shadow-xl dark:shadow-none dark:bg-slate-850 max-w-64 ease-soft-in-out xl:ml-6 rounded-2xl xl:left-0 xl:translate-x-0" aria-expanded="false">
+<aside id="sidenav-main"
+        class="fixed inset-y-0 left-0 z-[9999] flex-wrap items-center justify-between block w-full p-0 my-4 overflow-y-auto antialiased transition-transform duration-200 -translate-x-full bg-white border-0 shadow-xl dark:shadow-none dark:bg-slate-850 max-w-64 ease-soft-in-out xl:ml-6 rounded-2xl xl:translate-x-0"
+        style="z-index: 9999;">
 
-    {{-- LOGO BRAND --}}
+    {{-- LOGO BRAND & TOMBOL CLOSE --}}
     <div class="h-19">
-        {{-- TAMBAHAN: id="sidenav-close" buat tombol X di HP --}}
-        <i id="sidenav-close" class="absolute top-0 right-0 p-4 opacity-50 cursor-pointer fas fa-times dark:text-white text-slate-400 xl:hidden"></i>
+            {{-- TOMBOL CLOSE (X) - Muncul di HP doang (xl:hidden) --}}
+            <i class="absolute top-0 right-0 p-4 opacity-50 cursor-pointer fas fa-times dark:text-white text-slate-400 xl:hidden"
+            onclick="document.getElementById('sidenav-main').classList.add('-translate-x-full')">
+            </i>
 
+        {{-- LOGIC LINK DASHBOARD --}}
         @php $dashboardRoute = route('login'); @endphp
         @auth
             @if(strtolower(Auth::user()->role->name) == 'admin')
@@ -19,6 +23,7 @@
                 @php $dashboardRoute = route('dashboard.client'); @endphp
             @endif
         @endauth
+
         <a class="block px-8 py-6 m-0 text-size-sm whitespace-nowrap dark:text-white text-slate-700" href="{{ $dashboardRoute }}">
             <img src="{{ asset('argon-template/build/assets/img/logoyin.png') }}" class="inline h-full max-w-full transition-all duration-200 ease-nav-brand max-h-8" alt="main_logo" />
             <span class="ml-1 font-semibold transition-all duration-200 ease-nav-brand">Y.in Creative</span>
@@ -27,11 +32,9 @@
 
     <hr class="h-px mt-0 bg-transparent bg-gradient-horizontal-dark" />
 
-    {{-- LIST MENU SIDEBAR --}}
+    {{-- LIST MENU --}}
     <div class="items-center block w-auto max-h-screen overflow-auto h-sidenav grow basis-full">
         <ul class="flex flex-col pl-0 mb-0">
-
-            {{-- INCLUDE MENU UTAMA (Sesuai Role) --}}
             @if(Auth::check())
                 @if(strtolower(Auth::user()->role->name) == 'admin')
                     @include('layout.partial.sidebar.sbadmin')
@@ -42,14 +45,12 @@
                 @endif
             @endif
 
-            {{-- BAGIAN AKUN (PROFILE & LOGOUT) --}}
             <li class="w-full mt-4">
                 <h6 class="pl-6 ml-2 text-xs font-bold leading-tight uppercase opacity-60">Akun Saya</h6>
             </li>
 
-            {{-- Menu Profile --}}
             <li class="mt-0.5 w-full">
-                <a class="py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors {{ Request::routeIs('profile.edit') ? 'bg-blue-500/13 rounded-lg font-semibold text-slate-700' : '' }}" href="{{ route('profile.edit') }}">
+                <a class="py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors" href="{{ route('profile.edit') }}">
                     <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center stroke-0 text-center xl:p-2.5">
                         <i class="relative top-0 text-sm leading-normal text-slate-700 fas fa-user-circle"></i>
                     </div>
@@ -57,7 +58,7 @@
                 </a>
             </li>
 
-            {{-- Menu Logout --}}
+
             <li class="mt-0.5 w-full">
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
@@ -69,85 +70,47 @@
                     </button>
                 </form>
             </li>
-
         </ul>
     </div>
 </aside>
 
 
 {{-- ============================================= --}}
-{{-- 2. NAVBAR ATAS (Hanya Breadcrumb) --}}
+{{-- 2. MAIN CONTENT WRAPPER --}}
 {{-- ============================================= --}}
 <main class="relative h-full max-h-screen transition-all duration-200 ease-soft-in-out xl:ml-68 rounded-xl">
+
+    {{-- NAVBAR ATAS --}}
     <nav class="relative flex flex-wrap items-center justify-between px-0 py-2 mx-6 transition-all shadow-none duration-250 ease-soft-in rounded-2xl lg:flex-nowrap lg:justify-start" navbar-main navbar-scroll="true">
         <div class="flex items-center justify-between w-full px-4 py-1 mx-auto flex-wrap-inherit">
 
-            {{-- Breadcrumb --}}
+            {{-- BREADCRUMB --}}
             <nav aria-label="breadcrumb">
-                <h6 class="mb-0 font-bold capitalize">
-                    @yield('page-title', 'Dashboard')
-                </h6>
+                <h6 class="mb-0 font-bold capitalize">@yield('page-title', 'Dashboard')</h6>
             </nav>
 
-            {{-- Bagian Kanan Navbar --}}
+            {{-- BAGIAN KANAN (TOMBOL HAMBURGER) --}}
             <div class="flex items-center mt-2 grow sm:mt-0 sm:mr-6 md:mr-0 lg:flex lg:basis-auto">
                 <ul class="flex flex-row justify-end pl-0 mb-0 list-none md-max:w-full">
 
-                    {{-- Burger Menu (Wajib ada buat HP) --}}
+                    {{-- TOMBOL HAMBURGER --}}
+                    {{-- PERHATIKAN: xl:hidden (Hanya muncul di HP/Tablet, ilang di Desktop Besar) --}}
+                    {{-- ONCLICK: Langsung tembak ID sidebar --}}
                     <li class="flex items-center pl-4 xl:hidden">
-                        {{-- TAMBAHAN: id="sidenav-trigger" buat tombol Hamburger --}}
-                        <a href="javascript:;" class="block p-0 text-sm transition-all ease-nav-brand text-slate-500" id="sidenav-trigger">
+                        <a href="javascript:;" class="block p-0 text-sm transition-all ease-nav-brand text-slate-500"
+                        onclick="document.getElementById('sidenav-main').classList.remove('-translate-x-full')">
                             <div class="w-4.5 overflow-hidden">
-                                {{-- NOTE: Kalau background biru, ganti bg-slate-500 jadi bg-gray-800 atau text-black biar kontras --}}
                                 <i class="ease-soft mb-0.75 relative block h-0.5 rounded-sm bg-slate-600 transition-all"></i>
                                 <i class="ease-soft mb-0.75 relative block h-0.5 rounded-sm bg-slate-600 transition-all"></i>
                                 <i class="ease-soft relative block h-0.5 rounded-sm bg-slate-600 transition-all"></i>
                             </div>
                         </a>
                     </li>
+
                 </ul>
             </div>
-
         </div>
     </nav>
 
-    {{-- KONTEN --}}
+    {{-- KONTEN UTAMA --}}
     <div class="w-full px-6 py-6 mx-auto">
-        {{-- ============================================= --}}
-    {{-- 3. SCRIPT PENYELAMAT MOBILE (Embed Langsung) --}}
-    {{-- ============================================= --}}
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // Ambil elemen berdasarkan ID yang kita buat tadi
-            const sidenav = document.getElementById('sidenav-main');
-            const sidenavTrigger = document.getElementById('sidenav-trigger');
-            const sidenavClose = document.getElementById('sidenav-close');
-
-            // Fungsi Buka Sidebar
-            if (sidenavTrigger) {
-                sidenavTrigger.addEventListener('click', function() {
-                    // Hapus class translate (biar muncul)
-                    sidenav.classList.remove('-translate-x-full');
-                    // Tambahin shadow biar cakep
-                    sidenav.classList.add('shadow-xl');
-                });
-            }
-
-            // Fungsi Tutup Sidebar (Tombol X)
-            if (sidenavClose) {
-                sidenavClose.addEventListener('click', function() {
-                    sidenav.classList.add('-translate-x-full');
-                    sidenav.classList.remove('shadow-xl');
-                });
-            }
-
-            // Fungsi Tutup kalau klik di luar sidebar (Opsional, buat UX enak)
-            document.addEventListener('click', function(event) {
-                if (sidenav && !sidenav.contains(event.target) && !sidenavTrigger.contains(event.target)) {
-                    if (!sidenav.classList.contains('-translate-x-full')) {
-                        sidenav.classList.add('-translate-x-full');
-                    }
-                }
-            });
-        });
-    </script>
