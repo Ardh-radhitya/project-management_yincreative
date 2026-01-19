@@ -7,7 +7,9 @@
     <div class="p-6 pb-0 mb-0 bg-white border-b-0 border-b-solid rounded-t-2xl border-b-transparent">
         <div class="flex justify-between items-center">
             <h6 class="mb-0">Tabel Kategori Proyek</h6>
-            <a href="{{ route('categories.create') }}" class="btn-primary">Tambah Kategori</a>
+            <a href="{{ route('projects.create') }}" class="inline-block px-6 py-3 font-bold text-center text-white uppercase align-middle transition-all bg-blue-500 border-0 rounded-lg cursor-pointer shadow-md hover:shadow-lg hover:bg-blue-600 active:opacity-85">
+            + Tambah Kategori
+        </a>
         </div>
     </div>
     <div class="flex-auto px-0 pt-0 pb-2">

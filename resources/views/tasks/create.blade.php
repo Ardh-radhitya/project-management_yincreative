@@ -4,7 +4,7 @@
 
     @section('content')
     <div class="relative flex flex-col min-w-0 mb-6 break-words bg-white border-0 border-transparent border-solid shadow-soft-xl rounded-2xl bg-clip-border">
-        
+
         {{-- HEADER CARD --}}
         <div class="p-6 pb-0 mb-0 bg-white border-b-0 border-b-solid rounded-t-2xl border-b-transparent">
             <h6 class="font-bold text-slate-700">Tambah Tugas Baru untuk Proyek: <span class="text-purple-600">{{ $project->name }}</span></h6>
@@ -20,12 +20,12 @@
                     <label for="title" class="block mb-2 ml-1 text-xs font-bold text-slate-700 uppercase tracking-wide">
                         Judul Tugas
                     </label>
-                    <input type="text" 
-                        name="title" 
-                        id="title" 
-                        value="{{ old('title') }}" 
-                        placeholder="Contoh: Desain Database, Fix Bug Login..." 
-                        class="focus:shadow-primary-outline dark:bg-slate-850 dark:text-white text-sm leading-5.6 ease block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 outline-none transition-all placeholder:text-gray-500 focus:border-purple-500 focus:outline-none @error('title') border-red-500 @enderror" 
+                    <input type="text"
+                        name="title"
+                        id="title"
+                        value="{{ old('title') }}"
+                        placeholder="Contoh: Desain Database, Fix Bug Login..."
+                        class="focus:shadow-primary-outline dark:bg-slate-850 dark:text-white text-sm leading-5.6 ease block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 outline-none transition-all placeholder:text-gray-500 focus:border-purple-500 focus:outline-none @error('title') border-red-500 @enderror"
                         required />
                     @error('title')
                         <p class="mt-2 text-xs text-red-600 font-semibold">* {{ $message }}</p>
@@ -37,10 +37,10 @@
                     <label for="description" class="block mb-2 ml-1 text-xs font-bold text-slate-700 uppercase tracking-wide">
                         Deskripsi (Opsional)
                     </label>
-                    <textarea name="description" 
-                            id="description" 
-                            rows="4" 
-                            placeholder="Jelaskan detail tugas ini..." 
+                    <textarea name="description"
+                            id="description"
+                            rows="4"
+                            placeholder="Jelaskan detail tugas ini..."
                             class="focus:shadow-primary-outline dark:bg-slate-850 dark:text-white text-sm leading-5.6 ease block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 outline-none transition-all placeholder:text-gray-500 focus:border-purple-500 focus:outline-none @error('description') border-red-500 @enderror">{{ old('description') }}</textarea>
                     @error('description')
                         <p class="mt-2 text-xs text-red-600 font-semibold">* {{ $message }}</p>
@@ -49,15 +49,15 @@
 
                 {{-- 3. GRID SYSTEM (Status & Assigned To) --}}
                 <div class="grid grid-cols-1 gap-6 md:grid-cols-2 mb-6">
-                    
+
                     {{-- Dropdown Status --}}
                     <div>
                         <label for="status" class="block mb-2 ml-1 text-xs font-bold text-slate-700 uppercase tracking-wide">
                             Status Awal
                         </label>
                         <div class="relative">
-                            <select name="status" 
-                                    id="status" 
+                            <select name="status"
+                                    id="status"
                                     class="focus:shadow-primary-outline dark:bg-slate-850 dark:text-white text-sm leading-5.6 ease block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 outline-none transition-all focus:border-purple-500 focus:outline-none cursor-pointer @error('status') border-red-500 @enderror">
                                 <option value="To Do" {{ old('status', 'To Do') == 'To Do' ? 'selected' : '' }}>To Do</option>
                                 <option value="In Progress" {{ old('status') == 'In Progress' ? 'selected' : '' }}>In Progress</option>
@@ -79,8 +79,8 @@
                             Tugaskan Kepada (Opsional)
                         </label>
                         <div class="relative">
-                            <select name="assigned_to_user_id" 
-                                    id="assigned_to_user_id" 
+                            <select name="assigned_to_user_id"
+                                    id="assigned_to_user_id"
                                     class="focus:shadow-primary-outline dark:bg-slate-850 dark:text-white text-sm leading-5.6 ease block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 outline-none transition-all focus:border-purple-500 focus:outline-none cursor-pointer @error('assigned_to_user_id') border-red-500 @enderror">
                                 <option value="">-- Belum Ditugaskan --</option>
                                 @foreach ($teamMembers as $member)
@@ -102,16 +102,16 @@
 
                     {{-- 4. TOMBOL ACTION --}}
                 <div class="flex items-center justify-end gap-3 mt-8">
-                    
+
                     {{-- Tombol Batal (Paksa Warna Abu manual) --}}
-                    <a href="{{ route('projects.show', $project->id) }}" 
+                    <a href="{{ route('projects.show', $project->id) }}"
                     class="inline-block px-6 py-3 font-bold text-center text-white uppercase align-middle transition-all rounded-lg cursor-pointer leading-pro text-xs ease-soft-in tracking-tight-rem shadow-soft-md hover:scale-102 hover:shadow-soft-xs active:opacity-85"
                     style="background-color: #a0aec0;"> {{-- Kode warna Gray-500 --}}
                         Batal
                     </a>
 
                     {{-- Tombol Simpan (Paksa Gradient Ungu manual - Khas Argon) --}}
-                    <button type="submit" 
+                    <button type="submit"
                             class="inline-block px-6 py-3 font-bold text-center text-white uppercase align-middle transition-all rounded-lg cursor-pointer leading-pro text-xs ease-soft-in tracking-tight-rem shadow-soft-md hover:scale-102 hover:shadow-soft-xs active:opacity-85"
                             style="background-image: linear-gradient(310deg, #7928CA 0%, #FF0080 100%); border: none;">
                         Simpan Tugas

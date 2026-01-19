@@ -1,90 +1,145 @@
-@extends('layout.main')
+    @extends('layout.main')
 
-@section('content')
-<div class="flex flex-wrap -mx-3">
-    <div class="flex-none w-full max-w-full px-3">
-        <div class="relative flex flex-col min-w-0 mb-6 break-words bg-white border-0 border-transparent border-solid shadow-soft-xl rounded-2xl bg-clip-border">
-            <div class="p-6 pb-0 mb-0 bg-white border-b-0 border-b-solid rounded-t-2xl border-b-transparent">
-                <h6>Tambah Proyek Baru</h6>
-            </div>
-            <div class="flex-auto px-0 pt-0 pb-2">
-                <div class="p-6">
-                    <form action="{{ route('projects.store') }}" method="POST">
-                        @csrf
-                        <div class="mb-4">
-                            <label for="name" class="inline-block mb-2 ml-1 font-bold text-size-xs text-slate-700">Nama Proyek</label>
-                            <input type="text" name="name" id="name" value="{{ old('name') }}" placeholder="Masukkan Nama Proyek" class="form-input @error('name') border-red-500 @enderror" />
-                            @error('name')<p class="mt-2 text-sm text-red-600">{{ $message }}</p>@enderror
-                        </div>
-                        <div class="mb-4">
-                            <label for="client_id" class="inline-block mb-2 ml-1 font-bold text-size-xs text-slate-700">Klien</label>
-                            <select name="client_id" id="client_id" class="form-input @error('client_id') border-red-500 @enderror">
-                                <option value="">Pilih Klien</option>
-                                @foreach ($clients as $client)
-                                    <option value="{{ $client->id }}" {{ old('client_id') == $client->id ? 'selected' : '' }}>{{ $client->name }}</option>
-                                @endforeach
-                            </select>
-                            @error('client_id')<p class="mt-2 text-sm text-red-600">{{ $message }}</p>@enderror
-                        </div>
-                        <div class="mb-4">
-                            <label for="category_id" class="inline-block mb-2 ml-1 font-bold text-size-xs text-slate-700">Kategori</label>
-                            <select name="category_id" id="category_id" class="form-input @error('category_id') border-red-500 @enderror">
-                                <option value="">Pilih Kategori</option>
-                                @foreach ($categories as $category)
-                                    <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
-                                @endforeach
-                            </select>
-                            @error('category_id')<p class="mt-2 text-sm text-red-600">{{ $message }}</p>@enderror
-                        </div>
-                        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                            <div class="mb-4">
-                                <label for="start_date" class="inline-block mb-2 ml-1 font-bold text-size-xs text-slate-700">Tanggal Mulai</label>
-                                <input type="date" name="start_date" id="start_date" value="{{ old('start_date') }}" class="form-input @error('start_date') border-red-500 @enderror" />
-                                @error('start_date')<p class="mt-2 text-sm text-red-600">{{ $message }}</p>@enderror
-                            </div>
-                            <div class="mb-4">
-                                <label for="end_date" class="inline-block mb-2 ml-1 font-bold text-size-xs text-slate-700">Tanggal Selesai</label>
-                                <input type="date" name="end_date" id="end_date" value="{{ old('end_date') }}" class="form-input @error('end_date') border-red-500 @enderror" />
-                                @error('end_date')<p class="mt-2 text-sm text-red-600">{{ $message }}</p>@enderror
-                            </div>
-                        </div>
-                        <div class="mb-4">
-                            <label for="status" class="inline-block mb-2 ml-1 font-bold text-size-xs text-slate-700">Status</label>
-                            <select name="status" id="status" class="form-input @error('status') border-red-500 @enderror">
-                                <option value="">Pilih Status</option>
-                                <option value="Pending" {{ old('status') == 'Pending' ? 'selected' : '' }}>Pending</option>
-                                <option value="In Progress" {{ old('status') == 'In Progress' ? 'selected' : '' }}>In Progress</option>
-                                <option value="Completed" {{ old('status') == 'Completed' ? 'selected' : '' }}>Completed</option>
-                            </select>
-                            @error('status')<p class="mt-2 text-sm text-red-600">{{ $message }}</p>@enderror
-                        </div>
-                        <div class="mb-4">
-                            <label for="description" class="inline-block mb-2 ml-1 font-bold text-size-xs text-slate-700">Deskripsi (Opsional)</label>
-                            <textarea name="description" id="description" rows="4" placeholder="Masukkan Deskripsi Proyek" class="form-input @error('description') border-red-500 @enderror">{{ old('description') }}</textarea>
-                            @error('description')<p class="mt-2 text-sm text-red-600">{{ $message }}</p>@enderror
-                        </div>
-                        <div class="flex justify-end mt-6">
-                            <a href="{{ route('projects.index') }}" class="btn-secondary">Batal</a>
-                            <button type="submit" class="btn-primary">Simpan</button>
-                        </div>
-                    </form>
+    @section('page-title', 'Tambah Proyek Baru')
+
+    @section('content')
+    <div class="relative flex flex-col min-w-0 mb-6 break-words bg-white border-0 border-transparent border-solid shadow-soft-xl rounded-2xl bg-clip-border">
+
+        {{-- HEADER CARD --}}
+        <div class="p-6 pb-0 mb-0 bg-white border-b-0 border-b-solid rounded-t-2xl border-b-transparent">
+            <h6 class="font-bold text-slate-700">Form Pengajuan Proyek Baru</h6>
+        </div>
+
+        <div class="flex-auto p-6">
+            <form action="{{ route('projects.store') }}" method="POST">
+                @csrf
+
+                {{-- 1. NAMA PROYEK --}}
+                <div class="mb-6">
+                    <label for="name" class="block mb-2 ml-1 text-xs font-bold text-slate-700 uppercase tracking-wide">
+                        Nama Proyek
+                    </label>
+                    <input type="text"
+                        name="name"
+                        id="name"
+                        value="{{ old('name') }}"
+                        placeholder="Contoh: Website E-Commerce, Desain Logo..."
+                        class="focus:shadow-primary-outline dark:bg-slate-850 dark:text-white text-sm leading-5.6 ease block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 outline-none transition-all placeholder:text-gray-500 focus:border-purple-500 focus:outline-none @error('name') border-red-500 @enderror"
+                        required />
+                    @error('name')
+                        <p class="mt-2 text-xs text-red-600 font-semibold">* {{ $message }}</p>
+                    @enderror
                 </div>
-            </div>
+
+                {{-- 2. GRID KLIEN & KATEGORI (2 Kolom) --}}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+
+                    {{-- Dropdown Klien --}}
+                    <div>
+                        <label for="client_id" class="block mb-2 ml-1 text-xs font-bold text-slate-700 uppercase tracking-wide">
+                            Klien
+                        </label>
+                        <div class="relative">
+                            <select name="client_id" id="client_id" class="focus:shadow-primary-outline dark:bg-slate-850 dark:text-white text-sm leading-5.6 ease block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 outline-none transition-all focus:border-purple-500 focus:outline-none cursor-pointer">
+                                <option value="">-- Pilih Klien --</option>
+                                @foreach ($clients as $client)
+                                    <option value="{{ $client->id }}" {{ old('client_id') == $client->id ? 'selected' : '' }}>
+                                        {{ $client->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-700">
+                                <i class="fas fa-chevron-down text-xs"></i>
+                            </div>
+                        </div>
+                        @error('client_id') <p class="mt-2 text-xs text-red-600 font-semibold">* {{ $message }}</p> @enderror
+                    </div>
+
+                    {{-- Dropdown Kategori --}}
+                    <div>
+                        <label for="category_id" class="block mb-2 ml-1 text-xs font-bold text-slate-700 uppercase tracking-wide">
+                            Kategori
+                        </label>
+                        <div class="relative">
+                            <select name="category_id" id="category_id" class="focus:shadow-primary-outline dark:bg-slate-850 dark:text-white text-sm leading-5.6 ease block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 outline-none transition-all focus:border-purple-500 focus:outline-none cursor-pointer">
+                                <option value="">-- Pilih Kategori --</option>
+                                @foreach ($categories as $category)
+                                    <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
+                                        {{ $category->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-700">
+                                <i class="fas fa-chevron-down text-xs"></i>
+                            </div>
+                        </div>
+                        @error('category_id') <p class="mt-2 text-xs text-red-600 font-semibold">* {{ $message }}</p> @enderror
+                    </div>
+                </div>
+
+                {{-- 3. GRID TANGGAL (2 Kolom) --}}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <label for="start_date" class="block mb-2 ml-1 text-xs font-bold text-slate-700 uppercase tracking-wide">
+                            Tanggal Mulai
+                        </label>
+                        <input type="date" name="start_date" id="start_date" value="{{ old('start_date') }}" class="focus:shadow-primary-outline dark:bg-slate-850 dark:text-white text-sm leading-5.6 ease block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 outline-none transition-all focus:border-purple-500 focus:outline-none" />
+                        @error('start_date') <p class="mt-2 text-xs text-red-600 font-semibold">* {{ $message }}</p> @enderror
+                    </div>
+
+                    <div>
+                        <label for="end_date" class="block mb-2 ml-1 text-xs font-bold text-slate-700 uppercase tracking-wide">
+                            Tanggal Selesai
+                        </label>
+                        <input type="date" name="end_date" id="end_date" value="{{ old('end_date') }}" class="focus:shadow-primary-outline dark:bg-slate-850 dark:text-white text-sm leading-5.6 ease block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 outline-none transition-all focus:border-purple-500 focus:outline-none" />
+                        @error('end_date') <p class="mt-2 text-xs text-red-600 font-semibold">* {{ $message }}</p> @enderror
+                    </div>
+                </div>
+
+                {{-- 4. STATUS --}}
+                <div class="mb-6">
+                    <label for="status" class="block mb-2 ml-1 text-xs font-bold text-slate-700 uppercase tracking-wide">
+                        Status Awal
+                    </label>
+                    <div class="relative">
+                        <select name="status" id="status" class="focus:shadow-primary-outline dark:bg-slate-850 dark:text-white text-sm leading-5.6 ease block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 outline-none transition-all focus:border-purple-500 focus:outline-none cursor-pointer">
+                            <option value="Pending" {{ old('status') == 'Pending' ? 'selected' : '' }}>Pending</option>
+                            <option value="In Progress" {{ old('status') == 'In Progress' ? 'selected' : '' }}>In Progress</option>
+                            <option value="Completed" {{ old('status') == 'Completed' ? 'selected' : '' }}>Completed</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-700">
+                            <i class="fas fa-chevron-down text-xs"></i>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- 5. DESKRIPSI --}}
+                <div class="mb-6">
+                    <label for="description" class="block mb-2 ml-1 text-xs font-bold text-slate-700 uppercase tracking-wide">
+                        Deskripsi (Opsional)
+                    </label>
+                    <textarea name="description" id="description" rows="4" placeholder="Jelaskan detail proyek ini..." class="focus:shadow-primary-outline dark:bg-slate-850 dark:text-white text-sm leading-5.6 ease block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 outline-none transition-all placeholder:text-gray-500 focus:border-purple-500 focus:outline-none">{{ old('description') }}</textarea>
+                </div>
+
+                {{-- 6. TOMBOL ACTION --}}
+                <div class="flex items-center justify-end gap-3 mt-8">
+
+                    {{-- Tombol Batal --}}
+                    <a href="{{ route('projects.index') }}"
+                    class="inline-block px-6 py-3 font-bold text-center text-white uppercase align-middle transition-all rounded-lg cursor-pointer leading-pro text-xs ease-soft-in tracking-tight-rem shadow-soft-md hover:scale-102 hover:shadow-soft-xs active:opacity-85"
+                    style="background-color: #a0aec0;">
+                        Batal
+                    </a>
+
+                    {{-- Tombol Simpan --}}
+                    <button type="submit"
+                            class="inline-block px-6 py-3 font-bold text-center text-white uppercase align-middle transition-all rounded-lg cursor-pointer leading-pro text-xs ease-soft-in tracking-tight-rem shadow-soft-md hover:scale-102 hover:shadow-soft-xs active:opacity-85"
+                            style="background-image: linear-gradient(310deg, #7928CA 0%, #FF0080 100%); border: none;">
+                        Simpan Proyek
+                    </button>
+                </div>
+
+            </form>
         </div>
     </div>
-</div>
-@endsection
-
-@push('styles')   {{--biar gausah tulis ulang css --}}
-<style>
-    .form-input {
-        @apply focus:shadow-soft-primary-outline text-size-sm leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 transition-all focus:border-fuchsia-300 focus:outline-none focus:transition-shadow;
-    }
-    .btn-primary {
-        @apply inline-block px-6 py-3 font-bold text-center text-white uppercase align-middle transition-all bg-transparent border-0 rounded-lg cursor-pointer active:opacity-85 hover:scale-102 hover:shadow-soft-xs leading-pro text-size-xs ease-soft-in tracking-tight-soft shadow-soft-md bg-150 bg-x-25 bg-gradient-cyan hover:border-slate-700 hover:bg-slate-700 hover:text-white;
-    }
-    .btn-secondary {
-        @apply inline-block px-6 py-3 mr-3 font-bold text-center uppercase align-middle transition-all bg-gray-200 border-0 rounded-lg cursor-pointer hover:scale-102 active:opacity-85 hover:shadow-soft-xs leading-pro text-size-xs ease-soft-in tracking-tight-soft shadow-soft-md bg-150 bg-x-25 text-slate-800;
-    }
-</style>
-@endpush
+    @endsection
