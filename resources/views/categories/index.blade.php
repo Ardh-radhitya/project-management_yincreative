@@ -29,15 +29,24 @@
                                 <h6 class="mb-0 text-size-sm leading-normal">{{ $category->name }}</h6>
                             </div>
                         </td>
-                        <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
-                            <div class="flex items-center justify-center">
-                                <a href="{{ route('categories.edit', $category->id) }}" class="btn-action-edit mr-2">Edit</a>
-                                <form action="{{ route('categories.destroy', $category->id) }}" method="POST" onsubmit="return confirm('Anda yakin?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn-action-delete">Hapus</button>
-                                </form>
-                            </div>
+                        <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap shadow-transparent text-center">
+                            {{-- Edit Category --}}
+                            <a href="{{ route('categories.edit', $category->id) }}"
+                            class="inline-block text-center align-middle transition-all cursor-pointer leading-pro ease-soft-in tracking-tight-rem shadow-soft-xs hover:scale-102 hover:shadow-soft-md active:opacity-85"
+                            style="background-color: #344767; color: white; padding: 6px 14px; border-radius: 8px; font-size: 11px; font-weight: 700; text-transform: uppercase; text-decoration: none; margin-right: 4px;">
+                                Edit
+                            </a>
+
+                            {{-- Delete Category --}}
+                            <form action="{{ route('categories.destroy', $category->id) }}" method="POST" style="display: inline-block;" onsubmit="return confirm('Hapus kategori ini? Project yang pakai kategori ini mungkin akan terdampak.');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit"
+                                        class="inline-block text-center align-middle transition-all cursor-pointer leading-pro ease-soft-in tracking-tight-rem shadow-soft-xs hover:scale-102 hover:shadow-soft-md active:opacity-85"
+                                        style="background-color: #f5365c; color: white; padding: 6px 14px; border-radius: 8px; font-size: 11px; font-weight: 700; text-transform: uppercase; border: none;">
+                                    Hapus
+                                </button>
+                            </form>
                         </td>
                     </tr>
                     @empty

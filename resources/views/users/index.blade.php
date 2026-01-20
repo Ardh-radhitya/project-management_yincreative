@@ -80,25 +80,25 @@
                             <span class="font-semibold leading-tight text-xs text-slate-400">{{ $user->created_at->format('d/m/Y') }}</span>
                         </td>
 
-                        {{-- KOLOM AKSI --}}
-                        <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
-                            <div class="flex items-center justify-center">
-                                {{-- Tombol Edit --}}
-                                <a href="{{ route('users.edit', $user->id) }}" class="mr-2 font-bold text-xs text-blue-500 hover:text-blue-700 uppercase" style="cursor: pointer;">
-                                    Edit
-                                </a>
+                        <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap shadow-transparent text-center">
+                            {{-- TOMBOL EDIT (Style Abu-abu Gelap) --}}
+                            <a href="{{ route('users.edit', $user->id) }}"
+                            class="inline-block text-center align-middle transition-all cursor-pointer leading-pro ease-soft-in tracking-tight-rem shadow-soft-xs hover:scale-102 hover:shadow-soft-md active:opacity-85"
+                            style="background-color: #344767; color: white; padding: 6px 14px; border-radius: 8px; font-size: 11px; font-weight: 700; text-transform: uppercase; text-decoration: none; margin-right: 4px;">
+                                Edit
+                            </a>
 
-                                {{-- Tombol Hapus --}}
-                                @if(auth()->user()->id !== $user->id)
-                                <form action="{{ route('users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('Hapus user {{ $user->name }}?');" style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="font-bold text-xs text-red-500 hover:text-red-700 uppercase border-0 bg-transparent p-0" style="cursor: pointer;">
-                                        Hapus
-                                    </button>
-                                </form>
-                                @endif
-                            </div>
+                            {{-- TOMBOL HAPUS (Style Merah) --}}
+                            <form action="{{ route('users.destroy', $user->id) }}" method="POST" style="display: inline-block;" onsubmit="return confirm('Yakin ingin menghapus user ini?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit"
+                                        class="inline-block text-center align-middle transition-all cursor-pointer leading-pro ease-soft-in tracking-tight-rem shadow-soft-xs hover:scale-102 hover:shadow-soft-md active:opacity-85"
+                                        style="background-color: #f5365c; color: white; padding: 6px 14px; border-radius: 8px; font-size: 11px; font-weight: 700; text-transform: uppercase; border: none;">
+                                    Hapus
+                                </button>
+                            </form>
+
                         </td>
                     </tr>
                     @empty

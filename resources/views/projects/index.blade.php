@@ -51,15 +51,24 @@
                         <td class="p-2 text-center align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
                             <span class="font-semibold leading-tight text-size-xs text-slate-400">{{ \Carbon\Carbon::parse($project->end_date)->format('d/m/Y') }}</span>
                         </td>
-                        <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
-                            <div class="flex items-center justify-center">
-                                <a href="{{ route('projects.edit', $project->id) }}" class="btn-action-edit mr-2"> Edit </a>
-                                <form action="{{ route('projects.destroy', $project->id) }}" method="POST" onsubmit="return confirm('Anda yakin ingin menghapus proyek ini?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn-action-delete"> Hapus </button>
-                                </form>
-                            </div>
+                        <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap shadow-transparent text-center">
+                            {{-- Edit Project --}}
+                            <a href="{{ route('projects.edit', $project->id) }}"
+                            class="inline-block text-center align-middle transition-all cursor-pointer leading-pro ease-soft-in tracking-tight-rem shadow-soft-xs hover:scale-102 hover:shadow-soft-md active:opacity-85"
+                            style="background-color: #344767; color: white; padding: 6px 14px; border-radius: 8px; font-size: 11px; font-weight: 700; text-transform: uppercase; text-decoration: none; margin-right: 4px;">
+                                Edit
+                            </a>
+
+                            {{-- Delete Project --}}
+                            <form action="{{ route('projects.destroy', $project->id) }}" method="POST" style="display: inline-block;" onsubmit="return confirm('Yakin ingin menghapus project ini secara permanen?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit"
+                                        class="inline-block text-center align-middle transition-all cursor-pointer leading-pro ease-soft-in tracking-tight-rem shadow-soft-xs hover:scale-102 hover:shadow-soft-md active:opacity-85"
+                                        style="background-color: #f5365c; color: white; padding: 6px 14px; border-radius: 8px; font-size: 11px; font-weight: 700; text-transform: uppercase; border: none;">
+                                    Hapus
+                                </button>
+                            </form>
                         </td>
                     </tr>
                     @empty
