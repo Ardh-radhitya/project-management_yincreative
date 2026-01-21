@@ -100,20 +100,20 @@
                     </div>
                 </div>
 
-                    {{-- 4. TOMBOL ACTION --}}
+                {{-- 4. TOMBOL ACTION --}}
                 <div class="flex items-center justify-end gap-3 mt-8">
 
-                    {{-- Tombol Batal (Paksa Warna Abu manual) --}}
+                    {{-- Tombol Batal (Abu Terang - Konsisten) --}}
+                    {{-- Pastikan route-nya bener, misal: projects.show atau tasks.index --}}
                     <a href="{{ route('projects.show', $project->id) }}"
-                    class="inline-block px-6 py-3 font-bold text-center text-white uppercase align-middle transition-all rounded-lg cursor-pointer leading-pro text-xs ease-soft-in tracking-tight-rem shadow-soft-md hover:scale-102 hover:shadow-soft-xs active:opacity-85"
-                    style="background-color: #a0aec0;"> {{-- Kode warna Gray-500 --}}
+                    class="inline-block px-6 py-3 font-bold text-center text-gray-700 uppercase align-middle transition-all bg-gray-200 rounded-lg cursor-pointer leading-pro text-xs ease-soft-in shadow-soft-md hover:scale-102 hover:shadow-soft-xs hover:bg-gray-300">
                         Batal
                     </a>
 
-                    {{-- Tombol Simpan (Paksa Gradient Ungu manual - Khas Argon) --}}
+                    {{-- Tombol Simpan (Biru Solid - Konsisten) --}}
                     <button type="submit"
-                            class="inline-block px-6 py-3 font-bold text-center text-white uppercase align-middle transition-all rounded-lg cursor-pointer leading-pro text-xs ease-soft-in tracking-tight-rem shadow-soft-md hover:scale-102 hover:shadow-soft-xs active:opacity-85"
-                            style="background-image: linear-gradient(310deg, #7928CA 0%, #FF0080 100%); border: none;">
+                            class="inline-block px-6 py-3 font-bold text-center text-white uppercase align-middle transition-all bg-blue-500 rounded-lg cursor-pointer leading-pro text-xs ease-soft-in shadow-soft-md hover:scale-102 hover:shadow-soft-xs"
+                            style="background-color: #5e72e4; border: none;">
                         Simpan Tugas
                     </button>
 

@@ -51,11 +51,17 @@
                 </div>
             </div>
 
-            <div class="flex justify-end mt-6">
-                {{-- Tombol Batal kembali ke halaman detail proyek --}}
-                <a href="{{ route('projects.show', $project->id) }}" class="btn-secondary">Batal</a>
-                <button type="submit" class="btn-primary">Simpan Perubahan</button>
-            </div>
+            {{-- Tombol Aksi --}}
+                        <div class="flex items-center justify-end mt-6">
+                            {{-- Tombol Batal (Abu Terang) --}}
+                            <a href="{{ route('projects.show') }}" class="inline-block px-6 py-3 mr-3 font-bold text-center text-gray-700 uppercase align-middle transition-all bg-gray-200 rounded-lg cursor-pointer leading-pro text-xs ease-soft-in shadow-soft-md hover:scale-102 hover:shadow-soft-xs hover:bg-gray-300">
+                                Batal
+                            </a>
+                            {{-- Tombol Simpan (Biru Solid) --}}
+                            <button type="submit" class="inline-block px-6 py-3 font-bold text-center text-white uppercase align-middle transition-all bg-blue-500 rounded-lg cursor-pointer leading-pro text-xs ease-soft-in shadow-soft-md hover:scale-102 hover:shadow-soft-xs" style="background-color: #5e72e4;">
+                                Simpan Perubahan
+                            </button>
+                        </div>
         </form>
     </div>
 </div>

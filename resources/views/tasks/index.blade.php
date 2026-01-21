@@ -5,7 +5,7 @@
 @section('content')
 <div class="w-full px-6 py-6 mx-auto">
 
-    {{-- BAGIAN 1: INFO PROYEK (Header Card) --}}
+    {{-- BAGIAN 1: INFO PROYEK --}}
     <div class="flex flex-wrap -mx-3 mb-6">
         <div class="w-full max-w-full px-3">
             <div class="relative flex flex-col min-w-0 break-words bg-white border-0 shadow-soft-xl rounded-2xl bg-clip-border">
@@ -13,15 +13,13 @@
                     <div class="flex flex-wrap justify-between items-start">
                         <div class="w-full lg:w-3/4">
                             <h4 class="font-bold text-slate-700 mb-1 flex items-center gap-2">
-                                {{-- Hapus <i class="fas fa-rocket..."></i> --}}
                                 {{ $project->name }}
                             </h4>
-                            <p class="text-sm text-slate-500 mb-4 ml-7">
+                            <p class="text-sm text-slate-500 mb-4 ml-0">
                                 Kategori: <span class="font-semibold text-slate-700">{{ $project->category->name ?? 'Umum' }}</span> &nbsp;•&nbsp;
                                 Klien: <span class="font-semibold text-slate-700">{{ $project->client->name ?? '-' }}</span>
                             </p>
-
-                            <div class="p-4 bg-slate-50 rounded-xl border border-slate-100 mb-4 ml-7">
+                            <div class="p-4 bg-slate-50 rounded-xl border border-slate-100 mb-4">
                                 <h6 class="text-xs font-bold uppercase text-slate-400 mb-2">Deskripsi Proyek</h6>
                                 <p class="text-sm text-slate-600 leading-relaxed mb-0">
                                     {{ $project->description ?? 'Tidak ada deskripsi khusus.' }}
@@ -29,7 +27,6 @@
                             </div>
                         </div>
                         <div class="w-full lg:w-1/4 text-right flex flex-col items-end">
-                            {{-- Status Proyek Badge (Gradient Style) --}}
                             @php
                                 $badgeStyle = match($project->status) {
                                     'Pending'     => 'background: linear-gradient(310deg, #a0aec0 0%, #a8b8d8 100%); color: #fff;',
@@ -41,7 +38,6 @@
                             <span style="{{ $badgeStyle }}" class="px-4 py-2 rounded-lg font-bold text-xs uppercase shadow-md mb-4 inline-block tracking-wide">
                                 {{ $project->status }}
                             </span>
-
                             <a href="{{ route('projects.tasks.create', $project->id) }}" class="inline-block px-6 py-3 font-bold text-center text-white uppercase align-middle transition-all bg-gradient-to-tl from-blue-500 to-violet-500 border-0 rounded-lg cursor-pointer shadow-md hover:scale-105 hover:shadow-lg active:opacity-85">
                                 <i class="fas fa-plus mr-1"></i> Tambah Tugas
                             </a>
@@ -58,7 +54,6 @@
             <div class="relative flex flex-col min-w-0 break-words bg-white border-0 shadow-soft-xl rounded-2xl bg-clip-border">
                 <div class="p-6 pb-0 mb-0 bg-white border-b-0 rounded-t-2xl">
                     <h6 class="font-bold text-slate-700 flex items-center gap-2">
-                        {{-- Hapus <i class="fas fa-tasks..."></i> --}}
                         Daftar Tugas & Progress
                     </h6>
                 </div>
@@ -77,7 +72,6 @@
                             <tbody>
                                 @forelse ($tasks as $task)
                                 <tr class="hover:bg-gray-50 transition-colors">
-                                    {{-- NAMA TUGAS --}}
                                     <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
                                         <div class="flex px-2 py-1">
                                             <div class="flex flex-col justify-center">
@@ -85,8 +79,6 @@
                                             </div>
                                         </div>
                                     </td>
-
-                                    {{-- ASSIGNEE --}}
                                     <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
                                         <div class="flex items-center gap-2">
                                             @if($task->user)
@@ -97,63 +89,35 @@
                                             @endif
                                         </div>
                                     </td>
-
-                                    {{-- STATUS DROPDOWN (Enhanced) --}}
                                     <td class="p-2 text-center align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
                                         <form action="{{ route('tasks.updateStatus', $task->id) }}" method="POST" class="inline-block">
-                                            @csrf
-                                            @method('PATCH')
-                                            <select name="status" onchange="this.form.submit()"
-                                                class="text-xs font-bold uppercase py-1 px-3 rounded-lg border-0 shadow-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-                                                style="
-                                                    @if($task->status == 'Done') background-color: #dcfce7; color: #166534; /* Green */
-                                                    @elseif($task->status == 'In Progress') background-color: #dbeafe; color: #1e40af; /* Blue */
-                                                    @else background-color: #f1f5f9; color: #475569; /* Slate */ @endif
-                                                ">
+                                            @csrf @method('PATCH')
+                                            <select name="status" onchange="this.form.submit()" class="text-xs font-bold uppercase py-1 px-3 rounded-lg border-0 shadow-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" style="@if($task->status == 'Done') background-color: #dcfce7; color: #166534; @elseif($task->status == 'In Progress') background-color: #dbeafe; color: #1e40af; @else background-color: #f1f5f9; color: #475569; @endif">
                                                 <option class="bg-white text-slate-600" value="To Do" {{ $task->status == 'To Do' ? 'selected' : '' }}>To Do</option>
                                                 <option class="bg-white text-slate-600" value="In Progress" {{ $task->status == 'In Progress' ? 'selected' : '' }}>In Progress</option>
                                                 <option class="bg-white text-slate-600" value="Done" {{ $task->status == 'Done' ? 'selected' : '' }}>Done</option>
                                             </select>
                                         </form>
                                     </td>
-
-                                    {{-- DISKUSI BUTTON --}}
                                     <td class="p-2 text-center align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
-                                        <button type="button" onclick="toggleModal('task-modal-{{ $task->id }}')"
-                                            class="inline-block px-3 py-1 mb-0 font-bold text-center uppercase align-middle transition-all bg-transparent border border-blue-400 border-solid rounded-lg cursor-pointer leading-pro text-xxs hover:scale-102 active:opacity-85 hover:shadow-sm text-blue-500 hover:bg-blue-500 hover:text-white">
+                                        <button type="button" onclick="openTaskModal('task-modal-{{ $task->id }}')" class="inline-block px-3 py-1 mb-0 font-bold text-center uppercase align-middle transition-all bg-transparent border border-blue-400 border-solid rounded-lg cursor-pointer leading-pro text-xxs hover:scale-102 active:opacity-85 hover:shadow-sm text-blue-500 hover:bg-blue-500 hover:text-white">
                                             <i class="fas fa-comments mr-1"></i> {{ $task->progress->count() }}
                                         </button>
                                     </td>
-                                    {{-- GANTI BAGIAN KOLOM AKSI INI --}}
                                     <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
                                         <div class="flex items-center justify-center gap-2">
-
-                                            {{-- Tombol EDIT (Teks Biru Tebal) --}}
-                                            <a href="{{ route('tasks.edit', $task->id) }}"
-                                            class="inline-block font-bold text-xs text-blue-500 hover:text-blue-700 uppercase p-2 border border-transparent hover:bg-blue-50 rounded transition-all">
-                                                Edit
-                                            </a>
-
-                                            {{-- Tombol HAPUS (Teks Merah Tebal) --}}
+                                            <a href="{{ route('tasks.edit', $task->id) }}" class="inline-block font-bold text-xs text-blue-500 hover:text-blue-700 uppercase p-2 border border-transparent hover:bg-blue-50 rounded transition-all">Edit</a>
                                             <form action="{{ route('tasks.destroy', $task->id) }}" method="POST" class="inline-block m-0" onsubmit="return confirm('Hapus tugas ini?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit"
-                                                    class="inline-block font-bold text-xs text-red-500 hover:text-red-700 uppercase p-2 border border-transparent bg-transparent cursor-pointer hover:bg-red-50 rounded transition-all">
-                                                    Hapus
-                                                </button>
+                                                @csrf @method('DELETE')
+                                                <button type="submit" class="inline-block font-bold text-xs text-red-500 hover:text-red-700 uppercase p-2 border border-transparent bg-transparent cursor-pointer hover:bg-red-50 rounded transition-all">Hapus</button>
                                             </form>
-
                                         </div>
                                     </td>
                                 </tr>
                                 @empty
                                 <tr>
                                     <td colspan="5" class="p-8 text-center text-slate-400">
-                                        <div class="flex flex-col items-center">
-                                            <i class="fas fa-clipboard-list text-3xl mb-2 opacity-50"></i>
-                                            <p class="text-sm">Belum ada tugas di proyek ini.</p>
-                                        </div>
+                                        <div class="flex flex-col items-center"><i class="fas fa-clipboard-list text-3xl mb-2 opacity-50"></i><p class="text-sm">Belum ada tugas.</p></div>
                                     </td>
                                 </tr>
                                 @endforelse
@@ -166,85 +130,134 @@
     </div>
 </div>
 
-{{-- BAGIAN 3: MODAL POPUP (Keep Existing Logic, Minor Style Tweaks) --}}
-@push('modals')
-    @foreach($tasks as $task)
-        <div id="task-modal-{{ $task->id }}" class="hidden fixed inset-0 z-[9999] flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm transition-opacity duration-300">
+{{-- MODAL AREA --}}
+@foreach($tasks as $task)
+    {{-- Kita kasih ID unik dan class 'modal-diskusi' buat penanda --}}
+    <div id="task-modal-{{ $task->id }}" class="modal-diskusi hidden">
+        {{-- Overlay Hitam (Backdrop) --}}
+        <div class="modal-backdrop" onclick="closeTaskModal('task-modal-{{ $task->id }}')"></div>
 
-            <div class="bg-white rounded-2xl shadow-2xl flex flex-col relative w-full max-w-2xl mx-4 overflow-hidden transform transition-all scale-100" style="max-height: 85vh;">
+        {{-- Konten Modal --}}
+        <div class="modal-content">
+            {{-- Header --}}
+            <div class="p-4 border-b bg-slate-50 flex justify-between items-center">
+                <div>
+                    <h5 class="font-bold text-slate-800 text-lg mb-0">{{ $task->title }}</h5>
+                    <div class="flex items-center gap-2 mt-1 text-xs text-slate-500">
+                        <span class="px-2 py-0.5 rounded bg-slate-200 font-bold text-slate-700">{{ $task->status }}</span>
+                    </div>
+                </div>
+                <button type="button" onclick="closeTaskModal('task-modal-{{ $task->id }}')" class="text-slate-400 hover:text-red-500 text-3xl leading-none px-2">&times;</button>
+            </div>
 
-                {{-- Header Modal --}}
-                <div class="p-4 border-b bg-slate-50 flex justify-between items-center">
-                    <div>
-                        <h5 class="font-bold text-slate-800 text-lg mb-0">{{ $task->title }}</h5>
-                        <div class="flex items-center gap-2 mt-1 text-xs text-slate-500">
-                            <span class="px-2 py-0.5 rounded bg-slate-200 font-bold text-slate-700">{{ $task->status }}</span>
-                            <span>•</span>
-                            <span>Assigned to: <b>{{ $task->user->name ?? 'Unassigned' }}</b></span>
+            {{-- Body --}}
+            <div class="p-6 bg-slate-100 overflow-y-auto flex-1 space-y-4" style="max-height: 60vh;">
+                @if($task->description)
+                    <div class="p-4 bg-white rounded-xl shadow-sm border border-slate-200 mb-6">
+                        <h6 class="text-xs font-bold uppercase text-slate-400 mb-2">Deskripsi Tugas</h6>
+                        <p class="text-sm text-slate-700">{{ $task->description }}</p>
+                    </div>
+                @endif
+
+                <h6 class="text-xs font-bold uppercase text-slate-400 mb-2 flex items-center gap-2">
+                    <i class="fas fa-history"></i> Riwayat & Diskusi
+                </h6>
+
+                @forelse($task->progress as $prog)
+                    <div class="flex gap-3">
+                        <div class="flex-shrink-0">
+                            <img src="https://ui-avatars.com/api/?name={{ urlencode($prog->user->name) }}&background=random&color=fff&size=32" class="w-8 h-8 rounded-full shadow-sm">
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex justify-between items-baseline mb-1">
+                                <span class="text-sm font-bold text-slate-700">{{ $prog->user->name ?? 'Unknown' }}</span>
+                                <span class="text-xs text-slate-400">{{ $prog->created_at->format('d M H:i') }}</span>
+                            </div>
+                            <div class="bg-white p-3 rounded-lg rounded-tl-none border border-slate-200 shadow-sm text-sm text-slate-600">
+                                {{ $prog->progress_note }}
+                            </div>
                         </div>
                     </div>
-                    <button type="button" onclick="toggleModal('task-modal-{{ $task->id }}')" class="text-slate-400 hover:text-slate-600 text-2xl leading-none px-2">&times;</button>
-                </div>
+                @empty
+                    <div class="text-center py-6 text-slate-400 text-sm">Belum ada aktivitas diskusi.</div>
+                @endforelse
+            </div>
 
-                {{-- Body (Chat) --}}
-                <div class="p-6 bg-slate-100 overflow-y-auto flex-1 space-y-4">
-                    @if($task->description)
-                        <div class="p-4 bg-white rounded-xl shadow-sm border border-slate-200 mb-6">
-                            <h6 class="text-xs font-bold uppercase text-slate-400 mb-2">Deskripsi Tugas</h6>
-                            <p class="text-sm text-slate-700">{{ $task->description }}</p>
-                        </div>
-                    @endif
-
-                    <h6 class="text-xs font-bold uppercase text-slate-400 mb-2 flex items-center gap-2">
-                        <i class="fas fa-history"></i> Riwayat & Diskusi
-                    </h6>
-
-                    @forelse($task->progress as $prog)
-                        <div class="flex gap-3">
-                            <div class="flex-shrink-0">
-                                <img src="https://ui-avatars.com/api/?name={{ urlencode($prog->user->name) }}&background=random&color=fff&size=32" class="w-8 h-8 rounded-full shadow-sm">
-                            </div>
-                            <div class="flex-1">
-                                <div class="flex justify-between items-baseline mb-1">
-                                    <span class="text-sm font-bold text-slate-700">{{ $prog->user->name ?? 'Unknown' }}</span>
-                                    <span class="text-xs text-slate-400">{{ $prog->created_at->format('d M H:i') }}</span>
-                                </div>
-                                <div class="bg-white p-3 rounded-lg rounded-tl-none border border-slate-200 shadow-sm text-sm text-slate-600">
-                                    {{ $prog->progress_note }}
-                                </div>
-                            </div>
-                        </div>
-                    @empty
-                        <div class="text-center py-6 text-slate-400 text-sm">Belum ada aktivitas diskusi.</div>
-                    @endforelse
-                </div>
-
-                {{-- Footer (Input) --}}
-                <div class="p-4 bg-white border-t">
-                    <form action="{{ route('tasks.progress.store', $task->id) }}" method="POST" class="flex gap-2">
-                        @csrf
-                        <input type="text" name="progress_note" class="flex-1 p-3 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500" placeholder="Ketik pesan atau update progress..." required autocomplete="off">
-                        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                    </form>
-                </div>
+            {{-- Footer --}}
+            <div class="p-4 bg-white border-t z-10">
+                <form action="{{ route('tasks.progress.store', $task->id) }}" method="POST" class="flex gap-2">
+                    @csrf
+                    <input type="text" name="progress_note" class="flex-1 p-3 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500" placeholder="Ketik pesan..." required autocomplete="off">
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </form>
             </div>
         </div>
-    @endforeach
+    </div>
+@endforeach
 
-    <script>
-        function toggleModal(modalID) {
-            const modal = document.getElementById(modalID);
-            if (modal.classList.contains('hidden')) {
-                modal.classList.remove('hidden');
-                modal.style.display = 'flex';
-            } else {
-                modal.classList.add('hidden');
-                modal.style.display = 'none';
-            }
+{{-- SCRIPT JURUS PAKSA (HARDCORE STYLE) --}}
+<script>
+    function openTaskModal(modalID) {
+        let modal = document.getElementById(modalID);
+
+        // 1. PINDAHIN KE BODY (WAJIB)
+        if (modal && modal.parentNode !== document.body) {
+            document.body.appendChild(modal);
         }
-    </script>
-@endpush
+
+        // 2. RESET CLASS BIAR GAK CRASH SAMA TAILWIND
+        modal.classList.remove('hidden');
+
+        // 3. PAKSA CSS LANGSUNG DI ELEMENT (OVERRIDE SEGALA MACEM STYLE BAWAAN)
+        // Container Utama
+        modal.style.position = 'fixed';
+        modal.style.top = '0';
+        modal.style.left = '0';
+        modal.style.width = '100vw';
+        modal.style.height = '100vh';
+        modal.style.zIndex = '9999999'; // Z-Index Jebol Langit
+        modal.style.display = 'flex';
+        modal.style.alignItems = 'center';
+        modal.style.justifyContent = 'center';
+
+        // Backdrop
+        let backdrop = modal.querySelector('.modal-backdrop');
+        if(backdrop) {
+            backdrop.style.position = 'absolute';
+            backdrop.style.top = '0';
+            backdrop.style.left = '0';
+            backdrop.style.width = '100%';
+            backdrop.style.height = '100%';
+            backdrop.style.backgroundColor = 'rgba(0,0,0,0.5)';
+            backdrop.style.backdropFilter = 'blur(4px)';
+            backdrop.style.zIndex = '-1'; // Di belakang konten
+        }
+
+        // Konten (Kotak Putih)
+        let content = modal.querySelector('.modal-content');
+        if(content) {
+            content.style.position = 'relative';
+            content.style.zIndex = '10';
+            content.style.width = '100%';
+            content.style.maxWidth = '600px';
+            content.style.backgroundColor = 'white';
+            content.style.borderRadius = '16px';
+            content.style.boxShadow = '0 25px 50px -12px rgba(0, 0, 0, 0.25)';
+            content.style.display = 'flex';
+            content.style.flexDirection = 'column';
+            content.style.overflow = 'hidden';
+            content.style.margin = '20px';
+        }
+    }
+
+    function closeTaskModal(modalID) {
+        let modal = document.getElementById(modalID);
+        if (modal) {
+            modal.style.display = 'none'; // Sembunyiin lagi
+        }
+    }
+</script>
 
 @endsection
