@@ -50,7 +50,6 @@ class ProjectController extends Controller
     {
         $clients = Client::all();
         // --- TES DULU DI SINI ---
-        dd($clients);
         // Kalau browser jadi layar hitam isi data Client, berarti Controller AMAN.
         // Kalau errornya tetep "Undefined variable", berarti Controller ini GAK DIPANGGIL.
         $categories = ProjectCategory::all();

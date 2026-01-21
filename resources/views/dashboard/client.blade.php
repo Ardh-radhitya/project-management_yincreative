@@ -36,7 +36,7 @@
                     <a href="{{ route('client.projects.create') }}"
                     class="inline-block px-6 py-3 font-bold text-center text-white uppercase align-middle transition-all border-0 rounded-lg cursor-pointer leading-pro text-xs ease-soft-in tracking-tight-rem shadow-soft-md hover:scale-102 active:opacity-85 hover:shadow-soft-xs"
                     style="background-image: linear-gradient(310deg, #2152ff 0%, #21d4fd 100%);">
-                        <i class="fas fa-plus mr-1"></i> Ajukan Proyek Baru
+                        <i class="fas fa-plus mr-1"></i>Ajukan Proyek Baru
                     </a>
                 </div>
 
