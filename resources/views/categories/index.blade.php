@@ -3,13 +3,15 @@
 @section('content')
 
 
-<div class="relative flex flex-col min-w-0 mb-6 break-words bg-white border-0 border-transparent border-solid shadow-soft-xl rounded-2xl bg-clip-border">
-    <div class="p-6 pb-0 mb-0 bg-white border-b-0 border-b-solid rounded-t-2xl border-b-transparent">
-        <div class="flex justify-between items-center">
-            <h6 class="mb-0">Tabel Kategori Proyek</h6>
-            <a href="{{ route('projects.create') }}" class="inline-block px-6 py-3 font-bold text-center text-white uppercase align-middle transition-all bg-blue-500 border-0 rounded-lg cursor-pointer shadow-md hover:shadow-lg hover:bg-blue-600 active:opacity-85">
-            + Tambah Kategori
-        </a>
+    <div class="relative flex flex-col min-w-0 mb-6 break-words bg-white border-0 border-transparent border-solid shadow-soft-xl rounded-2xl bg-clip-border">
+        <div class="p-6 pb-0 mb-0 bg-white border-b-0 border-b-solid rounded-t-2xl border-b-transparent">
+            <div class="flex justify-between items-center">
+                <h6 class="mb-0">Tabel Kategori Proyek</h6>
+                <div class="w-full max-w-full px-3 text-right shrink-0 md:w-6/12 md:flex-none">
+                <a href="{{ route('categories.create') }}" class="inline-block px-6 py-3 font-bold text-center text-white uppercase align-middle transition-all bg-transparent rounded-lg cursor-pointer leading-pro text-xs ease-soft-in shadow-soft-md bg-150 bg-x-25 hover:scale-102 active:opacity-85 hover:shadow-soft-xs" style="background-color: #5e72e4;">
+                    + Tambah Kategori
+                </a>
+            </div>
         </div>
     </div>
     <div class="flex-auto px-0 pt-0 pb-2">
