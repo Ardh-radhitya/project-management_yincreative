@@ -104,14 +104,24 @@
                                             <i class="fas fa-comments mr-1"></i> {{ $task->progress->count() }}
                                         </button>
                                     </td>
-                                    <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
-                                        <div class="flex items-center justify-center gap-2">
-                                            <a href="{{ route('tasks.edit', $task->id) }}" class="inline-block font-bold text-xs text-blue-500 hover:text-blue-700 uppercase p-2 border border-transparent hover:bg-blue-50 rounded transition-all">Edit</a>
-                                            <form action="{{ route('tasks.destroy', $task->id) }}" method="POST" class="inline-block m-0" onsubmit="return confirm('Hapus tugas ini?');">
-                                                @csrf @method('DELETE')
-                                                <button type="submit" class="inline-block font-bold text-xs text-red-500 hover:text-red-700 uppercase p-2 border border-transparent bg-transparent cursor-pointer hover:bg-red-50 rounded transition-all">Hapus</button>
-                                            </form>
-                                        </div>
+                                    <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap shadow-transparent text-center">
+                                        {{-- Edit Project --}}
+                                        <a href="{{ route('tasks.edit', $project->id) }}"
+                                        class="inline-block text-center align-middle transition-all cursor-pointer leading-pro ease-soft-in tracking-tight-rem shadow-soft-xs hover:scale-102 hover:shadow-soft-md active:opacity-85"
+                                        style="background-color: #344767; color: white; padding: 6px 14px; border-radius: 8px; font-size: 11px; font-weight: 700; text-transform: uppercase; text-decoration: none; margin-right: 4px;">
+                                            Edit
+                                        </a>
+
+                                        {{-- Delete Project --}}
+                                        <form action="{{ route('tasks.destroy', $project->id) }}" method="POST" style="display: inline-block;" onsubmit="return confirm('Hapus tugas ini?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit"
+                                                    class="inline-block text-center align-middle transition-all cursor-pointer leading-pro ease-soft-in tracking-tight-rem shadow-soft-xs hover:scale-102 hover:shadow-soft-md active:opacity-85"
+                                                    style="background-color: #f5365c; color: white; padding: 6px 14px; border-radius: 8px; font-size: 11px; font-weight: 700; text-transform: uppercase; border: none;">
+                                                Hapus
+                                            </button>
+                                        </form>
                                     </td>
                                 </tr>
                                 @empty
