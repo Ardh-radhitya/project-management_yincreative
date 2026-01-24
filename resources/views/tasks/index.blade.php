@@ -72,6 +72,7 @@
                             <tbody>
                                 @forelse ($tasks as $task)
                                 <tr class="hover:bg-gray-50 transition-colors">
+                                    {{-- JUDUL --}}
                                     <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
                                         <div class="flex px-2 py-1">
                                             <div class="flex flex-col justify-center">
@@ -79,6 +80,8 @@
                                             </div>
                                         </div>
                                     </td>
+
+                                    {{-- ASSIGNED --}}
                                     <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
                                         <div class="flex items-center gap-2">
                                             @if($task->user)
@@ -89,6 +92,8 @@
                                             @endif
                                         </div>
                                     </td>
+
+                                    {{-- STATUS --}}
                                     <td class="p-2 text-center align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
                                         <form action="{{ route('tasks.updateStatus', $task->id) }}" method="POST" class="inline-block">
                                             @csrf @method('PATCH')
@@ -99,29 +104,35 @@
                                             </select>
                                         </form>
                                     </td>
+
+                                    {{-- DISKUSI --}}
                                     <td class="p-2 text-center align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
                                         <button type="button" onclick="openTaskModal('task-modal-{{ $task->id }}')" class="inline-block px-3 py-1 mb-0 font-bold text-center uppercase align-middle transition-all bg-transparent border border-blue-400 border-solid rounded-lg cursor-pointer leading-pro text-xxs hover:scale-102 active:opacity-85 hover:shadow-sm text-blue-500 hover:bg-blue-500 hover:text-white">
                                             <i class="fas fa-comments mr-1"></i> {{ $task->progress->count() }}
                                         </button>
                                     </td>
-                                    <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap shadow-transparent text-center">
-                                        {{-- Edit Project --}}
-                                        <a href="{{ route('tasks.edit', $project->id) }}"
-                                        class="inline-block text-center align-middle transition-all cursor-pointer leading-pro ease-soft-in tracking-tight-rem shadow-soft-xs hover:scale-102 hover:shadow-soft-md active:opacity-85"
-                                        style="background-color: #344767; color: white; padding: 6px 14px; border-radius: 8px; font-size: 11px; font-weight: 700; text-transform: uppercase; text-decoration: none; margin-right: 4px;">
-                                            Edit
-                                        </a>
 
-                                        {{-- Delete Project --}}
-                                        <form action="{{ route('tasks.destroy', $project->id) }}" method="POST" style="display: inline-block;" onsubmit="return confirm('Hapus tugas ini?');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit"
-                                                    class="inline-block text-center align-middle transition-all cursor-pointer leading-pro ease-soft-in tracking-tight-rem shadow-soft-xs hover:scale-102 hover:shadow-soft-md active:opacity-85"
-                                                    style="background-color: #f5365c; color: white; padding: 6px 14px; border-radius: 8px; font-size: 11px; font-weight: 700; text-transform: uppercase; border: none;">
-                                                Hapus
-                                            </button>
-                                        </form>
+                                    {{-- AKSI (TOMBOL RAPI) --}}
+                                    <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap shadow-transparent text-center">
+                                        <div class="flex items-center justify-center gap-2">
+                                            {{-- Tombol Edit: Pakai style Argon (Biru Tua/Slate) --}}
+                                            <a href="{{ route('tasks.edit', $task->id) }}"
+                                               class="inline-block px-3 py-2 font-bold text-center text-white uppercase align-middle transition-all rounded-lg cursor-pointer leading-pro text-xs ease-soft-in shadow-soft-md hover:scale-102 hover:shadow-soft-xs"
+                                               style="background-color: #344767;">
+                                                <i class="fas fa-edit mr-1"></i> Edit
+                                            </a>
+
+                                            {{-- Tombol Hapus: Pakai style Argon (Merah) --}}
+                                            <form action="{{ route('tasks.destroy', $task->id) }}" method="POST" class="inline-block m-0" onsubmit="return confirm('Hapus tugas ini?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit"
+                                                        class="inline-block px-3 py-2 font-bold text-center text-white uppercase align-middle transition-all rounded-lg cursor-pointer leading-pro text-xs ease-soft-in shadow-soft-md hover:scale-102 hover:shadow-soft-xs"
+                                                        style="background-color: #f5365c; border: none;">
+                                                    <i class="fas fa-trash mr-1"></i> Hapus
+                                                </button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                                 @empty
@@ -140,16 +151,11 @@
     </div>
 </div>
 
-{{-- MODAL AREA --}}
+{{-- MODAL AREA (Script Sakti) --}}
 @foreach($tasks as $task)
-    {{-- Kita kasih ID unik dan class 'modal-diskusi' buat penanda --}}
     <div id="task-modal-{{ $task->id }}" class="modal-diskusi hidden">
-        {{-- Overlay Hitam (Backdrop) --}}
         <div class="modal-backdrop" onclick="closeTaskModal('task-modal-{{ $task->id }}')"></div>
-
-        {{-- Konten Modal --}}
         <div class="modal-content">
-            {{-- Header --}}
             <div class="p-4 border-b bg-slate-50 flex justify-between items-center">
                 <div>
                     <h5 class="font-bold text-slate-800 text-lg mb-0">{{ $task->title }}</h5>
@@ -159,8 +165,6 @@
                 </div>
                 <button type="button" onclick="closeTaskModal('task-modal-{{ $task->id }}')" class="text-slate-400 hover:text-red-500 text-3xl leading-none px-2">&times;</button>
             </div>
-
-            {{-- Body --}}
             <div class="p-6 bg-slate-100 overflow-y-auto flex-1 space-y-4" style="max-height: 60vh;">
                 @if($task->description)
                     <div class="p-4 bg-white rounded-xl shadow-sm border border-slate-200 mb-6">
@@ -168,11 +172,9 @@
                         <p class="text-sm text-slate-700">{{ $task->description }}</p>
                     </div>
                 @endif
-
                 <h6 class="text-xs font-bold uppercase text-slate-400 mb-2 flex items-center gap-2">
                     <i class="fas fa-history"></i> Riwayat & Diskusi
                 </h6>
-
                 @forelse($task->progress as $prog)
                     <div class="flex gap-3">
                         <div class="flex-shrink-0">
@@ -192,8 +194,6 @@
                     <div class="text-center py-6 text-slate-400 text-sm">Belum ada aktivitas diskusi.</div>
                 @endforelse
             </div>
-
-            {{-- Footer --}}
             <div class="p-4 bg-white border-t z-10">
                 <form action="{{ route('tasks.progress.store', $task->id) }}" method="POST" class="flex gap-2">
                     @csrf
@@ -207,32 +207,23 @@
     </div>
 @endforeach
 
-{{-- SCRIPT JURUS PAKSA (HARDCORE STYLE) --}}
 <script>
     function openTaskModal(modalID) {
         let modal = document.getElementById(modalID);
-
-        // 1. PINDAHIN KE BODY (WAJIB)
         if (modal && modal.parentNode !== document.body) {
             document.body.appendChild(modal);
         }
-
-        // 2. RESET CLASS BIAR GAK CRASH SAMA TAILWIND
         modal.classList.remove('hidden');
-
-        // 3. PAKSA CSS LANGSUNG DI ELEMENT (OVERRIDE SEGALA MACEM STYLE BAWAAN)
-        // Container Utama
         modal.style.position = 'fixed';
         modal.style.top = '0';
         modal.style.left = '0';
         modal.style.width = '100vw';
         modal.style.height = '100vh';
-        modal.style.zIndex = '9999999'; // Z-Index Jebol Langit
+        modal.style.zIndex = '9999999';
         modal.style.display = 'flex';
         modal.style.alignItems = 'center';
         modal.style.justifyContent = 'center';
 
-        // Backdrop
         let backdrop = modal.querySelector('.modal-backdrop');
         if(backdrop) {
             backdrop.style.position = 'absolute';
@@ -242,10 +233,9 @@
             backdrop.style.height = '100%';
             backdrop.style.backgroundColor = 'rgba(0,0,0,0.5)';
             backdrop.style.backdropFilter = 'blur(4px)';
-            backdrop.style.zIndex = '-1'; // Di belakang konten
+            backdrop.style.zIndex = '-1';
         }
 
-        // Konten (Kotak Putih)
         let content = modal.querySelector('.modal-content');
         if(content) {
             content.style.position = 'relative';
@@ -265,7 +255,7 @@
     function closeTaskModal(modalID) {
         let modal = document.getElementById(modalID);
         if (modal) {
-            modal.style.display = 'none'; // Sembunyiin lagi
+            modal.style.display = 'none';
         }
     }
 </script>
