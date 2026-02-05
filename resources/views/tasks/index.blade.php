@@ -26,6 +26,36 @@
                                 </p>
                             </div>
                         </div>
+                        {{-- BAGIAN LAMPIRAN FILE (Updated) --}}
+                        <div class="mt-4">
+                            <h6 class="text-xs font-bold uppercase text-slate-400 mb-2 flex items-center gap-2">
+                                <i class="fas fa-paperclip"></i> Lampiran File
+                            </h6>
+
+                            @if($project->file_path)
+                                <div class="flex items-center p-3 bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                                    {{-- Icon File --}}
+                                    <div class="mr-4 bg-blue-100 p-3 rounded-lg text-blue-600">
+                                        <i class="fas fa-file-alt text-xl"></i>
+                                    </div>
+
+                                    {{-- Info & Tombol --}}
+                                    <div class="flex-1 overflow-hidden">
+                                        <p class="text-sm font-semibold text-slate-700 mb-1 truncate">
+                                            Dokumen Proyek
+                                        </p>
+                                        <a href="{{ asset('storage/' . $project->file_path) }}" target="_blank"
+                                        class="inline-block px-4 py-2 text-xs font-bold text-white uppercase bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors">
+                                            <i class="fas fa-download mr-1"></i> Download / Lihat
+                                        </a>
+                                    </div>
+                                </div>
+                            @else
+                                <div class="p-3 bg-slate-50 border border-dashed border-slate-300 rounded-lg text-center">
+                                    <span class="text-sm text-slate-400 italic">Tidak ada file yang dilampirkan oleh klien.</span>
+                                </div>
+                            @endif
+                        </div>
                         <div class="w-full lg:w-1/4 text-right flex flex-col items-end">
                             @php
                                 $badgeStyle = match($project->status) {
