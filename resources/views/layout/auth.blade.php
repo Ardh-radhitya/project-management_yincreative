@@ -36,7 +36,7 @@
 
                         <div navbar-menu class="items-center flex-grow transition-all duration-500 lg-max:overflow-hidden ease lg-max:max-h-0 basis-full lg:flex lg:basis-auto">
                             <ul class="flex flex-col pl-0 mx-auto mb-0 list-none lg:flex-row xl:ml-auto">
-                                <li>
+                                {{-- <li>
                                     <a class="block px-4 py-2 mr-2 font-normal transition-all ease-in-out lg-max:opacity-0 duration-250 text-sm text-slate-700 lg:px-2" href="{{ route('register') }}">
                                         <i class="mr-1 fas fa-user-circle opacity-60"></i>
                                         Sign Up
@@ -47,7 +47,7 @@
                                         <i class="mr-1 fas fa-key opacity-60"></i>
                                         Sign In
                                     </a>
-                                </li>
+                                </li> --}}
                             </ul>
                         </div>
                     </div>

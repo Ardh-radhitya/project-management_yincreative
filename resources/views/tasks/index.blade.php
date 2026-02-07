@@ -26,7 +26,8 @@
                                 </p>
                             </div>
                         </div>
-                        {{-- BAGIAN LAMPIRAN FILE (Updated) --}}
+
+                        {{-- BAGIAN LAMPIRAN FILE --}}
                         <div class="mt-4">
                             <h6 class="text-xs font-bold uppercase text-slate-400 mb-2 flex items-center gap-2">
                                 <i class="fas fa-paperclip"></i> Lampiran File
@@ -34,12 +35,9 @@
 
                             @if($project->file_path)
                                 <div class="flex items-center p-3 bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                                    {{-- Icon File --}}
                                     <div class="mr-4 bg-blue-100 p-3 rounded-lg text-blue-600">
                                         <i class="fas fa-file-alt text-xl"></i>
                                     </div>
-
-                                    {{-- Info & Tombol --}}
                                     <div class="flex-1 overflow-hidden">
                                         <p class="text-sm font-semibold text-slate-700 mb-1 truncate">
                                             Dokumen Proyek
@@ -56,6 +54,7 @@
                                 </div>
                             @endif
                         </div>
+
                         <div class="w-full lg:w-1/4 text-right flex flex-col items-end">
                             @php
                                 $badgeStyle = match($project->status) {
@@ -68,9 +67,13 @@
                             <span style="{{ $badgeStyle }}" class="px-4 py-2 rounded-lg font-bold text-xs uppercase shadow-md mb-4 inline-block tracking-wide">
                                 {{ $project->status }}
                             </span>
+
+                            {{-- LOGIC GATE TOMBOL TAMBAH TUGAS --}}
+                            @if($project->status != 'Completed')
                             <a href="{{ route('projects.tasks.create', $project->id) }}" class="inline-block px-6 py-3 font-bold text-center text-white uppercase align-middle transition-all bg-gradient-to-tl from-blue-500 to-violet-500 border-0 rounded-lg cursor-pointer shadow-md hover:scale-105 hover:shadow-lg active:opacity-85">
                                 <i class="fas fa-plus mr-1"></i> Tambah Tugas
                             </a>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -102,7 +105,6 @@
                             <tbody>
                                 @forelse ($tasks as $task)
                                 <tr class="hover:bg-gray-50 transition-colors">
-                                    {{-- JUDUL --}}
                                     <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
                                         <div class="flex px-2 py-1">
                                             <div class="flex flex-col justify-center">
@@ -110,8 +112,6 @@
                                             </div>
                                         </div>
                                     </td>
-
-                                    {{-- ASSIGNED --}}
                                     <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
                                         <div class="flex items-center gap-2">
                                             @if($task->user)
@@ -122,46 +122,42 @@
                                             @endif
                                         </div>
                                     </td>
-
-                                    {{-- STATUS --}}
                                     <td class="p-2 text-center align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
+                                        {{-- Dropdown Status dikunci jika Proyek Selesai --}}
                                         <form action="{{ route('tasks.updateStatus', $task->id) }}" method="POST" class="inline-block">
                                             @csrf @method('PATCH')
-                                            <select name="status" onchange="this.form.submit()" class="text-xs font-bold uppercase py-1 px-3 rounded-lg border-0 shadow-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" style="@if($task->status == 'Done') background-color: #dcfce7; color: #166534; @elseif($task->status == 'In Progress') background-color: #dbeafe; color: #1e40af; @else background-color: #f1f5f9; color: #475569; @endif">
+                                            <select name="status" onchange="this.form.submit()" @if($project->status == 'Completed') disabled @endif class="text-xs font-bold uppercase py-1 px-3 rounded-lg border-0 shadow-sm cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" style="@if($task->status == 'Done') background-color: #dcfce7; color: #166534; @elseif($task->status == 'In Progress') background-color: #dbeafe; color: #1e40af; @else background-color: #f1f5f9; color: #475569; @endif">
                                                 <option class="bg-white text-slate-600" value="To Do" {{ $task->status == 'To Do' ? 'selected' : '' }}>To Do</option>
                                                 <option class="bg-white text-slate-600" value="In Progress" {{ $task->status == 'In Progress' ? 'selected' : '' }}>In Progress</option>
                                                 <option class="bg-white text-slate-600" value="Done" {{ $task->status == 'Done' ? 'selected' : '' }}>Done</option>
                                             </select>
                                         </form>
                                     </td>
-
-                                    {{-- DISKUSI --}}
                                     <td class="p-2 text-center align-middle bg-transparent border-b whitespace-nowrap shadow-transparent">
                                         <button type="button" onclick="openTaskModal('task-modal-{{ $task->id }}')" class="inline-block px-3 py-1 mb-0 font-bold text-center uppercase align-middle transition-all bg-transparent border border-blue-400 border-solid rounded-lg cursor-pointer leading-pro text-xxs hover:scale-102 active:opacity-85 hover:shadow-sm text-blue-500 hover:bg-blue-500 hover:text-white">
                                             <i class="fas fa-comments mr-1"></i> {{ $task->progress->count() }}
                                         </button>
                                     </td>
-
-                                    {{-- AKSI (TOMBOL RAPI) --}}
                                     <td class="p-2 align-middle bg-transparent border-b whitespace-nowrap shadow-transparent text-center">
                                         <div class="flex items-center justify-center gap-2">
-                                            {{-- Tombol Edit: Pakai style Argon (Biru Tua/Slate) --}}
+                                            {{-- AKSI DIKUNCI JIKA PROYEK SELESAI --}}
+                                            @if($project->status != 'Completed')
                                             <a href="{{ route('tasks.edit', $task->id) }}"
                                                class="inline-block px-3 py-2 font-bold text-center text-white uppercase align-middle transition-all rounded-lg cursor-pointer leading-pro text-xs ease-soft-in shadow-soft-md hover:scale-102 hover:shadow-soft-xs"
                                                style="background-color: #344767;">
                                                 <i class="fas fa-edit mr-1"></i> Edit
                                             </a>
-
-                                            {{-- Tombol Hapus: Pakai style Argon (Merah) --}}
                                             <form action="{{ route('tasks.destroy', $task->id) }}" method="POST" class="inline-block m-0" onsubmit="return confirm('Hapus tugas ini?');">
-                                                @csrf
-                                                @method('DELETE')
+                                                @csrf @method('DELETE')
                                                 <button type="submit"
                                                         class="inline-block px-3 py-2 font-bold text-center text-white uppercase align-middle transition-all rounded-lg cursor-pointer leading-pro text-xs ease-soft-in shadow-soft-md hover:scale-102 hover:shadow-soft-xs"
                                                         style="background-color: #f5365c; border: none;">
                                                     <i class="fas fa-trash mr-1"></i> Hapus
                                                 </button>
                                             </form>
+                                            @else
+                                            <span class="text-xxs font-bold text-slate-400 italic">No Action Available</span>
+                                            @endif
                                         </div>
                                     </td>
                                 </tr>
@@ -181,7 +177,7 @@
     </div>
 </div>
 
-{{-- MODAL AREA (Script Sakti) --}}
+{{-- MODAL AREA --}}
 @foreach($tasks as $task)
     <div id="task-modal-{{ $task->id }}" class="modal-diskusi hidden">
         <div class="modal-backdrop" onclick="closeTaskModal('task-modal-{{ $task->id }}')"></div>
@@ -225,6 +221,8 @@
                 @endforelse
             </div>
             <div class="p-4 bg-white border-t z-10">
+                {{-- DISKUSI DIKUNCI JIKA SELESAI --}}
+                @if($project->status != 'Completed')
                 <form action="{{ route('tasks.progress.store', $task->id) }}" method="POST" class="flex gap-2">
                     @csrf
                     <input type="text" name="progress_note" class="flex-1 p-3 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500" placeholder="Ketik pesan..." required autocomplete="off">
@@ -232,6 +230,9 @@
                         <i class="fas fa-paper-plane"></i>
                     </button>
                 </form>
+                @else
+                <p class="text-center text-xs text-slate-400 italic py-2">Proyek telah selesai. Diskusi dinonaktifkan.</p>
+                @endif
             </div>
         </div>
     </div>

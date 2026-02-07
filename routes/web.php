@@ -68,8 +68,8 @@ Route::middleware(['auth'])->group(function () {
         // Client Management (Resource)
         Route::resource('clients', ClientController::class);
     });
-
-
+    // lihat history proyek
+    Route::get('/projects/history', [App\Http\Controllers\ProjectController::class, 'history'])->name('projects.history');
     // --- GRUP RUTE ADMIN & TIM (MANAJEMEN PROYEK) ---
     Route::middleware(['role:admin,team'])->group(function () {
         Route::resource('projects', ProjectController::class);

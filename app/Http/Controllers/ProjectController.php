@@ -90,4 +90,19 @@ class ProjectController extends Controller
         $project->delete();
         return redirect()->route('projects.index')->with('success', 'Proyek berhasil dihapus.');
     }
+
+    // --- FITUR RIWAYAT PROYEK ---
+    public function history()
+    {
+        $user = auth()->user();
+
+        // Ambil yang statusnya 'Completed'
+        $query = Project::with('client')->where('status', 'Completed');
+        if ($user->role->name == 'Team') {
+             $query->where('user_id', $user->id); // Asumsi ada kolom user_id
+        }
+        $projects = $query->orderBy('updated_at', 'desc')->get();
+
+        return view('projects.history', compact('projects'));
+    }
 }
