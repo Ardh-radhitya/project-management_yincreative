@@ -69,12 +69,21 @@
                                 <input type="date" name="end_date" value="{{ old('end_date', $project->end_date) }}" class="focus:shadow-soft-primary-outline text-sm leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 transition-all focus:border-blue-500 focus:outline-none focus:transition-shadow" />
                             </div>
 
-                            {{-- Input: Status (Read Only) --}}
+                            {{-- Input: Status (Bisa Diedit) --}}
                             <div class="w-full max-w-full px-3 mb-4 md:w-1/3">
                                 <label class="mb-2 ml-1 font-bold text-xs text-slate-700">Status</label>
                                 <div class="relative">
-                                    <input type="text" value="{{ $project->status }}" disabled class="focus:shadow-soft-primary-outline text-sm leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-gray-100 bg-clip-padding px-3 py-2 font-normal text-gray-500 cursor-not-allowed capitalize" />
-                                    <input type="hidden" name="status" value="{{ $project->status }}">
+                                    <select name="status"
+                                        class="focus:shadow-soft-primary-outline text-sm leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 outline-none transition-all focus:border-fuchsia-300 capitalize">
+
+                                        {{-- Pilihan Status --}}
+                                        <option value="pending" {{ $project->status == 'pending' ? 'selected' : '' }}>Pending</option>
+                                        <option value="on progress" {{ $project->status == 'on progress' ? 'selected' : '' }}>On Progress</option>
+                                        <option value="completed" {{ $project->status == 'completed' ? 'selected' : '' }}>Completed</option>
+                                        <option value="cancelled" {{ $project->status == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                                    </select>
+
+                                    {{-- Hapus input hidden yang lama, karena select sudah punya name="status" --}}
                                 </div>
                             </div>
 
