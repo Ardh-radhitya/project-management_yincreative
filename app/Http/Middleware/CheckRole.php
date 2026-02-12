@@ -18,13 +18,13 @@ class CheckRole
         $user = Auth::user();
 
         foreach ($roles as $role) {
-            // PERBAIKAN DI SINI:
-            // Kita ubah kedua nilai menjadi huruf kecil sebelum membandingkan.
+            // Membandingkan dengan huruf kecil agar Admin/admin tidak masalah
             if (strtolower($user->role->name) == strtolower($role)) {
                 return $next($request);
             }
         }
 
-        return redirect('/login')->with('error', 'Anda tidak memiliki hak akses.');
+        // Pakai abort untuk mencegah "Too Many Redirects"
+        abort(403, 'Anda tidak memiliki hak akses ke halaman ini.');
     }
 }

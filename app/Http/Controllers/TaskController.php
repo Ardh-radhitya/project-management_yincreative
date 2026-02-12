@@ -5,109 +5,108 @@ namespace App\Http\Controllers;
 use App\Models\Task;
 use App\Models\Project;
 use App\Models\User;
-use App\Models\TaskProgress;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class TaskController extends Controller
 {
+    // Munculin Daftar Tugas (Fungsi yang tadi ilang)
     public function index(Project $project)
     {
-        // PERBAIKAN: Tambahkan 'progress.user' untuk memuat siapa yang komen
-        $tasks = $project->tasks()
-                        ->with(['user', 'progress.user'])
-                        ->orderBy('created_at', 'desc')
-                        ->get();
-
+        $tasks = $project->tasks()->with('user', 'progress')->get();
         return view('tasks.index', compact('project', 'tasks'));
     }
 
-
     public function create(Project $project)
     {
-        $teamMembers = User::whereHas('role', function ($query) {
-            $query->where('name', 'Team');
+        $teams = User::whereHas('role', function($q) {
+            $q->where('name', 'Team');
         })->get();
-        return view('tasks.create', compact('project', 'teamMembers'));
+
+        return view('projects.tasks.create', compact('project', 'teams'));
     }
 
     public function store(Request $request, Project $project)
     {
-        $validatedData = $request->validate([
+        $request->validate([
             'title' => 'required|string|max:255',
+            'user_id' => 'required|exists:users,id',
             'description' => 'nullable|string',
-            'status' => 'required|string',
-            'assigned_to_user_id' => 'nullable|exists:users,id',
         ]);
-        $validatedData['project_id'] = $project->id;
-        Task::create($validatedData);
 
-        // [PERBAIKAN 1] Redirect ke Daftar Tugas, bukan Detail Proyek
-        return redirect()->route('projects.tasks.index', $project->id)
-                        ->with('success', 'Tugas berhasil ditambahkan.');
+        $project->tasks()->create([
+            'title' => $request->title,
+            'user_id' => $request->user_id,
+            'description' => $request->description,
+            'status' => 'To Do',
+        ]);
+
+        return redirect()->route('projects.show', $project->id)->with('success', 'Tugas berhasil ditambahkan.');
     }
 
     public function edit(Task $task)
     {
         $project = $task->project;
-        $teamMembers = User::whereHas('role', function ($query) {
-            $query->where('name', 'Team');
+        $teams = User::whereHas('role', function($q) {
+            $q->where('name', 'Team');
         })->get();
-        return view('tasks.edit', compact('task', 'project', 'teamMembers'));
+
+        return view('tasks.edit', compact('task', 'project', 'teams'));
     }
 
     public function update(Request $request, Task $task)
     {
-        $validatedData = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'status' => 'required|string',
-            'assigned_to_user_id' => 'nullable|exists:users,id',
+        $request->validate([
+            'title'   => 'required|string|max:255',
+            'user_id' => 'required|exists:users,id',
+            'status'  => 'required|in:To Do,In Progress,Done',
         ]);
 
-        $task->update($validatedData);
+        // LOGIC KUNCI: Ambil data asli dari database sebelum di-update
+        $statusLama = strtolower(trim($task->getOriginal('status')));
+        $userLama   = $task->getOriginal('user_id');
 
-        // [PERBAIKAN 2] Redirect ke Daftar Tugas
-        return redirect()->route('projects.tasks.index', $task->project_id)
-                        ->with('success', 'Tugas berhasil diperbarui.');
+        // Jika status di DB sudah 'Done', kunci perubahan Nama & Team
+        if ($statusLama === 'done') {
+            if ($userLama != $request->user_id || $task->getOriginal('title') != $request->title) {
+                return back()->with('error', 'Gagal! Tugas yang sudah "Done" tidak boleh diubah datanya.');
+            }
+
+            // Opsional: Kunci agar status Done tidak bisa dibalikin ke To Do
+            if (strtolower($request->status) !== 'done') {
+                return back()->with('error', 'Gagal! Status "Done" sudah final.');
+            }
+        }
+
+        // Simpan manual biar aman
+        $task->title = $request->title;
+        $task->user_id = $request->user_id;
+        $task->status = $request->status;
+        $task->description = $request->description;
+        $task->save();
+
+        return redirect()->route('projects.show', $task->project_id)->with('success', 'Tugas berhasil diperbarui.');
     }
 
     public function updateStatus(Request $request, Task $task)
     {
-        $validated = $request->validate([
-            'status' => 'required|string|in:To Do,In Progress,Done',
-        ]);
+        $request->validate(['status' => 'required|in:To Do,In Progress,Done']);
 
-        $task->update(['status' => $validated['status']]);
+        $statusLama = strtolower(trim($task->getOriginal('status')));
 
-        // [PERBAIKAN 3] Redirect ke Daftar Tugas (Penting untuk Dropdown)
-        return redirect()->route('projects.tasks.index', $task->project_id)
-                        ->with('success', 'Status tugas berhasil diperbarui.');
-    }
+        if ($statusLama === 'done' && strtolower($request->status) !== 'done') {
+            return back()->with('error', 'Gagal! Status "Done" tidak bisa diubah kembali.');
+        }
 
-    public function storeProgress(Request $request, Task $task)
-    {
-        $request->validate([
-            'progress_note' => 'required|string',
-        ]);
+        $task->status = $request->status;
+        $task->save();
 
-        TaskProgress::create([
-            'task_id' => $task->id,
-            'user_id' => Auth::id(),
-            'progress_note' => $request->progress_note,
-        ]);
-
-        // Kalau ini pakai back() saja sudah aman karena usernya ada di halaman itu
-        return back()->with('success', 'Laporan progress berhasil ditambahkan.');
+        return redirect()->back()->with('success', 'Status berhasil diperbarui.');
     }
 
     public function destroy(Task $task)
     {
         $projectId = $task->project_id;
         $task->delete();
-
-        // [PERBAIKAN 4] Redirect ke Daftar Tugas
-        return redirect()->route('projects.tasks.index', $projectId)
-                        ->with('success', 'Tugas berhasil dihapus.');
+        return redirect()->route('projects.show', $projectId)->with('success', 'Tugas berhasil dihapus.');
     }
 }

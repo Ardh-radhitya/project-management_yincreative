@@ -5,15 +5,15 @@ namespace App\Http\Controllers;
 use App\Models\Project;
 use App\Models\Client;
 use App\Models\ProjectCategory;
+use App\Models\User;
 use Illuminate\Http\Request;
-use App\Events\ProjectStatusUpdated; // <-- TAMBAHKAN Impor Event
-use Illuminate\Support\Facades\Log;   // <-- TAMBAHKAN Impor Log (untuk debug jika perlu)
+use App\Events\ProjectStatusUpdated;
 
 class ProjectController extends Controller
 {
     public function index()
     {
-        $projects = Project::with(['client', 'category'])->get();
+        $projects = Project::with(['client', 'category', 'user'])->get();
         return view('projects.index', compact('projects'));
     }
 
@@ -21,7 +21,11 @@ class ProjectController extends Controller
     {
         $clients = Client::all();
         $categories = ProjectCategory::all();
-        return view('projects.create', compact('clients', 'categories'));
+        $teams = User::whereHas('role', function($q) {
+            $q->where('name', 'Team');
+        })->get();
+
+        return view('projects.create', compact('clients', 'categories', 'teams'));
     }
 
     public function store(Request $request)
@@ -30,13 +34,14 @@ class ProjectController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'client_id' => 'required|exists:clients,id',
+            'user_id' => 'nullable|exists:users,id',
             'category_id' => 'required|exists:project_categories,id',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
-            'status' => 'required|string|in:Pending,In Progress,Completed', // Dibuat lebih spesifik
+            'status' => 'required|string',
         ]);
 
-        $project = Project::create($validatedData);
+        Project::create($validatedData);
 
         return redirect()->route('projects.index')->with('success', 'Proyek berhasil ditambahkan.');
     }
@@ -49,11 +54,12 @@ class ProjectController extends Controller
     public function edit(Project $project)
     {
         $clients = Client::all();
-        // --- TES DULU DI SINI ---
-        // Kalau browser jadi layar hitam isi data Client, berarti Controller AMAN.
-        // Kalau errornya tetep "Undefined variable", berarti Controller ini GAK DIPANGGIL.
         $categories = ProjectCategory::all();
-        return view('projects.edit', compact('project', 'clients', 'categories'));
+        $teams = User::whereHas('role', function($q) {
+            $q->where('name', 'Team');
+        })->get();
+
+        return view('projects.edit', compact('project', 'clients', 'categories', 'teams'));
     }
 
     public function update(Request $request, Project $project)
@@ -62,25 +68,24 @@ class ProjectController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'client_id' => 'required|exists:clients,id',
+            'user_id' => 'nullable|exists:users,id', // ID Team
             'category_id' => 'required|exists:project_categories,id',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
-            'status' => 'required|string|in:Pending,In Progress,Completed', // Dibuat lebih spesifik
+            'status' => 'required|string',
         ]);
 
-        // Simpan status lama sebelum update
-        $oldStatus = $project->status;
+        // LOGIC KUNCI: Cek apakah user_id (Team) mau diganti
+        if ($project->user_id != $request->user_id) {
+            // Cek apakah ada task di proyek ini yang sudah "Done"
+            $hasDoneTask = $project->tasks()->where('status', 'Done')->exists();
 
-        // Update data proyek
-        $project->update($validatedData);
-
-        // Umumkan event HANYA jika status berubah
-        if ($oldStatus !== $validatedData['status']) { // Bandingkan dengan data tervalidasi
-            Log::info("Status berubah dari {$oldStatus} ke {$validatedData['status']}. Mencoba dispatch event untuk Project ID: {$project->id}"); // Log Debug 1
-            ProjectStatusUpdated::dispatch($project->fresh()); // Kirim data $project yang sudah terupdate
-        } else {
-             Log::info("Status tidak berubah untuk Project ID: {$project->id}. Event tidak di-dispatch."); // Log Debug Tambahan
+            if ($hasDoneTask) {
+                return back()->with('error', 'Gagal! Anggota tim proyek tidak bisa diganti karena sudah ada tugas yang selesai (Done).');
+            }
         }
+
+        $project->update($validatedData);
 
         return redirect()->route('projects.index')->with('success', 'Proyek berhasil diperbarui.');
     }
@@ -91,16 +96,18 @@ class ProjectController extends Controller
         return redirect()->route('projects.index')->with('success', 'Proyek berhasil dihapus.');
     }
 
-    // --- FITUR RIWAYAT PROYEK ---
     public function history()
     {
         $user = auth()->user();
 
-        // Ambil yang statusnya 'Completed'
-        $query = Project::with('client')->where('status', 'Completed');
-        if ($user->role->name == 'Team') {
-             $query->where('user_id', $user->id); // Asumsi ada kolom user_id
+        // Eager load biar gak berat
+        $query = Project::with(['client', 'category', 'user'])->where('status', 'Completed');
+
+        // Logic: Kalau bukan Admin (berarti Team), filter berdasarkan user_id dia
+        if (strtolower($user->role->name) !== 'admin') {
+            $query->where('user_id', $user->id);
         }
+
         $projects = $query->orderBy('updated_at', 'desc')->get();
 
         return view('projects.history', compact('projects'));

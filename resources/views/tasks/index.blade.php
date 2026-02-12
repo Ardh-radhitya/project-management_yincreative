@@ -143,8 +143,8 @@
                                             {{-- AKSI DIKUNCI JIKA PROYEK SELESAI --}}
                                             @if($project->status != 'Completed')
                                             <a href="{{ route('tasks.edit', $task->id) }}"
-                                               class="inline-block px-3 py-2 font-bold text-center text-white uppercase align-middle transition-all rounded-lg cursor-pointer leading-pro text-xs ease-soft-in shadow-soft-md hover:scale-102 hover:shadow-soft-xs"
-                                               style="background-color: #344767;">
+                                                class="inline-block px-3 py-2 font-bold text-center text-white uppercase align-middle transition-all rounded-lg cursor-pointer leading-pro text-xs ease-soft-in shadow-soft-md hover:scale-102 hover:shadow-soft-xs"
+                                                style="background-color: #344767;">
                                                 <i class="fas fa-edit mr-1"></i> Edit
                                             </a>
                                             <form action="{{ route('tasks.destroy', $task->id) }}" method="POST" class="inline-block m-0" onsubmit="return confirm('Hapus tugas ini?');">

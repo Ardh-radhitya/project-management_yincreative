@@ -23,10 +23,16 @@ class Project extends Model
         'deadline',
         'status',
         'client_id',
+        'user_id',
         'category_id',
         'file_path',
     ];
 
+    // Tambahkan ini biar Laravel tau 'user' itu ngambil dari tabel users lewat user_id
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
     /**
      * Relasi: Satu Proyek dimiliki oleh satu Klien.
      */
