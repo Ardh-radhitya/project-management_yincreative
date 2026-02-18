@@ -8,6 +8,10 @@ use App\Models\ProjectCategory;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Events\ProjectStatusUpdated;
+use App\Models\ProjectDelivery;
+use Illuminate\Support\Facades\Storage;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 
 class ProjectController extends Controller
 {
@@ -96,14 +100,55 @@ class ProjectController extends Controller
         return redirect()->route('projects.index')->with('success', 'Proyek berhasil dihapus.');
     }
 
-    public function history()
+    // 1. Tampilkan halaman delivery
+    public function showDelivery(Project $project)
+    {
+        // Eager load deliveries dan usernya agar tidak berat
+        $project->load('deliveries.user', 'client');
+        return view('projects.delivery', compact('project'));
+    }
+
+    // 2. Proses upload file hasil
+    public function storeDelivery(Request $request, Project $project)
+    {
+        $request->validate([
+            'file_hasil' => 'required|file|mimes:pdf,zip,jpg,png,docx|max:20480', // Max 20MB
+            'description' => 'nullable|string|max:255'
+        ]);
+
+        if ($request->hasFile('file_hasil')) {
+            $file = $request->file('file_hasil');
+
+            // Simpan ke folder storage/app/public/deliveries/{id_proyek}
+            $path = $file->store('deliveries/' . $project->id, 'public');
+
+            ProjectDelivery::create([
+                'project_id' => $project->id,
+                'user_id' => auth()->id(),
+                'file_name' => $file->getClientOriginalName(),
+                'file_path' => $path,
+                'description' => $request->description
+            ]);
+        }
+
+        return back()->with('success', 'File hasil pengerjaan berhasil diunggah!');
+    }
+
+    public function history(Request $request)
     {
         $user = auth()->user();
 
-        // Eager load biar gak berat
-        $query = Project::with(['client', 'category', 'user'])->where('status', 'Completed');
+        // Inisialisasi query dasar
+        $query = Project::with(['client', 'category', 'user'])
+                        ->where('status', 'Completed');
 
-        // Logic: Kalau bukan Admin (berarti Team), filter berdasarkan user_id dia
+        // LOGIC FILTER RENTANG WAKTU
+        if ($request->has('start_date') && $request->has('end_date')) {
+            // Kita filter berdasarkan tanggal update terakhir (saat status jadi Completed)
+            $query->whereBetween('updated_at', [$request->start_date, $request->end_date]);
+        }
+
+        // Filter Role (Tetep bawa yang lama biar gak rusak)
         if (strtolower($user->role->name) !== 'admin') {
             $query->where('user_id', $user->id);
         }
@@ -111,5 +156,29 @@ class ProjectController extends Controller
         $projects = $query->orderBy('updated_at', 'desc')->get();
 
         return view('projects.history', compact('projects'));
+    }
+
+    public function generateReport(Project $project)
+    {
+        $project->load(['tasks', 'deliveries.user', 'client', 'category']);
+
+        $totalTasks = $project->tasks->count();
+        $completedTasks = $project->tasks->whereIn('status', ['Done', 'Selesai'])->count();
+        $progressPercentage = $totalTasks > 0 ? round(($completedTasks / $totalTasks) * 100) : 0;
+
+        // Menyiapkan data untuk dikirim ke view PDF
+        $data = [
+            'project' => $project,
+            'progressPercentage' => $progressPercentage,
+            'totalTasks' => $totalTasks,
+            'completedTasks' => $completedTasks,
+            'adminName' => auth()->user()->name
+        ];
+
+        // Load view khusus PDF (kita buat di step 3)
+        $pdf = Pdf::loadView('projects.pdf_report', $data);
+
+        // Langsung download atau tampilkan di browser
+        return $pdf->stream('Laporan_Proyek_' . $project->name . '.pdf');
     }
 }

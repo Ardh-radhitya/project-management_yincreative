@@ -26,14 +26,10 @@
                                 </p>
                             </div>
 
+
                             {{-- TOMBOL DOWNLOAD --}}
                             @if($project->file_path)
                                 <div class="flex items-center mt-4">
-                                    <div class="mr-3">
-                                        <div class="inline-block p-3 text-center text-white bg-blue-500 rounded-lg shadow-sm">
-                                            <i class="fas fa-file-alt"></i>
-                                        </div>
-                                    </div>
                                     <div class="flex-1">
                                         <h6 class="mb-0 text-sm font-semibold">Dokumen Lampiran</h6>
                                         <p class="mb-0 text-xs text-slate-500">File referensi proyek</p>

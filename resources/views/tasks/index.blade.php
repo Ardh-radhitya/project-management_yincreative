@@ -6,77 +6,94 @@
 <div class="w-full px-6 py-6 mx-auto">
 
     {{-- BAGIAN 1: INFO PROYEK --}}
-    <div class="flex flex-wrap -mx-3 mb-6">
+    <div class="flex flex-wrap -mx-3 mb-6 text-left">
         <div class="w-full max-w-full px-3">
-            <div class="relative flex flex-col min-w-0 break-words bg-white border-0 shadow-soft-xl rounded-2xl bg-clip-border">
-                <div class="p-6">
-                    <div class="flex flex-wrap justify-between items-start">
-                        <div class="w-full lg:w-3/4">
-                            <h4 class="font-bold text-slate-700 mb-1 flex items-center gap-2">
-                                {{ $project->name }}
-                            </h4>
-                            <p class="text-sm text-slate-500 mb-4 ml-0">
-                                Kategori: <span class="font-semibold text-slate-700">{{ $project->category->name ?? 'Umum' }}</span> &nbsp;•&nbsp;
-                                Klien: <span class="font-semibold text-slate-700">{{ $project->client->name ?? '-' }}</span>
-                            </p>
-                            <div class="p-4 bg-slate-50 rounded-xl border border-slate-100 mb-4">
-                                <h6 class="text-xs font-bold uppercase text-slate-400 mb-2">Deskripsi Proyek</h6>
-                                <p class="text-sm text-slate-600 leading-relaxed mb-0">
-                                    {{ $project->description ?? 'Tidak ada deskripsi khusus.' }}
-                                </p>
+            <div class="relative flex flex-col min-w-0 break-words bg-white border-0 shadow-soft-xl rounded-2xl bg-clip-border p-6">
+
+                {{-- ROW 1: HEADER & STATUS --}}
+                <div class="flex flex-wrap justify-between items-center mb-4 gap-4">
+                    <div class="flex-1 min-w-[300px]">
+                        <h4 class="font-bold text-slate-700 mb-1">{{ $project->name }}</h4>
+                        <p class="text-sm text-slate-500 mb-0">
+                            <i class="fas fa-tag mr-1 opacity-50"></i> {{ $project->category->name ?? 'Umum' }} &nbsp;•&nbsp;
+                            <i class="fas fa-user mr-1 opacity-50"></i> {{ $project->client->name ?? '-' }}
+                        </p>
+                    </div>
+                    {{-- GRUP TOMBOL DENGAN GAP YANG PAS --}}
+                    <div class="flex items-center">
+                        @php
+                            $badgeStyle = match($project->status) {
+                                'Pending'     => 'background: linear-gradient(310deg, #a0aec0 0%, #a8b8d8 100%); color: #fff;',
+                                'In Progress' => 'background: linear-gradient(310deg, #2152ff 0%, #21d4fd 100%); color: #fff;',
+                                'Completed'   => 'background: linear-gradient(310deg, #17ad37 0%, #98ec2d 100%); color: #fff;',
+                                default       => 'background: #cbd5e0; color: #fff;',
+                            };
+                        @endphp
+
+                        {{-- Badge Status --}}
+                        <span style="{{ $badgeStyle }}" class="px-4 py-2 rounded-lg font-bold text-xs uppercase shadow-md inline-block tracking-wide">
+                            {{ $project->status }}
+                        </span>
+
+                        @if($project->status != 'Completed')
+                            {{-- Kita bungkus tombolnya pake div dengan margin-left (ml-4) biar bener-bener kepisah --}}
+                            <div class="ml-4">
+                                <a href="{{ route('projects.tasks.create', $project->id) }}"
+                                class="inline-block px-6 py-3 font-bold text-center text-white uppercase align-middle transition-all bg-gradient-to-tl from-blue-500 to-violet-500 border-0 rounded-lg cursor-pointer shadow-md hover:scale-105 active:opacity-85 text-xs">
+                                    <i class="fas fa-plus mr-1"></i> Tambah Tugas
+                                </a>
                             </div>
-                        </div>
+                        @endif
+                    </div>
+                </div>
 
-                        {{-- BAGIAN LAMPIRAN FILE --}}
-                        <div class="mt-4">
-                            <h6 class="text-xs font-bold uppercase text-slate-400 mb-2 flex items-center gap-2">
-                                <i class="fas fa-paperclip"></i> Lampiran File
-                            </h6>
+                <hr class="horizontal dark my-4">
 
-                            @if($project->file_path)
-                                <div class="flex items-center p-3 bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                                    <div class="mr-4 bg-blue-100 p-3 rounded-lg text-blue-600">
-                                        <i class="fas fa-file-alt text-xl"></i>
-                                    </div>
-                                    <div class="flex-1 overflow-hidden">
-                                        <p class="text-sm font-semibold text-slate-700 mb-1 truncate">
-                                            Dokumen Proyek
-                                        </p>
-                                        <a href="{{ asset('storage/' . $project->file_path) }}" target="_blank"
-                                        class="inline-block px-4 py-2 text-xs font-bold text-white uppercase bg-blue-500 rounded-lg hover:bg-blue-600 transition-colors">
-                                            <i class="fas fa-download mr-1"></i> Download / Lihat
-                                        </a>
-                                    </div>
+                {{-- ROW 2: DESKRIPSI (FULL WIDTH) --}}
+                <div class="mb-6 text-left">
+                    <h6 class="text-xs font-bold uppercase text-slate-400 mb-2">Deskripsi Proyek</h6>
+                    <p class="text-sm text-slate-600 leading-relaxed bg-slate-50 p-4 rounded-xl border border-slate-100">
+                        {{ $project->description ?? 'Tidak ada deskripsi khusus.' }}
+                    </p>
+                </div>
+
+                {{-- ROW 3: FILE & ASSETS (HORIZONTAL GRID) --}}
+                <div class="flex flex-wrap -mx-3 gap-y-4">
+                    {{-- Box Hasil Akhir --}}
+                    <div class="w-full md:w-1/2 px-3 text-left">
+                        <div class="p-4 border border-solid border-purple-100 rounded-2xl bg-purple-50 flex items-center justify-between shadow-sm">
+                            <div class="flex items-center">
+                                <div>
+                                    <h6 class="mb-0 text-sm font-bold text-slate-700">Hasil Proyek</h6>
+                                    <p class="mb-0 text-xxs text-slate-500 uppercase font-bold tracking-wider">Final Deliverables</p>
                                 </div>
-                            @else
-                                <div class="p-3 bg-slate-50 border border-dashed border-slate-300 rounded-lg text-center">
-                                    <span class="text-sm text-slate-400 italic">Tidak ada file yang dilampirkan oleh klien.</span>
-                                </div>
-                            @endif
-                        </div>
-
-                        <div class="w-full lg:w-1/4 text-right flex flex-col items-end">
-                            @php
-                                $badgeStyle = match($project->status) {
-                                    'Pending'     => 'background: linear-gradient(310deg, #a0aec0 0%, #a8b8d8 100%); color: #fff;',
-                                    'In Progress' => 'background: linear-gradient(310deg, #2152ff 0%, #21d4fd 100%); color: #fff;',
-                                    'Completed'   => 'background: linear-gradient(310deg, #17ad37 0%, #98ec2d 100%); color: #fff;',
-                                    default       => 'background: #cbd5e0; color: #fff;',
-                                };
-                            @endphp
-                            <span style="{{ $badgeStyle }}" class="px-4 py-2 rounded-lg font-bold text-xs uppercase shadow-md mb-4 inline-block tracking-wide">
-                                {{ $project->status }}
-                            </span>
-
-                            {{-- LOGIC GATE TOMBOL TAMBAH TUGAS --}}
-                            @if($project->status != 'Completed')
-                            <a href="{{ route('projects.tasks.create', $project->id) }}" class="inline-block px-6 py-3 font-bold text-center text-white uppercase align-middle transition-all bg-gradient-to-tl from-blue-500 to-violet-500 border-0 rounded-lg cursor-pointer shadow-md hover:scale-105 hover:shadow-lg active:opacity-85">
-                                <i class="fas fa-plus mr-1"></i> Tambah Tugas
+                            </div>
+                            <a href="{{ route('projects.delivery.index', $project->id) }}" class="px-5 py-2 bg-white text-purple-700 border border-purple-200 rounded-lg text-xs font-bold uppercase hover:bg-purple-700 hover:text-white transition-all shadow-soft-sm">
+                                Buka
                             </a>
+                        </div>
+                    </div>
+
+                    {{-- Box Lampiran Referensi --}}
+                    <div class="w-full md:w-1/2 px-3 text-left">
+                        <div class="p-4 border border-solid border-blue-100 rounded-2xl bg-blue-50 flex items-center justify-between shadow-sm">
+                            <div class="flex items-center">
+                                <div>
+                                    <h6 class="mb-0 text-sm font-bold text-slate-700">Lampiran Klien</h6>
+                                    <p class="mb-0 text-xxs text-slate-500 uppercase font-bold tracking-wider">Project Reference</p>
+                                </div>
+                            </div>
+                            @if($project->file_path)
+                                <a href="{{ asset('storage/' . $project->file_path) }}" target="_blank" class="px-5 py-2 bg-white text-blue-600 border border-blue-200 rounded-lg text-xs font-bold uppercase hover:bg-blue-600 hover:text-white transition-all shadow-soft-sm">
+                                    Unduh
+                                </a>
+                            @else
+                                <span class="text-xs italic text-slate-400 font-semibold pr-4">Tidak ada file</span>
                             @endif
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>

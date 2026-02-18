@@ -24,9 +24,7 @@ Route::middleware('guest')->group(function () {
 Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth')->name('logout');
 Route::get('/', fn() => redirect()->route('login'));
 
-// ====================================================
-// ZONA AMAN: WAJIB LOGIN
-// ====================================================
+// --- Rute Terproteksi (Auth) ---
 Route::middleware(['auth'])->group(function () {
 
     // --- Rute Dasbor ---
@@ -34,8 +32,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard-team', [TeamController::class, 'index'])->name('dashboard.team')->middleware('role:Team,Admin');
     Route::get('/dashboard-client', [ClientController::class, 'dashboard'])->name('dashboard.client')->middleware('role:Client');
 
-    // --- MANAJEMEN PROYEK (Bypass Role Admin & Team, biar bisa Save edit) ---
+    // --- RUTE HISTORY (WAJIB DI ATAS RESOURCE AGAR TIDAK BENTROK BIGINT) ---
+    Route::get('/projects/history', [ProjectController::class, 'history'])->name('projects.history');
+
+    // --- MANAJEMEN PROYEK ---
     Route::resource('projects', ProjectController::class);
+
 
     // --- RUTE UNTUK KLIEN ---
     Route::get('/client/projects/create', [ClientController::class, 'createProjectForm'])->name('client.projects.create')->middleware('role:Client');
@@ -57,16 +59,32 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/users/{user}', [AdminController::class, 'updateUser'])->name('users.update');
         Route::delete('/users/{user}', [AdminController::class, 'destroyUser'])->name('users.destroy');
         Route::resource('clients', ClientController::class);
+        Route::get('/projects/{project}/report', [ProjectController::class, 'generateReport'])->name('projects.delivery.report')->middleware('role:Admin');
     });
-
-    Route::get('/projects/history', [ProjectController::class, 'history'])->name('projects.history');
 
     // --- ADMIN & TIM ---
     Route::middleware(['role:Admin,Team'])->group(function () {
         Route::resource('categories', ProjectCategoryController::class);
-        Route::resource('projects.tasks', TaskController::class)->shallow();
+        Route::resource('projects.tasks', TaskController::class);
         Route::patch('/tasks/{task}/status', [TaskController::class, 'updateStatus'])->name('tasks.updateStatus');
         Route::post('/tasks/{task}/progress', [TaskController::class, 'storeProgress'])->name('tasks.progress.store');
+        Route::get('/tasks/{task}/edit', [TaskController::class, 'edit'])->name('tasks.edit');
+        Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
+    });
+
+    // --- FITUR DELIVERY (HASIL PENGERJAAN) ---
+    Route::prefix('projects/{project}/delivery')->name('projects.delivery.')->group(function () {
+        // Team & Admin bisa buka halaman & upload
+        Route::middleware(['role:Admin,Team'])->group(function () {
+            Route::get('/', [ProjectController::class, 'showDelivery'])->name('index');
+            Route::post('/', [ProjectController::class, 'storeDelivery'])->name('store');
+        });
+
+        // Client cuma bisa lihat & download
+        Route::get('/view', [ProjectController::class, 'showDelivery'])->name('view')->middleware('role:Client');
+
+        // Admin bisa generate laporan otomatis dari sini
+        Route::get('/report', [ProjectController::class, 'generateReport'])->name('report')->middleware('role:Admin');
     });
 
     // --- SETTINGS ---

@@ -76,14 +76,14 @@
                     {{-- Dropdown Assigned To --}}
                     <div>
                         <label for="assigned_to_user_id" class="block mb-2 ml-1 text-xs font-bold text-slate-700 uppercase tracking-wide">
-                            Tugaskan Kepada (Opsional)
+                            Tugaskan Kepada
                         </label>
                         <div class="relative">
                             <select name="assigned_to_user_id"
                                     id="assigned_to_user_id"
                                     class="focus:shadow-primary-outline dark:bg-slate-850 dark:text-white text-sm leading-5.6 ease block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 outline-none transition-all focus:border-purple-500 focus:outline-none cursor-pointer @error('assigned_to_user_id') border-red-500 @enderror">
                                 <option value="">-- Belum Ditugaskan --</option>
-                                @foreach ($teamMembers as $member)
+                                @foreach ($teams as $member)
                                     <option value="{{ $member->id }}" {{ old('assigned_to_user_id') == $member->id ? 'selected' : '' }}>
                                         {{ $member->name }}
                                     </option>

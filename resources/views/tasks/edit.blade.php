@@ -3,91 +3,62 @@
 @section('page-title', 'Edit Tugas')
 
 @section('content')
-<div class="w-full px-6 py-6 mx-auto">
-    <div class="flex flex-wrap -mx-3 text-left">
-        <div class="w-full max-w-full px-3">
-            <div class="relative flex flex-col min-w-0 break-words bg-white border-0 shadow-soft-xl rounded-2xl bg-clip-border">
+<div class="relative flex flex-col min-w-0 mb-6 break-words bg-white border-0 border-transparent border-solid shadow-soft-xl rounded-2xl bg-clip-border">
 
-                <div class="p-6 pb-0 mb-0 bg-white border-b-0 rounded-t-2xl">
-                    <h6 class="font-bold text-slate-700">Edit Tugas</h6>
-                    <p class="text-sm">Proyek: <span class="font-bold">{{ $task->project->name }}</span></p>
+    <div class="p-6 pb-0 mb-0 bg-white border-b-0 border-b-solid rounded-t-2xl border-b-transparent text-left">
+        <h6 class="font-bold text-slate-700">Edit Tugas: <span class="text-purple-600">{{ $task->title }}</span></h6>
+    </div>
+
+    <div class="flex-auto p-6">
+        {{-- ACTION HARUS KE UPDATE, DENGAN DUA PARAMETER: PROJECT & TASK --}}
+        <form action="{{ route('projects.tasks.update', [$project->id, $task->id]) }}" method="POST">
+            @csrf
+            @method('PUT')
+
+                <div class="mb-6 text-left">
+                    <label for="title" class="block mb-2 ml-1 text-xs font-bold text-slate-700 uppercase">Judul Tugas</label>
+                    <input type="text" name="title" id="title" value="{{ old('title', $task->title) }}"
+                        class="focus:shadow-primary-outline text-sm leading-5.6 ease block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white px-3 py-2 font-normal text-gray-700 outline-none transition-all focus:border-purple-500" required>
                 </div>
 
-                <div class="flex-auto p-6">
-                    {{-- Alert Error --}}
-                    @if(session('error'))
-                        <div class="p-3 mb-4 text-white bg-red-500 rounded-lg text-sm font-bold">
-                            {{ session('error') }}
-                        </div>
-                    @endif
+                <div class="mb-6 text-left">
+                    <label for="description" class="block mb-2 ml-1 text-xs font-bold text-slate-700 uppercase">Deskripsi</label>
+                    <textarea name="description" id="description" rows="4"
+                            class="focus:shadow-primary-outline text-sm leading-5.6 ease block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white px-3 py-2 font-normal text-gray-700 outline-none transition-all focus:border-purple-500">{{ old('description', $task->description) }}</textarea>
+                </div>
 
-                    <form action="{{ route('tasks.update', $task->id) }}" method="POST">
-                        @csrf
-                        @method('PUT')
+            <div class="grid grid-cols-1 gap-6 md:grid-cols-2 mb-6 text-left">
+                {{-- DROPDOWN STATUS --}}
+                <div>
+                    <label for="status" class="block mb-2 ml-1 text-xs font-bold text-slate-700 uppercase">Status</label>
+                    <select name="status" id="status" class="focus:shadow-primary-outline text-sm ease block w-full rounded-lg border border-solid border-gray-300 bg-white px-3 py-2 outline-none focus:border-purple-500">
+                        <option value="To Do" {{ old('status', $task->status) == 'To Do' ? 'selected' : '' }}>To Do</option>
+                        <option value="In Progress" {{ old('status', $task->status) == 'In Progress' ? 'selected' : '' }}>In Progress</option>
+                        <option value="Done" {{ old('status', $task->status) == 'Done' ? 'selected' : '' }}>Done</option>
+                    </select>
+                </div>
 
-                        @php
-                            $isDone = strtolower(trim($task->status)) === 'done';
-                        @endphp
-
-                        {{-- Kirim data asli lewat hidden input jika dropdown di-disable agar tidak error di controller --}}
-                        @if($isDone)
-                            <input type="hidden" name="user_id" value="{{ $task->user_id }}">
-                            <input type="hidden" name="status" value="{{ $task->status }}">
-                        @endif
-
-                        <div class="mb-4 text-left">
-                            <label class="font-bold text-xs uppercase text-slate-700">Judul Tugas</label>
-                            <input type="text" name="title" value="{{ old('title', $task->title) }}"
-                                class="focus:shadow-primary-outline text-sm block w-full rounded-lg border border-gray-300 p-2 outline-none focus:border-blue-500"
-                                {{ $isDone ? 'readonly' : 'required' }}>
-                        </div>
-
-                        <div class="flex flex-wrap -mx-3 mb-4 text-left">
-                            {{-- Dropdown Pilih Team --}}
-                            <div class="w-full md:w-1/2 px-3 mb-4">
-                                <label class="font-bold text-xs uppercase text-slate-700">Ditugaskan Ke</label>
-                                <select name="user_id" {{ $isDone ? 'disabled' : '' }}
-                                    class="focus:shadow-primary-outline text-sm block w-full rounded-lg border border-gray-300 p-2 outline-none focus:border-blue-500 {{ $isDone ? 'bg-gray-100 cursor-not-allowed' : '' }}">
-                                    @foreach($teams as $team)
-                                        <option value="{{ $team->id }}" {{ $task->user_id == $team->id ? 'selected' : '' }}>
-                                            {{ $team->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                @if($isDone) <p class="text-xxs text-red-500 mt-1">* Anggota tim tidak bisa diganti karena tugas selesai.</p> @endif
-                            </div>
-
-                            {{-- Dropdown Status --}}
-                            <div class="w-full md:w-1/2 px-3">
-                                <label class="font-bold text-xs uppercase text-slate-700">Status</label>
-                                <select name="status" {{ $isDone ? 'disabled' : '' }}
-                                    class="focus:shadow-primary-outline text-sm block w-full rounded-lg border border-gray-300 p-2 outline-none focus:border-blue-500 {{ $isDone ? 'bg-gray-100 cursor-not-allowed' : '' }}">
-                                    <option value="To Do" {{ $task->status == 'To Do' ? 'selected' : '' }}>To Do</option>
-                                    <option value="In Progress" {{ $task->status == 'In Progress' ? 'selected' : '' }}>In Progress</option>
-                                    <option value="Done" {{ $task->status == 'Done' ? 'selected' : '' }}>Done</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="mb-4 text-left">
-                            <label class="font-bold text-xs uppercase text-slate-700">Deskripsi</label>
-                            <textarea name="description" rows="4"
-                                class="focus:shadow-primary-outline text-sm block w-full rounded-lg border border-gray-300 p-2 outline-none focus:border-blue-500"
-                                {{ $isDone ? 'readonly' : '' }}>{{ old('description', $task->description) }}</textarea>
-                        </div>
-
-                        <div class="flex justify-end gap-2">
-                            <a href="{{ route('projects.show', $task->project_id) }}" class="px-6 py-2 text-xs font-bold uppercase bg-gray-200 rounded-lg">Batal</a>
-
-                            {{-- Sembunyikan tombol simpan atau biarkan saja (karena controller sudah nge-lock) --}}
-                            <button type="submit" class="px-6 py-2 text-xs font-bold text-white uppercase bg-blue-500 rounded-lg shadow-md hover:scale-102 active:opacity-85" style="background-color: #5e72e4;">
-                                Simpan Perubahan
-                            </button>
-                        </div>
-                    </form>
+                {{-- DROPDOWN TEAM MEMBER --}}
+                <div>
+                    <label for="assigned_to_user_id" class="block mb-2 ml-1 text-xs font-bold text-slate-700 uppercase">Tugaskan Kepada</label>
+                    <select name="assigned_to_user_id" id="assigned_to_user_id"
+                            class="focus:shadow-primary-outline text-sm ease block w-full rounded-lg border border-solid border-gray-300 bg-white px-3 py-2 outline-none focus:border-purple-500" required>
+                        <option value="">-- Pilih Anggota --</option>
+                        @foreach ($teams as $member)
+                            <option value="{{ $member->id }}"
+                                {{ old('assigned_to_user_id', $task->user_id) == $member->id ? 'selected' : '' }}>
+                                {{ $member->name }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
             </div>
-        </div>
+
+            <div class="flex items-center justify-end gap-3 mt-8">
+                <a href="{{ route('projects.show', $project->id) }}" class="inline-block px-6 py-3 font-bold text-center text-gray-700 uppercase bg-gray-200 rounded-lg text-xs">Batal</a>
+                <button type="submit" class="inline-block px-6 py-3 font-bold text-center text-white uppercase bg-blue-500 rounded-lg text-xs" style="background-color: #5e72e4;">Simpan Perubahan</button>
+            </div>
+        </form>
     </div>
 </div>
 @endsection
